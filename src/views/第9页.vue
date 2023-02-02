@@ -29,7 +29,7 @@ let 镜片A= new 镜片类()
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 .第九页 {
     display: grid;
     grid-auto-flow: row;

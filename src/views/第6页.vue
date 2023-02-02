@@ -53,7 +53,7 @@ let Event = ref(0)
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 .第五页 {
     display: grid;
     grid-auto-flow: row;

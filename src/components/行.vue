@@ -190,6 +190,7 @@ let 还原订单 = (行: any) => {
 
 .行 {
   display: grid;
+  width: 100%;
   grid-auto-flow: column;
   grid-template-columns: 100px repeat(3, 30px) 100px 200px 120px 170px repeat(6, 60px) 100px 1fr;
   grid-template-rows: 25px;

@@ -15,7 +15,7 @@ function 登录() {
         console.log("登录验证" + 返回数据);
 
         if (返回数据 == "登录成功") {
-            router.push("/1")
+            router.push("/01")
             localStorage.setItem("token", "通过")
             localStorage.setItem("当前登录用户", pinia.当前登录用户)
         }
@@ -60,8 +60,7 @@ socket.on("disconnect", () => {
 
 </template>
 
-
-<style scoped>
+<style scoped lang="scss">
 .登录页{
     display: grid;
     height: 100vh;

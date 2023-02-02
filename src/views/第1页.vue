@@ -72,7 +72,7 @@ pinia.获取旧订单()
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 div {
     display: grid;
     font-size: 50px;

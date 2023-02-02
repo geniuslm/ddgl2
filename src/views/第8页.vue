@@ -133,7 +133,7 @@ let 删除镜片 = (_id: any) => {
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 .行 {
     display: grid;
     grid-auto-flow: column;

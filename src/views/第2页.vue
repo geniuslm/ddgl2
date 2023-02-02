@@ -40,7 +40,7 @@ let 添加订单 = (行: any) => {
 
 <template>
 
-  <div class="未完成页">
+  <div class="未完成页 滑条">
 
     <div class="第一行">
       <!--   <div class = "弹窗" v-if = "添加订单窗口开关"> <lmButton @click = "添加订单窗口开关=false">关闭窗口</lmButton></div> -->
@@ -93,7 +93,7 @@ let 添加订单 = (行: any) => {
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 .查找状态 {
   background-color: #337ecc;
 }

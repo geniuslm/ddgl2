@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import 主页 from '@页面/主页.vue';
-import 第1页 from '../views/第1页.vue';
-import 第2页 from '../views/第2页.vue';
-import 第3页 from '../views/第3页.vue';
-import 第4页 from '../views/第4页.vue';
-import 第5页 from '../views/第5页.vue';
-import 第6页 from '../views/第6页.vue';
-import 第7页 from '../views/第7页.vue';
-import 第8页 from '../views/第8页.vue';
-import 第9页 from '../views/第9页.vue';
+import 第01页 from '../views/第1页.vue';
+import 第02页 from '../views/第2页.vue';
+import 第03页 from '../views/第3页.vue';
+import 第04页 from '../views/第4页.vue';
+import 第05页 from '../views/第5页.vue';
+import 第06页 from '../views/第6页.vue';
+import 第07页 from '../views/第7页.vue';
+import 第08页 from '../views/第8页.vue';
+import 第09页 from '../views/第9页.vue';
 import 第10页 from '../views/第10页.vue';
 import 第11页 from '../views/第11页.vue';
 import 默认页 from '../views/默认页.vue';
@@ -18,109 +18,31 @@ import { pinia数据中心 } from '../stores/pinia数据';
 
 
 
-const User = {
-    template: `
-      <div>
-        <router-view></router-view>
-      </div>
-    `,
-}
-
+let 主页子菜单 = [
+    { path: 'mr',  components: { 内容: 默认页 },  },
+    { path: '01',  components: { 内容: 第01页 },  },
+    { path: '02',  components: { 内容: 第02页 },  },
+    { path: '03',  components: { 内容: 第03页 },  },
+    { path: '04',  components: { 内容: 第04页 },  },
+    { path: '05',  components: { 内容: 第05页 },  },
+    { path: '06',  components: { 内容: 第06页 },  },
+    { path: '07',  components: { 内容: 第07页 },  },
+    { path: '08',  components: { 内容: 第08页 },  },
+    { path: '09',  components: { 内容: 第09页 },  },
+    { path: '10',  components: { 内容: 第10页 },  },
+    { path: '11',  components: { 内容: 第11页 },  },
+]
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+
+    history: createWebHistory(),
     routes: [
-        {
-            path: '/',
-            components: { 主页: 主页 },
-            children: [
-
-                {
-                    path: 'mr',
-                    name: '默认页',
-                    components: { 内容: 默认页 },
-                    props: true
-                },
-                {
-                    path: '1',
-                    name: '第1页',
-                    components: { 内容: 第1页 },
-                    props: true
-                },
-                {
-                    path: '2',
-                    name: '第2页',
-                    components: { 内容: 第2页 },
-                    props: true
-                },
-                {
-                    path: '3',
-                    name: '第3页',
-                    components: { 内容: 第3页 },
-                    props: true
-                },
-                {
-                    path: '4',
-                    name: '第4页',
-                    components: { 内容: 第4页 },
-                    props: true
-                },
-                {
-                    path: '5',
-                    name: '第5页',
-                    components: { 内容: 第5页 },
-                    props: true
-                },
-                {
-                    path: '6',
-                    name: '第6页',
-                    components: { 内容: 第6页 },
-                    props: true
-                },
-                {
-                    path: '7',
-                    name: '第7页',
-                    components: { 内容: 第7页 },
-                    props: true
-                },
-
-                {
-                    path: '8',
-                    name: '第8页',
-                    components: { 内容: 第8页 },
-                    props: true
-                },
-
-                {
-                    path: '9',
-                    name: '第9页',
-                    components: { 内容: 第9页 },
-                    props: true
-                },
-                {
-                    path: '10',
-                    name: '第10页',
-                    components: { 内容: 第10页 },
-                    props: true
-                },
-                {
-                    path: '11',
-                    name: '第11页',
-                    components: { 内容: 第11页 },
-                    props: true
-                },
-            ],
-        },
-
-        {
-            path: '/login',
-            name: 'login',
-            components: { 主页: 登录页 },
-            props: true
-        },
+        { path: '/', components: { 主页: 主页 }, children: 主页子菜单 },
+        { path: '/login', name: 'login', components: { 主页: 登录页 },  },
 
     ]
 })
+
 
 //路由守卫
 router.beforeEach((to, from, next) => {

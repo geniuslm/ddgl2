@@ -5,7 +5,9 @@
 
 <template>
 
-   <div>默认页
+   <div class="横向">默认页
+    <div class="哈哈 黑背景">哈哈</div>
+    <div class="哈哈">哈哈</div>
     <div class="哈哈">哈哈</div>
    </div>
 
@@ -14,16 +16,7 @@
 
 <style  lang="scss" scoped>
  div {
-     display: grid;
-     grid-template-columns: 1fr;
-     grid-template-rows: 1fr;
-     gap: 5px;
-     align-content: center;
-     align-items: center;
-     justify-content: center;
-     justify-items: center;
-     overflow: auto;
-     background-color: red;
-     color: red;
+
+     color: $正蓝;
  }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang = "ts">
 import { useRouter } from 'vue-router';
-import { ref, toRefs, reactive, computed,watch } from 'vue';
+import { ref, toRefs, reactive, computed, watch } from 'vue';
 import Icon from './icons/Icon.vue';
 import { socket } from "../stores/socket链接";
 import { pinia数据中心 } from '../stores/pinia数据';
@@ -10,8 +10,8 @@ let 库 = pinia库();
 let pinia = pinia数据中心()
 //接收参数
 //子组件
-let props  = defineProps(['行数据'])
-let 数据  = props.行数据
+let props = defineProps(['行数据'])
+let 数据 = props.行数据
 
 
 let 镜片 = ref('')
@@ -19,19 +19,20 @@ let 镜框 = ref('')
 
 
 let 修改订单 = () => {
-  let 订单数组=库.旧订单
+  let 订单数组 = 库.旧订单
   let 序列 = 订单数组.findIndex((item) => {
     return item._id == props.行数据._id;
   })
-  库.旧订单[序列]=props.行数据
+  库.旧订单[序列] = props.行数据
 }
 
 
 
-watch( () => 数据.右近视, (newValue, oldValue) => {
-  console.log('旧数据 '+oldValue+'修改为'+newValue)
+watch(() => 数据.右近视, (newValue, oldValue) => {
+  console.log('旧数据 ' + oldValue + '修改为' + newValue)
   修改订单()
-},{ deep: true })
+}, { deep: true })
+
 
 </script>
 
@@ -42,31 +43,36 @@ watch( () => 数据.右近视, (newValue, oldValue) => {
     <div class="第一行">
       <div class="标识格">
         <div class="标识">订单号:{{ 数据.订单号 }}</div>
-        <div class="标识">收件人:{{ 数据.收件人 }}</div>
-        <div class="标识 两列">{{ 数据.旺旺名 }}</div>
+        <input class="标识" v-model.lazy="数据.收件人" placeholder="收件人">
+        <input class="标识 两列" v-model.lazy="数据.旺旺名" placeholder="旺旺名">
       </div>
       <div class="镜片格">
-        <div class="镜片">{{ 数据.镜片下单日 }}下单</div>
+        <!-- <div class="镜片">{{ 数据.镜片下单日 }}下单</div>
         <div class="镜片">15日镜片已定</div>
         <div class="镜片">17日镜片备好</div>
-        <div class="镜片 三列">{{ 数据.镜片 }}</div>
-        <div class="验光数据 三列">
-          <input type="text" v-model.lazy="数据.右近视" >
-          <div>{{ 数据.右散光 }}</div>
-          <div>{{ 数据.右轴向 }}</div>
-          <div>{{ 数据.右瞳距 }}</div>
+        <div class="镜片 三列">{{ 数据.镜片 }}</div> -->
+        <input class="镜片" v-model.lazy="数据.镜片下单日" placeholder="镜片下单日" list="日期">
+        <input class="镜片" v-model.lazy="数据.镜片下单日" placeholder="镜片下单日" list="日期">
+        <input class="镜片" v-model.lazy="数据.镜片下单日" placeholder="镜片下单日" list="日期">
+        <input class="镜片 三列" v-model.lazy="数据.镜片" placeholder="镜片">
 
-          <div>{{ 数据.左近视 }}</div>
-          <div>{{ 数据.左散光 }}</div>
-          <div>{{ 数据.左轴向 }}</div>
-          <div>{{ 数据.左瞳距 }}</div>
+        <div class="验光数据 三列">
+          <input v-model.lazy="数据.右近视" placeholder="右近视">
+          <input v-model.lazy="数据.右散光" placeholder="右散光">
+          <input v-model.lazy="数据.右轴向" placeholder="右轴向">
+          <input v-model.lazy="数据.右瞳距" placeholder="右瞳距">
+          <input v-model.lazy="数据.左近视" placeholder="左近视">
+          <input v-model.lazy="数据.左散光" placeholder="左散光">
+          <input v-model.lazy="数据.左轴向" placeholder="左轴向">
+          <input v-model.lazy="数据.左瞳距" placeholder="左瞳距">
+
         </div>
       </div>
 
       <div class="镜框格">
         <input placeholder="下单日" list="日期">
-        <input placeholder="发货日">
-        <input placeholder="备好日">
+        <input placeholder="发货日" list="日期">
+        <input placeholder="备好日" list="日期">
         <div class="镜框第一行">
           <input class="" :class="{ '': 镜框 == '直接加工' || 镜框 == '' }" v-model=镜框 list="镜框选项" placeholder="镜框选项"
             @focus="镜框 = ''">
@@ -81,18 +87,11 @@ watch( () => 数据.右近视, (newValue, oldValue) => {
         <input class="三列" placeholder="备注">
 
       </div>
-      <datalist id="镜框选项">
-        <option>来框加工</option>
-        <option>试戴镜框</option>
-        <option>直接加工</option>
-      </datalist>
-      <datalist id="日期">
-        <option :value=库.月日>今天</option>
-      </datalist>
+
 
       <div class="图标格">
         <icon @click="修改订单" 图标名="icon-down" 颜色="#666" font-size='25px' />
-        <icon 图标名="icon-setting" 颜色="#666" font-size='25px' />
+        <icon @click="库.修改订单(数据)" 图标名="icon-setting" 颜色="#666" font-size='25px' />
         <icon 图标名="icon-delete" 颜色="#F56C6C" font-size='25px' />
       </div>
       <div class="图标格">
@@ -100,16 +99,21 @@ watch( () => 数据.右近视, (newValue, oldValue) => {
 
       </div>
     </div>
-
-
-
-
   </div>
+  <datalist id="镜框选项">
+    <option>来框加工</option>
+    <option>试戴镜框</option>
+    <option>直接加工</option>
+  </datalist>
+  <datalist id="日期">
+    <option :value=库.月日>今天</option>
+
+  </datalist>
 
 </template>
 
 
-<style scoped>
+<style lang="scss" scoped>
 .页 {
   display: grid;
   grid-auto-flow: column;
@@ -164,7 +168,7 @@ watch( () => 数据.右近视, (newValue, oldValue) => {
 .试戴镜框 {
   grid-template-rows: 1fr;
   grid-template-columns: 1fr;
-  
+
 }
 
 

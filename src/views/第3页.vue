@@ -19,8 +19,7 @@ pinia.获取用户();
     </div>
 </template>
 
-
-<style scoped>
+<style scoped lang="scss">
 .列表 {
    height: 200px;
 }

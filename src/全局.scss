@@ -1,0 +1,58 @@
+$正蓝: #409EFF;
+$浅蓝: #66b1ff;
+$暗蓝: #3375b9;
+
+$正绿: #67C23A;
+$浅绿: #85ce61;
+$暗绿: #4e8e2f;
+
+$正黄: #E6A23C;
+$浅黄: #ebb563;
+$暗黄: #a77730;
+
+$正红: #F56C6C;
+$浅红: #f78989;
+$暗红: #b25252;
+
+$纯白: #FFFFFF;
+$纯黑: #000000;
+
+$浅灰: #999999;
+$中灰: #666666;
+$深灰: #333333;
+
+
+* {
+    margin : 0;
+    padding: 0;
+}
+
+
+div {
+    display              : grid;
+    grid-auto-flow       : row;
+    width                : 100%;
+    height               : 100%;
+    align-content        : center;
+    justify-content      : center;
+    align-items          : center;
+    justify-items        : center;
+    grid-template-columns: 1fr ;
+    text-align           : center ;
+   
+}
+
+.横向{ grid-auto-flow: column; }
+.竖向{ grid-auto-flow: row; }
+.两列{ grid-column: 1 / span 2 }
+.滑条{ overflow: auto;}
+.黑背景{ background: #000; }
+
+/* 滚动条整体 */
+div::-webkit-scrollbar { height: 10px; width: 10px; }
+/* 两个滚动条交接处 -- x轴和y轴 */
+div::-webkit-scrollbar-corner { background-color: transparent; }
+/* 滚动条滑块 */
+div::-webkit-scrollbar-thumb { border-radius: 5px; box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2); background: #535353; }
+/* 滚动条轨道 */
+div::-webkit-scrollbar-track { box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); border-radius: 5px; background: rgba(255, 255, 255, 0.455); }
