@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { pinia数据中心 } from '../stores/pinia数据';
+import { ref } from 'vue';
 
 
 
 let pinia = pinia数据中心()
 pinia.获取旧订单()
 
+let hover=()=>{
 
-
+}
+let 图标大小=ref("30px")
 
 </script>
 
@@ -15,14 +18,16 @@ pinia.获取旧订单()
     <div>
         <h1>第一页 图标</h1>
 
-        <icon 图标名="icon-delete" 颜色="#666" font-size='100px' />
-        <icon 图标名="icon-home" color="#666" />
-        <icon 图标名="icon-close-circle" 颜色="#666" />
-        <icon 图标名="icon-copy" 颜色="#666" />
-        <icon 图标名="icon-check-circle-fill" 颜色="#666" />
-        <icon 图标名="icon-plus-circle-fill" 颜色="#666" />
-        <icon 图标名="icon-plus-circle-fill" 颜色="#666" />
-        <icon 图标名="icon-plus-circle-fill" 颜色="#666" />
+        <icon 图标名="lm-delete" 颜色="#666" font-size='100px' />
+        <icon 图标名="lm-home" color="#666" />
+        <icon 图标名="lm-close-circle" 颜色="#666" />
+        <icon 图标名="lm-copy" 颜色="#666" />
+        <icon 图标名="lm-check-circle-fill" 颜色="#666" />
+        <icon 图标名="lm-plus-circle-fill" 颜色="#666" />
+        <icon 图标名="lm-plus-circle-fill" 颜色="#666" />
+        <icon 图标名="lm-plus-circle-fill" 颜色="#666" />
+
+        <icon @mouseover="图标大小='50px'" @mouseout="图标大小='30px'" 图标名="lm-interation-fill" 颜色="#666" :font-size=图标大小  />
         <!-- <el-row class="mb-4">
             <el-button>Default</el-button>
             <el-button type="primary">Primary</el-button>
@@ -88,4 +93,6 @@ div {
     overflow: auto;
     background-color: #F0F2F5
 }
+
+
 </style>

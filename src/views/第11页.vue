@@ -1,6 +1,6 @@
 <script setup lang = "ts">
-import { pinia数据中心,  镜片类 } from '../stores/pinia数据';
-import { pinia库,订单类} from '../stores/pinia库';
+import { pinia数据中心, 镜片类 } from '../stores/pinia数据';
+import { pinia库, 订单类 } from '../stores/pinia库';
 import lmInput from "@组件/十一页行.vue";
 import lmh from "@组件/测试行.vue";
 import lmSH from "@组件/首行.vue";
@@ -11,61 +11,100 @@ import { onMounted, ref, toRef, computed, reactive } from 'vue';
 
 
 let 库 = pinia库();
-库.获取订单表11();
+onMounted(() => {
+    库.初始化()
+})
 
-let 订单 = new (订单类)
-let 测试=()=>{
-    库.对比测试()
+let 添加新订单 = () => {
+    库.订单正逆序=1
+    let 新订单 = new 订单类
+    let date = new Date()
+    let 年 = date.getFullYear().toString().slice(2)
+    let 月 = ("0" + (date.getMonth() + 1)).slice(-2)
+    let 日 = ("0" + date.getDate()).slice(-2)
+    let 最后订单号 = 库.订单表[库.订单表.length - 1].订单号
+    let 订单号 = () => {
+        if (最后订单号.slice(0, 6) == 年 + 月 + 日) {
+            return (parseInt(最后订单号) + 1).toString()
+        }
+        else {
+            return 年 + 月 + 日 + "01"
+        }
+    }
+    新订单.旺旺名 = "新订单 请输入旺旺名"
+    新订单.订单号 = 订单号()
+    新订单.镜片 = ""
+    库.通讯("订单", '增', 新订单)
 }
-let 获取旧订单=()=>{
-    库.获取旧订单()
-}
-let alert2=()=>{
-    let 订单=new 订单类
-    订单.旺旺名='哈哈'
-    alert(JSON.stringify(订单))
-}
+
 
 
 </script>
 
 <template>
 
-    <div >
+    <div class="整页 ">
 
         <div class="顶部 ">
-            <el-button type="primary">Primary</el-button>
-        
-         
-            <lmButton @click="测试">对比测试</lmButton>
-            <lmButton @click="获取旧订单">获取旧订单</lmButton>
-            <lmButton @click="alert2">alert</lmButton>
+            <el-button @click="库.订单正逆序 *= -1" type="primary">正逆序{{ 库.订单正逆序 }}</el-button>
+            <lmButton @click="添加新订单">添加新订单</lmButton>
+            <lmButton> 通过筛选的数量{{ 库.通过筛选的数量 }}</lmButton>
+            <input v-model.lazy="库.每页显示的数量" placeholder="每页显示的数量">
+            <lmButton @click="库.当前页 = 库.当前页 + 1">当前页加1</lmButton>
         </div>
-
-
         <!-- 表格模块 -->
-        <div class="">
-            <lmSH></lmSH>
-            <div class="">
-                <lmInput v-for="(i,k) in 库.订单表11" :行数据="库.订单表11[k]"></lmInput> 
-                <!-- <lmInput v-for="(i,k) in 库.订单表11" v-model:行数据="库.订单表11[k]"></lmInput>  -->
-                <!-- <lmInput v-model:行数据="库.订单表11[0]"></lmInput>  -->
-                <!-- <lmh v-for="(i,k) in 库.订单表11" v-model:行数据="库.订单表11[k] "></lmh >      -->
-            </div>
+        <div class="表格">
+            <!-- <lmSH></lmSH> -->
+
+            <!-- <lmInput v-for="(i, k) in 库.筛选过的订单" :key="i._id" :行数据="库.筛选过的订单[k]"></lmInput> -->
+            <lmInput v-for="(i, k) in 库.筛选过的订单" :key="i._id" :序号="k"></lmInput>
 
         </div>
-
+        <!-- 分页模块 -->
+        <div class="分页 横向">
+            <lmButton class=""> 这是第{{ 库.当前页 }} 页</lmButton>
+            <div class="分页内">
+                <lmButton class="" v-for="(页, index) in 库.订单页数" @click="库.当前页 = index + 1">
+                    {{ 页 }}
+                </lmButton>
+            </div>
+            <lmButton class="">一共有{{ 库.订单页数 }}页</lmButton>
+        </div>
 
 
     </div>
+
+
+
+
 
 </template>
 
 
 
 <style  lang="scss" scoped>
-.顶部{
+.整页 {
+    overflow: auto;
+    grid-template-rows: auto 1fr auto;
 
- grid-template-columns: repeat(auto-fit,minmax(1px, 1fr))   ;
+    .表格 {
+        align-content: start;
+        overflow: auto;
+    }
+}
+
+.顶部 {
+    gap: 3px;
+    grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
+}
+
+.分页 {
+    gap: 3px;
+    grid-template-columns: 100px 1fr 100px;
+
+    .分页内 {
+        gap: 2px;
+        grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
+    }
 }
 </style>

@@ -59,7 +59,7 @@ let 创建订单 = (行: any) => {
     <div class=" 滑条">
       <lmSH></lmSH>
       <div class=" 滑条">
-        <lmInput v-for="行 in pinia.筛选过的旧订单" :行=行></lmInput>
+        <lmInput v-for="行 in pinia.筛选过的旧订单" :key="行.订单号"  :行=行></lmInput>
       </div>
 
     </div>

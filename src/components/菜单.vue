@@ -15,18 +15,18 @@ let 跳转 = (路径: any) => {
 
 
 let 菜单列表 = reactive([
-    { 路径: "/mr", 内容: "默认页", 图标: "icon-file" },
-    { 路径: "/01", 内容: "1图标页", 图标: "icon-star-fill" },
-    { 路径: "/02", 内容: "2未订单", 图标: "icon-question-circle" },
-    { 路径: "/03", 内容: "3用户页", 图标: "icon-team" },
-    { 路径: "/04", 内容: "4旧订单", 图标: "icon-filedone" },
-    { 路径: "/05", 内容: "5删除单", 图标: "icon-question-circle" },
-    { 路径: "/06", 内容: "第六测试", 图标: "icon-question-circle" },
-    { 路径: "/07", 内容: "新单录入", 图标: "icon-question-circle" },
-    { 路径: "/08", 内容: "镜片列表", 图标: "icon-question-circle" },
-    { 路径: "/09", 内容: "第九测试", 图标: "icon-question-circle" },
-    { 路径: "/10", 内容: "第十测试", 图标: "icon-question-circle" },
-    { 路径: "/11", 内容: "第十一页", 图标: "icon-filedone" },
+    { 路径: "/mr", 内容: "默认页", 图标: "lm-file" },
+    { 路径: "/01", 内容: "1图标页", 图标: "lm-star-fill" },
+    { 路径: "/02", 内容: "2未订单", 图标: "lm-question-circle" },
+    { 路径: "/03", 内容: "3用户页", 图标: "lm-team" },
+    { 路径: "/04", 内容: "4旧订单", 图标: "lm-filedone" },
+    { 路径: "/05", 内容: "5删除单", 图标: "lm-question-circle" },
+    { 路径: "/06", 内容: "第六测试", 图标: "lm-question-circle" },
+    { 路径: "/07", 内容: "新单录入", 图标: "lm-question-circle" },
+    { 路径: "/08", 内容: "镜片列表", 图标: "lm-question-circle" },
+    { 路径: "/09", 内容: "九用户表", 图标: "lm-team" },
+    { 路径: "/10", 内容: "第十测试", 图标: "lm-question-circle" },
+    { 路径: "/11", 内容: "第十一页", 图标: "lm-filedone" },
 
 
 ])
