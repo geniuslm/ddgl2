@@ -11,10 +11,10 @@ let 库 = pinia库();
 let 镜框 = ref('')
 let 图标颜色 = ref("#666")
 
-let  {序号}  = defineProps(['序号'])
-let  行数据  =  库.筛选过的订单[序号]
-let  订单号分解  = 行数据.订单号.slice(2,4)+"月"+行数据.订单号.slice(2,4)+"日 第"+行数据.订单号.slice(2,4)+"单"
-let 改 = (行数据: any) => { console.log(行数据); 库.通讯('订单', "改", 行数据); 图标颜色.value = "#666"}
+let { 序号 } = defineProps(['序号'])
+let 行数据 = 库.筛选过的订单[序号]
+let 订单号分解 = 行数据.订单号.slice(2, 4) + "月" + 行数据.订单号.slice(2, 4) + "日 第" + 行数据.订单号.slice(2, 4) + "单"
+let 改 = (行数据: any) => { console.log(行数据); 库.通讯('订单', "改", 行数据); 图标颜色.value = "#666" }
 let 删 = (行数据: any) => { console.log(行数据); 库.通讯('订单', "删", 行数据) }
 
 watch(() => 行数据, (值) => {
@@ -40,39 +40,39 @@ watch(() => 行数据, (值) => {
       </div>
       <div class="镜片格">
         <input class="镜片" v-model.lazy="行数据.镜片下单日" placeholder="镜片下单日" list="日期">
-        <input class="镜片" v-model.lazy="行数据.镜片下单日" placeholder="镜片下单日" list="日期">
-        <input class="镜片" v-model.lazy="行数据.镜片下单日" placeholder="镜片下单日" list="日期">
+        <input class="镜片" v-model.lazy="行数据.镜片订货日" placeholder="镜片订货日" list="日期">
+        <input class="镜片" v-model.lazy="行数据.镜片备好日" placeholder="镜片备好日" list="日期">
         <input class="镜片 三列" v-model.lazy="行数据.镜片" placeholder="镜片" list="镜片名">
 
         <div class="验光数据 三列">
           <input v-model.lazy="行数据.右近视" placeholder="右近视">
           <input v-model.lazy="行数据.右散光" placeholder="右散光">
           <input v-model.lazy="行数据.右轴向" placeholder="右轴向">
-          <!-- <input v-model.lazy="行数据.右瞳距" placeholder="右瞳距"> -->
+          <input v-model.lazy="行数据.右瞳距" placeholder="右瞳距">
           <input v-model.lazy="行数据.左近视" placeholder="左近视">
           <input v-model.lazy="行数据.左散光" placeholder="左散光">
           <input v-model.lazy="行数据.左轴向" placeholder="左轴向">
-          <!-- <input v-model.lazy="行数据.左瞳距" placeholder="左瞳距"> -->
+          <input v-model.lazy="行数据.左瞳距" placeholder="左瞳距">
 
         </div>
       </div>
 
       <div class="镜框格">
-        <input placeholder="下单日" list="日期">
-        <input placeholder="发货日" list="日期">
-        <input placeholder="备好日" list="日期">
+        <input  v-model.lazy="行数据.镜框下单日" placeholder="镜框下单日" list="日期">
+        <input  v-model.lazy="行数据.镜框发货日" placeholder="镜框发货日" list="日期">
+        <input  v-model.lazy="行数据.镜框备好日" placeholder="镜框备好日" list="日期">
         <div class="镜框第一行">
           <input class="" :class="{ '': 镜框 == '直接加工' || 镜框 == '' }" v-model=镜框 list="镜框选项" placeholder="镜框选项"
             @focus="镜框 = ''">
           <input v-if="镜框 == '来框加工'" class="" placeholder="请输入运单号">
           <div class="试戴镜框">
-            <input v-if="镜框 == '试戴镜框'" class="" placeholder="试戴1">
-            <input v-if="镜框 == '试戴镜框'" class="" placeholder="试戴2">
-            <input v-if="镜框 == '试戴镜框'" class="" placeholder="试戴3">
+            <input v-if="镜框 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[0]" class="" placeholder="试戴1">
+            <input v-if="镜框 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[1]" class="" placeholder="试戴2">
+            <input v-if="镜框 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[2]" class="" placeholder="试戴3">
           </div>
         </div>
 
-        <input class="三列" :placeholder=行数据._id>
+        <input class="三列" placeholder="备注">
 
       </div>
 
@@ -83,7 +83,7 @@ watch(() => 行数据, (值) => {
         <icon 图标名="lm-delete" @click="删(行数据)" 颜色="#F56C6C" font-size='25px' />
       </div>
       <div class="图标格">
-        已完成
+        <input  v-model.lazy="行数据.订单进度" placeholder="订单进度"  >
       </div>
     </div>
   </div>
@@ -97,9 +97,9 @@ watch(() => 行数据, (值) => {
     <option :value=库.月日>今天</option>
   </datalist>
   <datalist id="镜片名">
-      <option v-for="i in 库.镜片名选项">{{ i }}</option>
-    </datalist>
-  
+    <option v-for="i in 库.镜片名选项">{{ i }}</option>
+  </datalist>
+
 
 </template>
 
@@ -111,7 +111,8 @@ watch(() => 行数据, (值) => {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
 }
-.订单号{
+
+.订单号 {
   grid-template-rows: 1fr 1fr;
 }
 
@@ -174,7 +175,7 @@ watch(() => 行数据, (值) => {
 
 .三列 {
 
-  grid-auto-flow: column;
+  grid-auto-flow: rows;
   grid-column: 1 / span 3
 }
 

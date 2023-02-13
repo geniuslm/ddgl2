@@ -3,33 +3,40 @@ import { socket } from "./socket链接";
 import { objectToString } from "@vue/shared";
 
 
-export class 订单类 {       // 定义数据模型 之后通过这个class建立对象
-  _id?: any;
-  订单号: string;
-  删除信息: string;
-  年: string;
-  月: string;
-  日: string;
-  镜片下单日: string;
-  收件人: string;
+export class 订单类 {       
+_id  ?: any;
+订单号   : string;
+删除信息  : string;
 
-  旺旺名: string;
-  镜片: string;
-  右近视: string;
-  右散光: string;
-  右轴向: string;
-  左近视: string;
-  左散光: string;
-  左轴向: string;
-  瞳距: string;
-  备注: string;
+收件人   : string;
+旺旺名   : string;
+镜片    : string;
 
-  镜片利润: number;
-  镜框利润: number;
-  优惠: number;
-  总利润: number;
+右近视   : string;
+右散光   : string;
+右轴向   : string;
+右瞳距   : string;
 
+左近视   : string;
+左散光   : string;
+左轴向   : string;
+左瞳距   : string;
+备注    : string;
 
+镜片下单日 : string;
+镜片订货日 : string;
+镜片备好日 : string;
+镜框下单日 : string;
+镜框发货日 : string;
+镜框备好日 : string;
+订单进度: string;
+
+镜片利润  : number;
+镜框利润  : number;
+优惠    : number;
+总利润   : number;
+
+试戴镜框: string[];
 }
 
 export class 用户类 {
