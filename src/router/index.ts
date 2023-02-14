@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 import 主页 from '@页面/主页.vue';
 import 第01页 from '../views/第1页.vue';
 import 第02页 from '../views/第2页.vue';
@@ -49,11 +50,10 @@ const router = createRouter({
 //路由守卫
 router.beforeEach((to, from, next) => {
     let 库 = pinia库()
-    let token = String(localStorage.getItem('token'))
-    let 当前登录用户 = String(localStorage.getItem('当前登录用户'))
-    console.log('当前登录用户:', 当前登录用户);
-    console.log('token:', token);
-    
+    // let token = String(localStorage.getItem('token'))
+    // let 当前登录用户 = String(localStorage.getItem('当前登录用户'))
+    let token = 获取Cookie('token')
+    let 当前登录用户 = 获取Cookie('当前登录用户')
     if (当前登录用户 != 'null') {
         库.当前登录用户 = String(localStorage.getItem('当前登录用户'))
     }

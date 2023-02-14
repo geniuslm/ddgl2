@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { pinia库 ,用户类} from '@/stores/pinia库';
 import { socket } from "../stores/socket链接";
 import { ref, toRefs, reactive, computed, watch } from 'vue';
+import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 import lmButton from "@组件/按钮.vue";
 let 库 = pinia库()
 let router = useRouter()
@@ -18,8 +19,10 @@ function 登录() {
         console.log("登录验证" + 返回数据);
 
         if (返回数据 == "登录成功") {            
-            localStorage.setItem("token", "通过")
-            localStorage.setItem("当前登录用户", 用户.用户名)
+            // localStorage.setItem("token", "通过")
+            // localStorage.setItem("当前登录用户", 用户.用户名)
+            设置Cookie("当前登录用户", 用户.用户名, 1)
+            设置Cookie("token", "通过",1)
             router.push("/01")
         }
         else if (返回数据 == "用户名不存在") { alert(返回数据) }
