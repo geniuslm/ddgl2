@@ -1,44 +1,41 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import { pinia数据中心 } from '@/stores/pinia数据';
+import { pinia库 ,用户类} from '@/stores/pinia库';
 import { socket } from "../stores/socket链接";
+import { ref, toRefs, reactive, computed, watch } from 'vue';
 import lmButton from "@组件/按钮.vue";
-let pinia = pinia数据中心()
+let 库 = pinia库()
 let router = useRouter()
+let 用户=reactive(new 用户类)
 
 
 
 function 登录() {
-    socket.emit('登录验证', { 用户名: pinia.当前登录用户, 密码: pinia.密码, 手机号: '' }, (返回数据: any) => {
 
+    socket.emit('登录验证', 用户, (返回数据: any) => {
+      
         console.log("登录验证" + 返回数据);
 
-        if (返回数据 == "登录成功") {
-            router.push("/01")
+        if (返回数据 == "登录成功") {            
             localStorage.setItem("token", "通过")
-            localStorage.setItem("当前登录用户", pinia.当前登录用户)
+            localStorage.setItem("当前登录用户", 用户.用户名)
+            router.push("/01")
         }
-        else if (返回数据 == "此用户名未注册") {
-
-            alert(返回数据)
-        }
-        else if (返回数据 == "此用户名未注册") {
-            alert(返回数据)
-        }
-        else
-            alert(返回数据)
+        else if (返回数据 == "用户名不存在") { alert(返回数据) }
+        else if (返回数据 == "密码错误") { alert(返回数据) }
+        else alert(返回数据)
     })
 }
 
 
 socket.on("connect", () => {
-    pinia.当前数据库状态 = "已连接"
+    库.当前数据库状态 = "已连接"
     console.log("数据库已连接");
 
 });
 socket.on("disconnect", () => {
-    pinia.当前数据库状态 = "断开连接"
+    库.当前数据库状态 = "断开连接"
     console.log("数据库链接断开");
 });
 
@@ -48,11 +45,12 @@ socket.on("disconnect", () => {
 
 <template>
     <div class="登录页">
+        <h1>登录页面-V1.3</h1>
 
-        <input type="text" placeholder="用户名" v-model.lazy="pinia.当前登录用户">
-        <input type="text" placeholder="密码" v-model.lazy="pinia.密码">
+        <input type="text" placeholder="用户名" v-model.lazy="用户.用户名">
+        <input type="text" placeholder="密码" v-model.lazy="用户.密码">
         <lmButton plain @click="登录">登录</lmButton>
-        <lmButton :class="{退出登录:pinia.当前数据库状态!='已连接'}"> 服务器 {{pinia.当前数据库状态}}</lmButton>
+        <lmButton :class="{退出登录:库.当前数据库状态!='已连接'}"> 服务器 {{库.当前数据库状态}}</lmButton>
 
     </div>
 

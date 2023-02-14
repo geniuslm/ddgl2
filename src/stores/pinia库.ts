@@ -4,39 +4,42 @@ import { objectToString } from "@vue/shared";
 
 
 export class 订单类 {       
-_id  ?: any;
-订单号   : string;
-删除信息  : string;
+  _id  ?: any;
+  订单号   : string;
+  删除信息  : string;
 
-收件人   : string;
-旺旺名   : string;
-镜片    : string;
+  收件人   : string;
+  旺旺名   : string;
+  镜片    : string;
 
-右近视   : string;
-右散光   : string;
-右轴向   : string;
-右瞳距   : string;
+  右近视   : string;
+  右散光   : string;
+  右轴向   : string;
+  右瞳距   : string;
 
-左近视   : string;
-左散光   : string;
-左轴向   : string;
-左瞳距   : string;
-备注    : string;
+  左近视   : string;
+  左散光   : string;
+  左轴向   : string;
+  左瞳距   : string;
+  备注    : string;
 
-镜片下单日 : string;
-镜片订货日 : string;
-镜片备好日 : string;
-镜框下单日 : string;
-镜框发货日 : string;
-镜框备好日 : string;
-订单进度: string;
+  镜片下单日 : string;
+  镜片订货日 : string;
+  镜片备好日 : string;
 
-镜片利润  : number;
-镜框利润  : number;
-优惠    : number;
-总利润   : number;
+  镜框选项 : string;
+  镜框运单号: string;
+  镜框下单日: string;
+  镜框发货日: string;
+  镜框备好日: string;
+  订单进度 : string;
 
-试戴镜框: string[];
+  镜片利润  : number;
+  镜框利润  : number;
+  优惠    : number;
+  总利润   : number;
+
+  试戴镜框: string[];
 }
 
 export class 用户类 {
@@ -82,6 +85,7 @@ export class 镜片类 {
 export const pinia库 = defineStore("pinia库", {
   state: () => {
     return {
+      菜单页面名: window.location.pathname,
 
       订单表: [] as 订单类[],
       镜片表: [] as 镜片类[],
@@ -91,6 +95,7 @@ export const pinia库 = defineStore("pinia库", {
       旧订单: [] as any[],
       镜片数据: [] as any[],
       当前数据库状态: '',
+      当前登录用户: '',
       测试: '哈哈哈',
       测试数组: [] as any[],
 

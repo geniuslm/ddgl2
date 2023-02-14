@@ -13,7 +13,7 @@ import 第10页 from '../views/第10页.vue';
 import 第11页 from '../views/第11页.vue';
 import 默认页 from '../views/默认页.vue';
 import 登录页 from '../views/登录页.vue';
-import { pinia数据中心 } from '../stores/pinia数据';
+import { pinia库 } from '../stores/pinia库';
 
 
 
@@ -39,6 +39,8 @@ const router = createRouter({
     routes: [
         { path: '/', components: { 主页: 主页 }, children: 主页子菜单 },
         { path: '/login', name: 'login', components: { 主页: 登录页 },  },
+        //找不到的页面
+        { path: '/:pathMatch(.*)*', name: 'not-found', components: { 主页: 登录页 }, },
 
     ]
 })
@@ -46,18 +48,22 @@ const router = createRouter({
 
 //路由守卫
 router.beforeEach((to, from, next) => {
-    let pinia = pinia数据中心()
+    let 库 = pinia库()
     let token = String(localStorage.getItem('token'))
     let 当前登录用户 = String(localStorage.getItem('当前登录用户'))
+    console.log('当前登录用户:', 当前登录用户);
+    console.log('token:', token);
+    
     if (当前登录用户 != 'null') {
-        pinia.当前登录用户 = String(localStorage.getItem('当前登录用户'))
+        库.当前登录用户 = String(localStorage.getItem('当前登录用户'))
     }
-    if ((token == '通过' && pinia.当前登录用户 != "") || to.path == '/login') {
+    if ((token == '通过' && 库.当前登录用户 != "") || to.path == '/login') {
         next();
     } else {
         next('/login');
     }
 })
+
 
 
 

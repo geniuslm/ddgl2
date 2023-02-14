@@ -1,12 +1,11 @@
 <script setup lang="ts">
-
-import { pinia数据中心 } from '../stores/pinia数据';
+import { pinia库 } from '../stores/pinia库';
 import { useRouter } from 'vue-router';
 import { socket } from "../stores/socket链接";
 import lmButton from "@组件/新版按钮.vue";
 import { ref } from 'vue';
 
-let pinia = pinia数据中心()
+let 库 = pinia库()
 let router = useRouter()
 
 let 退出登录 = () => {
@@ -15,18 +14,16 @@ let 退出登录 = () => {
 }
 
 socket.on("connect", () => {
-  pinia.当前数据库状态 = "已连接"
+  库.当前数据库状态 = "已连接"
   console.log("数据库已连接");
 });
 
 socket.on("disconnect", () => {
-  pinia.当前数据库状态 = "断开连接"
+  库.当前数据库状态 = "断开连接"
   console.log("数据库链接断开");
 });
 
 let 推出登录样式 = ref(true)
-
-pinia.新订单初始化
 
 </script>
 
@@ -35,15 +32,15 @@ pinia.新订单初始化
     <div></div>
 
     
-    <lmButton > {{pinia.菜单页面名}}</lmButton>
+    <lmButton > {{库.菜单页面名}}</lmButton>
 
-    <lmButton :class="{退出登录:pinia.当前数据库状态!='已连接'}"> 服务器 {{pinia.当前数据库状态}}</lmButton>
+    <lmButton :class="{退出登录:库.当前数据库状态!='已连接'}"> 服务器 {{库.当前数据库状态}}</lmButton>
 
 
 
-    <lmButton>日期:{{pinia.日期}}</lmButton>
+    <lmButton>日期:{{库.月日}}</lmButton>
 
-    <lmButton>当前用户:{{pinia.当前登录用户}}
+    <lmButton>当前用户:{{库.当前登录用户}}
 
     </lmButton>
     <lmButton :class="{退出登录:推出登录样式}" @click="退出登录">

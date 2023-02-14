@@ -3,8 +3,7 @@ import { useRouter } from 'vue-router';
 import { ref, toRefs, reactive, computed, watch } from 'vue';
 import Icon from './icons/Icon.vue';
 import { socket } from "../stores/socket链接";
-import { pinia数据中心 } from '../stores/pinia数据';
-import { pinia库 } from '../stores/pinia库';
+import { pinia库, 镜片类 } from '../stores/pinia库';
 
 let 库 = pinia库();
 
@@ -21,6 +20,18 @@ watch(() => 行数据, (值) => {
   图标颜色.value = "#67C23A"
   console.log('更改 ' + JSON.stringify(值))
 }, { deep: true })
+
+let 镜片数据
+for (镜片数据 in 库.镜片表){
+  if(库.镜片表[镜片数据].镜片名==行数据.镜片){
+    console.log(库.镜片表[镜片数据].售价-库.镜片表[镜片数据].进货价);
+    console.log(行数据.镜片利润);
+  }
+}
+
+
+
+
 
 
 </script>
@@ -62,17 +73,17 @@ watch(() => 行数据, (值) => {
         <input  v-model.lazy="行数据.镜框发货日" placeholder="镜框发货日" list="日期">
         <input  v-model.lazy="行数据.镜框备好日" placeholder="镜框备好日" list="日期">
         <div class="镜框第一行">
-          <input class="" :class="{ '': 镜框 == '直接加工' || 镜框 == '' }" v-model=镜框 list="镜框选项" placeholder="镜框选项"
+          <input class="" :class="{ '': 镜框 == '直接加工' || 镜框 == '' }" v-model=行数据.镜框选项 list="镜框选项" placeholder="镜框选项"
             @focus="镜框 = ''">
           <input v-if="镜框 == '来框加工'" class="" placeholder="请输入运单号">
           <div class="试戴镜框">
-            <input v-if="镜框 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[0]" class="" placeholder="试戴1">
-            <input v-if="镜框 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[1]" class="" placeholder="试戴2">
-            <input v-if="镜框 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[2]" class="" placeholder="试戴3">
+            <input v-if="行数据.镜框选项 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[0]" class="" placeholder="试戴1">
+            <input v-if="行数据.镜框选项 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[1]" class="" placeholder="试戴2">
+            <input v-if="行数据.镜框选项 == '试戴镜框'" v-model.lazy="行数据.试戴镜框[2]" class="" placeholder="试戴3">
           </div>
         </div>
 
-        <input class="三列" placeholder="备注">
+        <input class="三列" v-model.lazy="行数据.镜片利润" placeholder="备注">
 
       </div>
 
