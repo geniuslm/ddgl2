@@ -41,6 +41,7 @@ export class 订单类 {
 
   试戴镜框: string[];
   编辑记录: string[];
+  购买记录: string[];
 }
 
 export class 用户类 {
