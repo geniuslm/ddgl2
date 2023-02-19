@@ -1,7 +1,7 @@
 <script setup lang = "ts">
 import { pinia数据中心, 镜片类 } from '../stores/pinia数据';
 import { pinia库, 订单类 } from '../stores/pinia库';
-import lmInput from "@组件/十一页行.vue";
+import lmInput from "@/components/订单行.vue";
 import lmh from "@组件/测试行.vue";
 import lmSH from "@组件/首行.vue";
 import lmButton from "@组件/按钮.vue";
@@ -16,13 +16,16 @@ onMounted(() => {
 })
 
 let 添加新订单 = () => {
-    库.订单正逆序=1
+    库.订单正逆序 = 1
     let 新订单 = new 订单类
     let date = new Date()
     let 年 = date.getFullYear().toString().slice(2)
     let 月 = ("0" + (date.getMonth() + 1)).slice(-2)
     let 日 = ("0" + date.getDate()).slice(-2)
-    let 最后订单号 = 库.订单表[库.订单表.length - 1].订单号
+    let 最后订单号
+    if (库.订单表.length == 0) { 最后订单号 = 年 + 月 + 日 + "00" }
+    else { 最后订单号 = 库.订单表[库.订单表.length - 1].订单号 }
+
     let 订单号 = () => {
         if (最后订单号.slice(0, 6) == 年 + 月 + 日) {
             return (parseInt(最后订单号) + 1).toString()
@@ -42,7 +45,6 @@ let 添加新订单 = () => {
 </script>
 
 <template>
-
     <div class="整页 ">
 
         <div class="顶部 ">
@@ -50,6 +52,7 @@ let 添加新订单 = () => {
             <lmButton @click="添加新订单">添加新订单</lmButton>
             <lmButton> 通过筛选的数量{{ 库.通过筛选的数量 }}</lmButton>
             <input v-model.lazy="库.每页显示的数量" placeholder="每页显示的数量">
+            <input v-model.lazy="库.订单全局搜索值" placeholder="全局搜索">
             <lmButton @click="库.当前页 = 库.当前页 + 1">当前页加1</lmButton>
         </div>
         <!-- 表格模块 -->
@@ -72,12 +75,7 @@ let 添加新订单 = () => {
         </div>
 
 
-    </div>
-
-
-
-
-
+</div>
 </template>
 
 

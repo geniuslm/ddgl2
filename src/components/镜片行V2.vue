@@ -19,7 +19,12 @@ let 行数据 = 库.排序过的镜片[序号]
 
 watch(() => 行数据, (值) => {
   图标颜色.value = "#67C23A"
+  行数据.镜片名=(行数据.品牌名+行数据.系列名+行数据.折射率+行数据.高散车房).trim()
   console.log('更改 ' + JSON.stringify(值.镜片名))
+  if(值.供应商=="湖北和益"){ 值.售价=值.湖北和益 }
+  if(值.供应商=="湖北蔡司"){ 值.售价=值.湖北蔡司 }
+  if(值.供应商=="上海老周"){ 值.售价=值.上海老周 }
+  if(值.供应商=="丹阳臻视"){ 值.售价=值.丹阳臻视 }
 }, { deep: true })
 
 let 改 = (行数据: any) => { 库.通讯('镜片', "改", 行数据); 图标颜色.value = "#666" }
@@ -33,7 +38,7 @@ let 增 = (行数据: any) => {
 }
 
 let 镜片名= ()=>{
-  行数据.镜片名=(行数据.品牌名+行数据.系列名+行数据.折射率+行数据.高散车房).trim()
+  //行数据.镜片名=(行数据.品牌名+行数据.系列名+行数据.折射率+行数据.高散车房).trim()
 }
 
 </script>
@@ -57,13 +62,13 @@ let 镜片名= ()=>{
       <input @change="镜片名()" v-model.lazy="行数据.最高远视光度" placeholder="最高远视光度" list="最高远视光度">
       <input @change="镜片名()" v-model.lazy="行数据.最高远视散光" placeholder="最高远视散光" list="最高远视散光">
 
-      <input @change="镜片名()" v-model.lazy="行数据.供应商   " placeholder="供应商   " list="供应商   ">
-      <input @change="镜片名()" v-model.lazy="行数据.售价    " placeholder="售价    " list="售价    ">
-      <input @change="镜片名()" v-model.lazy="行数据.进货价   " placeholder="进货价   " list="进货价   ">
-      <input @change="镜片名()" v-model.lazy="行数据.湖北和益  " placeholder="湖北和益  " list="湖北和益  ">
-      <input @change="镜片名()" v-model.lazy="行数据.湖北蔡司  " placeholder="湖北蔡司  " list="湖北蔡司  ">
-      <input @change="镜片名()" v-model.lazy="行数据.上海老周  " placeholder="上海老周  " list="上海老周  ">
-      <input @change="镜片名()" v-model.lazy="行数据.丹阳臻视  " placeholder="丹阳臻视  " list="丹阳臻视  ">
+      <input @change="镜片名()" v-model.lazy="行数据.供应商   " placeholder="供应商" list="供应商">
+      <input @change="镜片名()" v-model.lazy="行数据.售价    " placeholder="售价" list="售价">
+      <input @change="镜片名()" v-model.lazy="行数据.进货价   " placeholder="进货价" list="进货价">
+      <input @change="镜片名()" v-model.lazy="行数据.湖北和益  " placeholder="湖北和益" list="湖北和益">
+      <input @change="镜片名()" v-model.lazy="行数据.湖北蔡司  " placeholder="湖北蔡司" list="湖北蔡司">
+      <input @change="镜片名()" v-model.lazy="行数据.上海老周  " placeholder="上海老周" list="上海老周">
+      <input @change="镜片名()" v-model.lazy="行数据.丹阳臻视  " placeholder="丹阳臻视" list="丹阳臻视">
       <div class="横向 平均行">
         <icon @click=改(行数据) 图标名="lm-cloud-upload" font-size='30px' :颜色=图标颜色 />
         <icon @click=增(行数据) 图标名="lm-copy1" font-size='30px' 颜色="#67C23A" />
@@ -78,6 +83,18 @@ let 镜片名= ()=>{
     </datalist>
     <datalist id="品牌名">
       <option v-for="i in 库.品牌名选项">{{ i }}</option>
+    </datalist>
+    <datalist id="系列名">
+      <option v-for="i in 库.系列名选项">{{ i }}</option>
+    </datalist>
+    <datalist id="折射率">
+      <option v-for="i in 库.折射率选项">{{ i }}</option>
+    </datalist>
+    <datalist id="供应商">
+      <option >湖北和益</option>
+      <option >湖北蔡司</option>
+      <option >上海老周</option>
+      <option >丹阳臻视</option>
     </datalist>
 
 

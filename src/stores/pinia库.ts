@@ -40,6 +40,7 @@ export class 订单类 {
   总利润   : number;
 
   试戴镜框: string[];
+  编辑记录: string[];
 }
 
 export class 用户类 {
@@ -122,6 +123,7 @@ export const pinia库 = defineStore("pinia库", {
       品牌名选项: [] as string[],
       系列名选项: [] as string[],
       折射率选项: [] as string[],
+      供应商选项: [] as string[],
 
 
 
@@ -212,13 +214,14 @@ export const pinia库 = defineStore("pinia库", {
   actions: {
     初始化() {
       console.log("初始化");
-      this.通讯('测试', "获");
+      //this.通讯('测试', "获");
+      this.通讯('订单', "获");
       this.通讯('用户', "获");
       this.通讯('镜片', "获");
     },
     通讯(类型: string, 操作: string, 数据?: any) {
   
-        if(类型=="测试") { socket.emit('测试', 操作, 数据, (返回数据: any) => { this.订单表 = 返回数据 }); }
+        if(类型=="测试") { socket.emit('测试', 操作, 数据, (返回数据: any) => { console.log(返回数据) }); }
         if(类型=="订单") { socket.emit('订单', 操作, 数据, (返回数据: any) => { this.订单表 = 返回数据 }); }
         if(类型=="用户") { socket.emit('用户', 操作, 数据, (返回数据: any) => { this.用户表 = 返回数据 }); }
         if(类型=="镜片") { socket.emit('镜片', 操作, 数据, (返回数据: any) => { this.镜片表 = 返回数据,this.镜片选项() }); }
@@ -230,6 +233,10 @@ export const pinia库 = defineStore("pinia库", {
       for (i in this.镜片表) {
         if (!(this.镜片名选项.indexOf(this.镜片表[i].镜片名) > -1)) this.镜片名选项.push(this.镜片表[i].镜片名)
         if (!(this.品牌名选项.indexOf(this.镜片表[i].品牌名) > -1)) this.品牌名选项.push(this.镜片表[i].品牌名)
+        if (!(this.系列名选项.indexOf(this.镜片表[i].系列名) > -1)) this.系列名选项.push(this.镜片表[i].系列名)
+        if (!(this.折射率选项.indexOf(this.镜片表[i].折射率) > -1)) this.折射率选项.push(this.镜片表[i].折射率)
+        if (!(this.供应商选项.indexOf(this.镜片表[i].供应商) > -1)) this.供应商选项.push(this.镜片表[i].供应商)
+       
       }
     },
 

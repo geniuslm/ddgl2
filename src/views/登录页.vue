@@ -21,6 +21,7 @@ function 登录() {
         if (返回数据 == "登录成功") {            
             // localStorage.setItem("token", "通过")
             // localStorage.setItem("当前登录用户", 用户.用户名)
+            库.当前登录用户=用户.用户名
             设置Cookie("当前登录用户", 用户.用户名, 1)
             设置Cookie("token", "通过",1)
             router.push("/01")

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { pinia数据中心 } from '../stores/pinia数据';
+import { pinia库 } from '@仓库/pinia库';
 import lmRow from "@组件/用户行.vue";
 import lmB from "@组件/按钮.vue";
 import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 import { ref } from 'vue';
 
+let 库 = pinia库();
 let 名字 = ref("");
 let 天数 = ref("");
 let 数值 = ref("");
@@ -18,6 +19,12 @@ let 获取 = () => {
 let 删除 = () => {
     删除Cookie(名字.value);
 }
+let 测试build = () => {
+    for( let i in [1,2,3,4,5,6,7,8]) {
+        console.log(i);
+    }
+    
+}
 
 </script>
 
@@ -28,6 +35,7 @@ let 删除 = () => {
             <lmB @click="存储()">存储</lmB>
             <lmB @click="获取()">获取</lmB>
             <lmB @click="删除()">删除</lmB>
+            <lmB @click="测试build()">测试build</lmB>
         </div>
         <div class="横向 平均行">
             <input v-model.lazy="名字" placeholder="名字">

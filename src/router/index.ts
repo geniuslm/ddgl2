@@ -53,9 +53,9 @@ router.beforeEach((to, from, next) => {
     // let token = String(localStorage.getItem('token'))
     // let 当前登录用户 = String(localStorage.getItem('当前登录用户'))
     let token = 获取Cookie('token')
-    let 当前登录用户 = 获取Cookie('当前登录用户')
+    let 当前登录用户 = 获取Cookie('当前登录用户')   
     if (当前登录用户 != 'null') {
-        库.当前登录用户 = String(localStorage.getItem('当前登录用户'))
+        库.当前登录用户 = 获取Cookie('当前登录用户')
     }
     if ((token == '通过' && 库.当前登录用户 != "") || to.path == '/login') {
         next();

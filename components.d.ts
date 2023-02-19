@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     '按钮': typeof import('./src/components/按钮.vue')['default']
     '菜单': typeof import('./src/components/菜单.vue')['default']
     '测试行': typeof import('./src/components/测试行.vue')['default']
+    '订单行': typeof import('./src/components/订单行.vue')['default']
     '镜片行': typeof import('./src/components/镜片行.vue')['default']
     '镜片行V2': typeof import('./src/components/镜片行V2.vue')['default']
     '十一页行': typeof import('./src/components/十一页行.vue')['default']

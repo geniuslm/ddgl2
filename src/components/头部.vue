@@ -4,12 +4,14 @@ import { useRouter } from 'vue-router';
 import { socket } from "../stores/socket链接";
 import lmButton from "@组件/新版按钮.vue";
 import { ref } from 'vue';
+import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 
 let 库 = pinia库()
 let router = useRouter()
 
 let 退出登录 = () => {
-  localStorage.removeItem("token");
+  删除Cookie("当前登录用户");
+  删除Cookie("token");
   router.push("/login");
 }
 
