@@ -2,7 +2,7 @@
 import { pinia数据中心, 镜片类 } from '../stores/pinia数据';
 import { pinia库, 订单类 } from '../stores/pinia库';
 import lmInput from "@/components/订单行.vue";
-import lmh from "@组件/测试行.vue";
+import lmh from "@/components/菜单客服.vue";
 import lmSH from "@组件/首行.vue";
 import lmButton from "@组件/按钮.vue";
 import lmWin from "@组件/添加订单窗口.vue";

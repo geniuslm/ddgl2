@@ -16,17 +16,18 @@ function 登录() {
 
     socket.emit('登录验证', 用户, (返回数据: any) => {
       
-        console.log("登录验证" + 返回数据);
+        console.log("登录验证" + 返回数据[0]);
 
-        if (返回数据 == "登录成功") {            
-            // localStorage.setItem("token", "通过")
-            // localStorage.setItem("当前登录用户", 用户.用户名)
-            库.当前登录用户=用户.用户名
-            设置Cookie("当前登录用户", 用户.用户名, 1)
-            设置Cookie("token", "通过",1)
+        if (返回数据[0] =="登录成功") {            
+
+            库.当前登录用户=返回数据[1].用户名
+            库.当前登录用户类型=返回数据[1].类型       
+            设置Cookie("当前登录用户", 返回数据[1].用户名, 1)
+            设置Cookie("当前登录用户类型", 返回数据[1].类型 , 1)
+            设置Cookie("token", "通过",1)            
             router.push("/01")
         }
-        else if (返回数据 == "用户名不存在") { alert(返回数据) }
+        else if (返回数据.length == 0) { alert('用户名不存在') }
         else if (返回数据 == "密码错误") { alert(返回数据) }
         else alert(返回数据)
     })

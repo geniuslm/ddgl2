@@ -42,9 +42,7 @@ let 推出登录样式 = ref(true)
 
     <lmButton>日期:{{库.月日}}</lmButton>
 
-    <lmButton>当前用户:{{库.当前登录用户}}
-
-    </lmButton>
+    <lmButton>当前用户:{{库.当前登录用户}} {{ 库.当前登录用户类型 }}</lmButton>
     <lmButton :class="{退出登录:推出登录样式}" @click="退出登录">
       <icon 图标名="icon-close-circle" 颜色="#fff" font-size='23px' /> 退出登录
     </lmButton>

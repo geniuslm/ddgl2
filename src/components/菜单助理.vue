@@ -32,17 +32,9 @@ let 菜单列表 = reactive([
 
 let 开关 = ref(true);
 
-onMounted(() => {
-    if(库.当前登录用户类型=='客服'){
-        菜单列表=[
-            
-        ]
-    }
-})
-
 let 测试 = () => { 
     console.log('登录类型'+库.当前登录用户类型);
-        菜单列表=菜单列表.splice(1, 3)
+        
 }
 
 
@@ -60,6 +52,7 @@ let 测试 = () => {
         <button @click="开关 = !开关">{{ 开关 ? "开" : "关" }}</button>
         <div class="展开按钮" @click="开关 = !开关"></div>
         <button @click="测试()">测试</button>
+        <button @click="">助理菜单</button>
     </div>
 </template>
 

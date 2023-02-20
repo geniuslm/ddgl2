@@ -20,9 +20,7 @@ let 删除 = () => {
     删除Cookie(名字.value);
 }
 let 测试build = () => {
-    for( let i in [1,2,3,4,5,6,7,8]) {
-        console.log(i);
-    }
+    console.log(库.当前登录用户);
     
 }
 

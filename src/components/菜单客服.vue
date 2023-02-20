@@ -23,27 +23,21 @@ let 菜单列表 = reactive([
     { 路径: "/05", 内容: "5删除单", 图标: "lm-question-circle" },
     { 路径: "/06", 内容: "第六测试", 图标: "lm-question-circle" },
     { 路径: "/07", 内容: "新单录入", 图标: "lm-question-circle" },
-    { 路径: "/08", 内容: "镜片列表", 图标: "lm-question-circle" },
-    { 路径: "/09", 内容: "九用户表", 图标: "lm-team" },
-    { 路径: "/10", 内容: "第十测试", 图标: "lm-question-circle" },
-    { 路径: "/11", 内容: "第十一页", 图标: "lm-filedone" },
+
+
+    { 路径: "/11", 内容: "订单页", 图标: "lm-filedone" },
 ])
 
 
 let 开关 = ref(true);
 
-onMounted(() => {
-    if(库.当前登录用户类型=='客服'){
-        菜单列表=[
-            
-        ]
-    }
-})
 
 let 测试 = () => { 
     console.log('登录类型'+库.当前登录用户类型);
-        菜单列表=菜单列表.splice(1, 3)
+        
 }
+
+
 
 
 </script>
@@ -60,6 +54,7 @@ let 测试 = () => {
         <button @click="开关 = !开关">{{ 开关 ? "开" : "关" }}</button>
         <div class="展开按钮" @click="开关 = !开关"></div>
         <button @click="测试()">测试</button>
+        <button @click="">客服菜单</button>
     </div>
 </template>
 

@@ -97,7 +97,8 @@ export const pinia库 = defineStore("pinia库", {
       旧订单: [] as any[],
       镜片数据: [] as any[],
       当前数据库状态: '',
-      当前登录用户: '',
+      当前登录用户: "",
+      当前登录用户类型: "",
       测试: '哈哈哈',
       测试数组: [] as any[],
 
@@ -219,6 +220,7 @@ export const pinia库 = defineStore("pinia库", {
       this.通讯('订单', "获");
       this.通讯('用户', "获");
       this.通讯('镜片', "获");
+      
     },
     通讯(类型: string, 操作: string, 数据?: any) {
   
