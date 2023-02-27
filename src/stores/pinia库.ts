@@ -3,41 +3,41 @@ import { socket } from "./socket链接";
 import { objectToString } from "@vue/shared";
 
 
-export class 订单类 {       
-  _id  ?: any;
-  订单号   : string;
-  删除信息  : string;
+export class 订单类 {
+  _id?: any;
+  订单号: string;
+  删除信息: string;
 
-  收件人   : string;
-  旺旺名   : string;
-  镜片    : string;
+  收件人: string;
+  旺旺名: string;
+  镜片: string;
 
-  右近视   : string;
-  右散光   : string;
-  右轴向   : string;
-  右瞳距   : string;
+  右近视: string;
+  右散光: string;
+  右轴向: string;
+  右瞳距: string;
 
-  左近视   : string;
-  左散光   : string;
-  左轴向   : string;
-  左瞳距   : string;
-  备注    : string;
+  左近视: string;
+  左散光: string;
+  左轴向: string;
+  左瞳距: string;
+  备注: string;
 
-  镜片下单日 : string;
-  镜片订货日 : string;
-  镜片备好日 : string;
+  镜片下单日: string;
+  镜片订货日: string;
+  镜片备好日: string;
 
-  镜框选项 : string;
+  镜框选项: string;
   镜框运单号: string;
   镜框下单日: string;
   镜框发货日: string;
   镜框备好日: string;
-  订单进度 : string;
+  订单进度: string;
 
-  镜片利润  : number;
-  镜框利润  : number;
-  优惠    : number;
-  总利润   : number;
+  镜片利润: number;
+  镜框利润: number;
+  优惠: number;
+  总利润: number;
 
   试戴镜框: string[];
   编辑记录: string[];
@@ -52,35 +52,35 @@ export class 用户类 {
 }
 
 export class 镜片类 {
-  _id ?: string;
-  镜片名  : string;
-  品牌名  : string;
-  系列名  : string;
-  折射率  : string;
+  _id?: string;
+  镜片名: string;
+  品牌名: string;
+  系列名: string;
+  折射率: string;
   高散车房?: string;
   染色变色?: string;
 
-  最高近视光度 : number;
-  最高散光光度 : number;
-  最高联合光度 : number;
-  最高远视光度 : number;
-  最高远视散光 : number;
-  供应商    : string;
-  售价     : number;
-  进货价    : number;
-  湖北和益  ?: number;
-  湖北蔡司  ?: number;
-  上海老周  ?: number;
-  丹阳臻视  ?: number;
+  最高近视光度: number;
+  最高散光光度: number;
+  最高联合光度: number;
+  最高远视光度: number;
+  最高远视散光: number;
+  供应商: string;
+  售价: number;
+  进货价: number;
+  湖北和益?: number;
+  湖北蔡司?: number;
+  上海老周?: number;
+  丹阳臻视?: number;
   constructor() {
-    this.镜片名  = "";
-    this.品牌名  = "";
-    this.系列名  = "";
-    this.折射率  = "";
+    this.镜片名 = "";
+    this.品牌名 = "";
+    this.系列名 = "";
+    this.折射率 = "";
     this.染色变色 = "";
     this.高散车房 = "";
 
-}
+  }
 }
 
 
@@ -110,7 +110,7 @@ export const pinia库 = defineStore("pinia库", {
 
       订单排序的属性: '订单号',
       订单正逆序: 1,
-      每页显示的数量: 20,
+      每页显示的数量: 50,
       订单页数: 1,
       当前页: 1,
 
@@ -120,7 +120,7 @@ export const pinia库 = defineStore("pinia库", {
       镜片全局搜索值: '',
       镜片排序的属性: '镜片名',
       镜片正逆序: 1,
-   
+
       镜片名选项: [] as string[],
       品牌名选项: [] as string[],
       系列名选项: [] as string[],
@@ -145,7 +145,7 @@ export const pinia库 = defineStore("pinia库", {
 
     排序过的镜片: (state) => {
       let 要显示的镜片 = state.镜片表;
-      let 要搜索的值: any= state.镜片搜索值;
+      let 要搜索的值: any = state.镜片搜索值;
       let 序号: any
       //全局搜索
       if (state.镜片全局搜索值) {
@@ -220,15 +220,15 @@ export const pinia库 = defineStore("pinia库", {
       this.通讯('订单', "获");
       this.通讯('用户', "获");
       this.通讯('镜片', "获");
-      
+
     },
-    通讯(类型: string, 操作: string, 数据?: any) {
-  
-        if(类型=="测试") { socket.emit('测试', 操作, 数据, (返回数据: any) => { console.log(返回数据) }); }
-        if(类型=="订单") { socket.emit('订单', 操作, 数据, (返回数据: any) => { this.订单表 = 返回数据 }); }
-        if(类型=="用户") { socket.emit('用户', 操作, 数据, (返回数据: any) => { this.用户表 = 返回数据 }); }
-        if(类型=="镜片") { socket.emit('镜片', 操作, 数据, (返回数据: any) => { this.镜片表 = 返回数据,this.镜片选项() }); }
-   
+    async 通讯(类型: string, 操作: string, 数据?: any) {
+
+      if (类型 == "测试") { socket.emit('测试', 操作, 数据, (返回数据: any) => { console.log(返回数据); }); }
+      if (类型 == "订单") { socket.emit('订单', 操作, 数据, (返回数据: any) => { this.订单表 = 返回数据; }); }
+      if (类型 == "用户") { socket.emit('用户', 操作, 数据, (返回数据: any) => { this.用户表 = 返回数据 }); }
+      if (类型 == "镜片") { socket.emit('镜片', 操作, 数据, (返回数据: any) => { this.镜片表 = 返回数据, this.镜片选项() }); }
+
     },
 
     镜片选项() {
@@ -239,7 +239,7 @@ export const pinia库 = defineStore("pinia库", {
         if (!(this.系列名选项.indexOf(this.镜片表[i].系列名) > -1)) this.系列名选项.push(this.镜片表[i].系列名)
         if (!(this.折射率选项.indexOf(this.镜片表[i].折射率) > -1)) this.折射率选项.push(this.镜片表[i].折射率)
         if (!(this.供应商选项.indexOf(this.镜片表[i].供应商) > -1)) this.供应商选项.push(this.镜片表[i].供应商)
-       
+
       }
     },
 

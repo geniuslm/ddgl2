@@ -25,8 +25,8 @@ let 菜单列表 = reactive([
     { 路径: "/07", 内容: "新单录入", 图标: "lm-question-circle" },
     { 路径: "/08", 内容: "镜片列表", 图标: "lm-question-circle" },
     { 路径: "/09", 内容: "九用户表", 图标: "lm-team" },
-    { 路径: "/10", 内容: "第十测试", 图标: "lm-question-circle" },
-    { 路径: "/11", 内容: "第十一页", 图标: "lm-filedone" },
+    { 路径: "/10", 内容: "利润-10", 图标: "lm-question-circle" },
+    { 路径: "/11", 内容: "订单页-11", 图标: "lm-filedone" },
 ])
 
 

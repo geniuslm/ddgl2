@@ -16,6 +16,7 @@ declare module '@vue/runtime-core' {
     '订单行': typeof import('./src/components/订单行.vue')['default']
     '镜片行': typeof import('./src/components/镜片行.vue')['default']
     '镜片行V2': typeof import('./src/components/镜片行V2.vue')['default']
+    '利润行': typeof import('./src/components/利润行.vue')['default']
     '十一页行': typeof import('./src/components/十一页行.vue')['default']
     '十一页行 copy 2': typeof import('./src/components/十一页行 copy 2.vue')['default']
     '首行': typeof import('./src/components/首行.vue')['default']
