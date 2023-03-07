@@ -63,7 +63,7 @@ let 测试 = () => {
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .菜单 {
     display: grid;
     box-sizing: border-box;
@@ -94,9 +94,9 @@ p {
     position: absolute;
     right: -10px;
     width: 20px;
-    height: 100px;
+    height: 1000px;
     border-radius: 10px;
-    background-color: #409EFF;
+    background-color: $浅灰;
     transition: all 0.2s;
     z-index: 1;
 }

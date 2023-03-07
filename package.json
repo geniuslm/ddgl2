@@ -13,7 +13,8 @@
     "pinia": "^2.0.29",
     "socket.io-client": "^4.5.4",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-print-nb": "^0.1.4"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",

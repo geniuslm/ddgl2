@@ -1,114 +1,84 @@
-<script setup lang = "ts">
-import { pinia数据中心 } from '../stores/pinia数据';
-import lmInput from "@组件/行.vue";
-import lmSH from "@组件/首行.vue";
-import lmButton from "@组件/按钮.vue";
-import lmWin from "@组件/添加订单窗口.vue";
-import { socket } from "../stores/socket链接";
-import { onMounted, ref, toRef } from 'vue';
+<script setup lang="ts">
+import { pinia库, 订单类 } from '@仓库/pinia库';
+import lmB from "@组件/按钮.vue";
+import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
+import { ref } from 'vue';
+import DDH from "@组件/订单行.vue";
 
 
 
+let 库 = pinia库();
+let 新值 = ref("");
+let 旧值 = ref("");
 
-let pinia = pinia数据中心();
-pinia.获取旧订单();
+let 替换镜片名字 = async () => {
+  let 更改数量 = 0
+  for (let i in 库.订单表) {
+    if (库.订单表[i].镜片 == 旧值.value) {
+      库.订单表[i].镜片 = 新值.value;
+      await 库.通讯('订单', "改", 库.订单表[i]);
+      更改数量 += 1
+    }
+  }
+  console.log("一共更改了" + 更改数量 + "个");
 
-
-let 添加订单窗口开关 = ref(false)
-let 添加订单按钮 = () => {
-  pinia.添加订单窗口开关 = !pinia.添加订单窗口开关
-  console.log('添加订单');
 }
-
-
-
-
-
-
-let 创建订单 = (行: any) => {
-  socket.emit('创建订单', 行, (返回数据: any) => {
-    console.log(返回数据)
-  });
-  console.log('创建订单');
-  pinia.获取旧订单();
-  pinia.旧订单当前页 = pinia.旧订单页数
-}
-
+//打印函数
 
 
 </script>
 
 <template>
-
-  <div class="第四页 滑条">
-
-    <div class="横向">
-      <!--   <div class = "弹窗" v-if = "添加订单窗口开关"> <lmButton @click = "添加订单窗口开关=false">关闭窗口</lmButton></div> -->
-      <lmWin v-if="pinia.添加订单窗口开关"></lmWin>
-      <h1>这是第四页{{ pinia.日期 }}</h1>
-      <input type="text" v-model="pinia.要全局搜索的值">
-      <lmButton @click="pinia.获取旧订单">获取旧订单</lmButton>
-      <input v-model.lazy="pinia.旧订单每页显示的数量">
-      <lmButton>一共有 {{ pinia.通过筛选的数量 }} 条数据通过筛选</lmButton>
-      <lmButton>当前显示 {{ pinia.筛选过的旧订单.length }} 条数据</lmButton>
-      <lmButton @click="添加订单按钮">添加订单按钮</lmButton>
+  <div class="第三页">
+    <h1>这是第2页测试</h1>
+    <div class="首行">
+      <lmB @click="替换镜片名字()">替换镜片名字</lmB>
+      <!-- <lmB v-print="'#printMe'">打印</lmB> -->
+    
     </div>
-
-
-    <!-- 表格模块 -->
-    <div class=" 滑条">
-      <lmSH></lmSH>
-      <div class=" 滑条">
-        <lmInput v-for="行 in pinia.筛选过的旧订单" :key="行.订单号"  :行=行></lmInput>
-      </div>
+    <div class="横向 平均行">
+      <input v-model.lazy="新值" placeholder="新值">
+      <input v-model.lazy="旧值" placeholder="旧值">
+    </div>
+    <div class="滑条 开始">
 
     </div>
-
-    <!-- 分页模块 -->
-    <div class="分页 横向">
-      <lmButton class="分页按钮"> 这是第{{ pinia.旧订单当前页 }}页</lmButton>
-      <!--      <button v-for = "(页, index) in pinia.页数" :key = "页" @click = 'pinia.当前页=pinia.页数[index]'>{{ 页 + 1 }}</button> -->
-      <!-- v-for 循环数组必须有 index 且必须使用 不然循环不了  而且index不能用中文名 -->
-      <div class="分页内 横向">
-        <lmButton class="" :class="{ 查找状态: pinia.旧订单当前页 == 页 }" v-for="(页, index) in pinia.旧订单页数"
-          @click="pinia.旧订单当前页 = index + 1">
-          {{ 页 }}
-        </lmButton>
-      </div>
-      <lmButton class="分页按钮">一共有{{ pinia.旧订单页数 }}页</lmButton>
-    </div>
-
-    <!-- 添加新订单模块 -->
-    <div class="添加订单">
-      <lmInput :行=pinia.新订单模板></lmInput>
-      <lmButton @click="创建订单(pinia.新订单模板)">
-        <icon 图标名="icon-plus-circle-fill" 颜色="#fff" font-size='20px' />
-        <p>添加订单</p>
-      </lmButton>
-    </div>
-
-
   </div>
-
 </template>
 
-
-<style lang="scss" scoped>
-.查找状态 {
-  background-color: #337ecc;
+<style scoped lang="scss">
+.列表 {
+  height: 200px;
 }
 
-.第四页 {
-  grid-template-rows: 50px 1fr 80px 80px;
+.第三页 {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 40px 40px 40px auto;
+  gap: 2px;
+  align-content: start;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  overflow: auto;
+  background-color: #F0F2F5
 }
 
-.分页 {
+.首行 {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) ;
+  grid-template-rows: 1fr;
   gap: 5px;
-  width: auto;
-  grid-template-columns: 1fr 1fr 1fr;
-  .分页内 {
-    gap: 1px;
-    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
-  }
+  align-content: start;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  overflow: auto;
+  background-color: #F0F2F5
+}
+
+.开始 {
+  align-content: start;
 }
 </style>

@@ -20,12 +20,21 @@ let 改 = async (行数据: any) => {
     delete 深拷贝行数据.编辑记录
     await 行数据.编辑记录.push(库.月日 + 库.当前登录用户 + '修改#' + JSON.stringify(深拷贝行数据))
     库.通讯('订单', "改", 行数据);
+    图标颜色.value = "#666"
+    console.log("修改" + 行数据.订单号 + 行数据.旺旺名 + "已提交")
   }
-  图标颜色.value = "#666"
+  else {
+    console.log(行数据.订单号 + 行数据.旺旺名 + "没有变化")
+  }
 }
 
 
-let 删 = (行数据: any) => { console.log(行数据); 库.通讯('订单', "删", 行数据) }
+let 删 = (行数据: any) => {
+  console.log(行数据);
+  库.通讯('订单', "删", 行数据)
+  //本地删除
+  库.订单表.splice(库.订单表.findIndex((行: any) => 行.订单号 == 行数据.订单号), 1)
+}
 let 编辑记录 = () => { 编辑记录附加页.value = !编辑记录附加页.value }
 
 watch(() => 行数据, (值) => {
@@ -36,7 +45,18 @@ watch(() => 行数据, (值) => {
   console.log('更改 ' + 值.订单号 + 值.旺旺名)
 }, { deep: true })
 
+//计算属性
+let 订单进度 = computed(() => {
+  if (行数据.订单进度)
+    return 行数据.订单进度
+  else if (行数据.镜片备好日)
+    return '镜片已备好'
+  else if (行数据.镜片订货日)
+    return '镜片已订货'
+  else if (行数据.镜片下单日)
+    return '镜片已下单'
 
+})
 
 
 let 镜片名判定 = () => {
@@ -70,30 +90,42 @@ let 旺旺号判定 = () => {
 <template>
   <div class="行整页">
     <div class="标识格">
-      <div class="订单号">
-        <div>订单号:{{ 行数据.订单号 }} </div>
-        <div>{{ 订单号分解 }} </div>
+      <div class="第一行">
+        <div class="第一行1">
+          <div>订单号: {{ 行数据.订单号 }} </div>
+          <div>{{ 订单号分解 }} </div>
+        </div>
+        <div class="第一行2">
+          <input class="标识" v-model.lazy="行数据.收件人" placeholder="收件人">
+          <div class="镜框选项">
+            <input v-model=行数据.镜框选项 list="镜框选项" placeholder="镜框选项">
+            <icon 图标名="lm-close-circle-fill" @click="行数据.镜框选项 = ''" 颜色="#666" font-size='20px' />
+          </div>
+        </div>
       </div>
-      <input class="标识" v-model.lazy="行数据.收件人" placeholder="收件人">
-      <div class="旺旺名">
+      <div class="第二行">
         <input @change="旺旺号判定()" v-model.lazy="行数据.旺旺名" placeholder="旺旺名">
         <div @click="购买记录附加页 = !购买记录附加页">
           {{ 行数据.购买记录.length + 1 == 1 ? '新' : 行数据.购买记录.length + 1 }}
         </div>
       </div>
-
     </div>
 
     <div class="镜片格">
-      <input class="镜片" v-model.lazy="行数据.镜片下单日" placeholder="镜片下单日" list="日期">
-      <input v-if="库.当前登录用户类型 == '助理'" class="镜片" v-model.lazy="行数据.镜片订货日" placeholder="镜片订货日" list="日期">
-      <input v-if="库.当前登录用户类型 == '助理'" class="镜片" v-model.lazy="行数据.镜片备好日" placeholder="镜片备好日" list="日期">
-      <div v-if="库.当前登录用户类型 == '客服'"  class="镜片" >{{ 行数据.镜片下单日?行数据.镜片下单日:"未定" }}</div>
-      <div v-if="库.当前登录用户类型 == '客服'"  class="镜片" >{{ 行数据.镜片备好日?行数据.镜片备好日:"未备好" }}</div>     
-      <input class="镜片 三列 " :class="{ 警告色: 镜片名判定() }" v-model.lazy="行数据.镜片" placeholder="镜片" list="镜片名">
+      <div class="镜片进度">
+
+        <input class="镜片" v-model.lazy="行数据.镜片下单日" placeholder="镜片下单日" list="日期">
+        <input v-if="库.当前登录用户类型 == '助理'" class="镜片" v-model.lazy="行数据.镜片订货日" placeholder="镜片订货日" list="日期">
+        <input v-if="库.当前登录用户类型 == '助理'" class="镜片" placeholder="镜片订货厂家" list="日期">
+        <input v-if="库.当前登录用户类型 == '助理'" class="镜片" v-model.lazy="行数据.镜片备好日" placeholder="镜片备好日" list="日期">
+        <div v-if="库.当前登录用户类型 == '客服'" class="镜片">{{ 行数据.镜片下单日 ? 行数据.镜片下单日 : "未定" }}</div>
+        <div v-if="库.当前登录用户类型 == '客服'" class="镜片">{{ 行数据.镜片备好日 ? 行数据.镜片备好日 : "未备好" }}</div>
+      </div>
+
+      <input class="镜片  " :class="{ 警告色: 镜片名判定() }" v-model.lazy="行数据.镜片" placeholder="镜片" list="镜片名">
 
 
-      <div class="验光数据 三列">
+      <div class="验光数据 ">
         <input v-model.lazy="行数据.右近视" placeholder="右近视">
         <input v-model.lazy="行数据.右散光" placeholder="右散光">
         <input v-model.lazy="行数据.右轴向" placeholder="右轴向">
@@ -107,21 +139,24 @@ let 旺旺号判定 = () => {
     </div>
 
     <div class="镜框格">
-      <input v-model.lazy="行数据.镜框下单日" placeholder="镜框下单日" list="日期">
-      <input v-model.lazy="行数据.镜框发货日" placeholder="镜框发货日" list="日期">
-      <input v-model.lazy="行数据.镜框备好日" placeholder="镜框备好日" list="日期">
       <div class="镜框第一行">
-        <div class="镜框选项">
-          <input v-model=行数据.镜框选项 list="镜框选项" placeholder="镜框选项">
-          <icon 图标名="lm-close-circle-fill" @click="行数据.镜框选项 = ''" 颜色="#666" font-size='20px' />
-        </div>
 
-        <input v-if="行数据.镜框选项 == '来框加工'" v-model.lazy="行数据.镜框运单号" :class="{ 警告色: 运单号判定() }" placeholder="请输入运单号">
-        <div v-if="行数据.镜框选项 == '试戴镜框'" class="试戴镜框 滑条">
-          <input v-for="i in [1, 2, 3, 4, 5, 6, 7, 8]" v-model.lazy="行数据.试戴镜框[i - 1]" class="" :placeholder="'试戴' + i">
+        <input v-model.lazy="行数据.镜框下单日" placeholder="镜框下单日" list="日期">
+        <input v-model.lazy="行数据.镜框发货日" placeholder="镜框发货日" list="日期">
+        <input v-model.lazy="行数据.镜框备好日" placeholder="镜框备好日" list="日期">
+
+      </div>
+      <div class="镜框第二行 ">
+        <input v-model.lazy="行数据.镜框运单号" :class="{ 警告色: 运单号判定() }" placeholder="请输入运单号">
+
+
+        <div class="试戴镜框 滑条">
+          <input v-for="i in [1, 2, 3]" v-model.lazy="行数据.试戴镜框[i - 1]" class="" :placeholder="'试戴' + i">
         </div>
       </div>
-      <input class="三列" v-model.lazy="行数据.备注" placeholder="备注">
+      <div class="镜框第三行">
+        <input class="三列" v-model.lazy="行数据.备注" placeholder="备注">
+      </div>
     </div>
 
 
@@ -129,78 +164,85 @@ let 旺旺号判定 = () => {
       <icon 图标名="lm-cloud-upload" @click="改(行数据);" :颜色=图标颜色 font-size='25px' />
       <icon 图标名="lm-setting" @click="编辑记录()" 颜色="#666" font-size='25px' />
       <icon 图标名="lm-delete" @click="删(行数据)" 颜色="#F56C6C" font-size='25px' />
+      <icon 图标名="lm-printer" v-print="'#打印范围'" 颜色="#F56C6C" font-size='25px' />
     </div>
+
     <div class="图标格">
       <input v-model.lazy="行数据.订单进度" placeholder="订单进度">
+      <input v-model.lazy="行数据.订单完成日" placeholder="完成日期" list="日期">
       <input v-model.lazy="行数据.优惠" placeholder="优惠">
-      <div>编辑数:{{ 行数据.编辑记录.length <= 1 ? '新建' : 行数据.编辑记录.length - 1 }}</div>
+      <div>
+        编辑数: {{ 行数据.编辑记录.length <= 1 ? '新建' : 行数据.编辑记录.length - 1 }} </div>
       </div>
 
-    </div>
-    <div v-if="编辑记录附加页">
-      <div v-for="i in 行数据.编辑记录">
-        <div class="编辑记录附加页 横向">
-          {{ i.split('#')[0] }}
-          <div> {{ JSON.parse(i.split('#')[1]).收件人 }}</div>
-          <div>
-            <div> {{ JSON.parse(i.split('#')[1]).旺旺名 }}</div>
-            <div> {{ JSON.parse(i.split('#')[1]).镜片 }}</div>
+
+      <div v-if="编辑记录附加页">
+        <div v-for="i in 行数据.编辑记录">
+          <div class="编辑记录附加页 横向">
+            {{ i.split('#')[0] }}
+            <div> {{ JSON.parse(i.split('#')[1]).收件人 }}</div>
+            <div>
+              <div> {{ JSON.parse(i.split('#')[1]).旺旺名 }}</div>
+              <div> {{ JSON.parse(i.split('#')[1]).镜片 }}</div>
+            </div>
+            <div class="光度数据 ">
+              <div>右近视: {{ JSON.parse(i.split('#')[1]).右近视 }}</div>
+              <div>右散光: {{ JSON.parse(i.split('#')[1]).右散光 }}</div>
+              <div>右轴向: {{ JSON.parse(i.split('#')[1]).右轴向 }}</div>
+              <div>右瞳距: {{ JSON.parse(i.split('#')[1]).右瞳距 }}</div>
+              <div>左近视: {{ JSON.parse(i.split('#')[1]).左近视 }}</div>
+              <div>左散光: {{ JSON.parse(i.split('#')[1]).左散光 }}</div>
+              <div>左轴向: {{ JSON.parse(i.split('#')[1]).左轴向 }}</div>
+              <div>左瞳距: {{ JSON.parse(i.split('#')[1]).左瞳距 }}</div>
+            </div>
+            <div> {{ JSON.parse(i.split('#')[1]).备注 }}</div>
           </div>
-          <div class="光度数据 ">
-            <div>右近视: {{ JSON.parse(i.split('#')[1]).右近视 }}</div>
-            <div>右散光: {{ JSON.parse(i.split('#')[1]).右散光 }}</div>
-            <div>右轴向: {{ JSON.parse(i.split('#')[1]).右轴向 }}</div>
-            <div>右瞳距: {{ JSON.parse(i.split('#')[1]).右瞳距 }}</div>
-            <div>左近视: {{ JSON.parse(i.split('#')[1]).左近视 }}</div>
-            <div>左散光: {{ JSON.parse(i.split('#')[1]).左散光 }}</div>
-            <div>左轴向: {{ JSON.parse(i.split('#')[1]).左轴向 }}</div>
-            <div>左瞳距: {{ JSON.parse(i.split('#')[1]).左瞳距 }}</div>
-          </div>
-          <div> {{ JSON.parse(i.split('#')[1]).备注 }}</div>
         </div>
       </div>
-    </div>
-    <div v-if="购买记录附加页">
-      <div v-for="i, k in 行数据.购买记录">
-        <div class="购买记录附加页 横向">
-          <div> {{ JSON.parse(i).订单号.slice(2, 4) + "月" + JSON.parse(i).订单号.slice(4, 6) + "日" }}</div>
-          <div> 第{{ k + 1 }}次购买</div>
-          <div>
-            <div> {{ JSON.parse(i).旺旺名 }}</div>
-            <div> {{ JSON.parse(i).镜片 }}</div>
-          </div>
-          <div class="光度数据 ">
-            <div>右近视: {{ JSON.parse(i).右近视 }}</div>
-            <div>右散光: {{ JSON.parse(i).右散光 }}</div>
-            <div>右轴向: {{ JSON.parse(i).右轴向 }}</div>
-            <div>右瞳距: {{ JSON.parse(i).右瞳距 }}</div>
-            <div>左近视: {{ JSON.parse(i).左近视 }}</div>
-            <div>左散光: {{ JSON.parse(i).左散光 }}</div>
-            <div>左轴向: {{ JSON.parse(i).左轴向 }}</div>
-            <div>左瞳距: {{ JSON.parse(i).左瞳距 }}</div>
-          </div>
+      <div v-if="购买记录附加页">
+        <div v-for="i, k in 行数据.购买记录">
+          <div class="购买记录附加页 横向">
+            <div> {{ JSON.parse(i).订单号.slice(2, 4) + "月" + JSON.parse(i).订单号.slice(4, 6) + "日" }}</div>
+            <div> 第{{ k + 1 }}次购买</div>
+            <div>
+              <div> {{ JSON.parse(i).旺旺名 }}</div>
+              <div> {{ JSON.parse(i).镜片 }}</div>
+            </div>
+            <div class="光度数据 ">
+              <div>右近视: {{ JSON.parse(i).右近视 }}</div>
+              <div>右散光: {{ JSON.parse(i).右散光 }}</div>
+              <div>右轴向: {{ JSON.parse(i).右轴向 }}</div>
+              <div>右瞳距: {{ JSON.parse(i).右瞳距 }}</div>
+              <div>左近视: {{ JSON.parse(i).左近视 }}</div>
+              <div>左散光: {{ JSON.parse(i).左散光 }}</div>
+              <div>左轴向: {{ JSON.parse(i).左轴向 }}</div>
+              <div>左瞳距: {{ JSON.parse(i).左瞳距 }}</div>
+            </div>
 
+          </div>
         </div>
       </div>
+
+
+      <!-- 选项 -->
+      <datalist id="镜框选项">
+        <option>来框加工</option>
+        <option>试戴镜框</option>
+        <option>直接加工</option>
+      </datalist>
+      <datalist id="日期">
+        <option :value=库.月日>今天</option>
+      </datalist>
+      <datalist id="镜片名">
+        <option v-for="i in 库.镜片名选项">{{ i }}</option>
+      </datalist>
+
     </div>
-
-
-    <!-- 选项 -->
-    <datalist id="镜框选项">
-      <option>来框加工</option>
-      <option>试戴镜框</option>
-      <option>直接加工</option>
-    </datalist>
-    <datalist id="日期">
-      <option :value=库.月日>今天</option>
-    </datalist>
-    <datalist id="镜片名">
-      <option v-for="i in 库.镜片名选项">{{ i }}</option>
-    </datalist>
+    <div id="打印范围">打印范围</div>
 </template>
 
 
-<style lang="scss" scoped>
+<style lang = "scss" scoped>
 .编辑记录附加页 {
   justify-content: start;
   grid-template-columns: 150px 100px 200px 1fr 300px;
@@ -231,18 +273,50 @@ let 旺旺号判定 = () => {
   grid-template-columns: 300px 1fr 1fr 50px 100px;
   grid-template-rows: 1fr;
   background-color: #F0F2F5;
-  border: 3px rgb(50, 216, 4);
+  border: 2px solid $浅灰;
 
   .标识格 {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
     background-color: none;
 
-    .订单号 {
-      grid-template-rows: 1fr 1fr;
+
+    .第一行 {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+
+      .第一行1 {
+        grid-template-rows: 1fr 1fr;
+      }
+
+      .第一行2 {
+        grid-template-rows: 1fr 1fr;
+
+        .镜框选项 {
+          grid-template-columns: 1fr 50px;
+          grid-template-rows: 1fr;
+          background-color: #b7c3d4;
+
+          input {
+            background-color: #b7c3d4;
+            border: none;
+          }
+
+          div {
+            background-color: #b7c3d4;
+            border: none;
+          }
+
+          input:focus {
+            outline: none;
+            box-shadow: none;
+            z-index: 99;
+          }
+        }
+      }
     }
 
-    .旺旺名 {
+    .第二行 {
       grid-template-columns: 1fr 50px;
       grid-template-rows: 1fr;
       grid-column: 1 / span 2;
@@ -274,12 +348,21 @@ let 旺旺号判定 = () => {
     .标识 {
       background-color: #b7c3d4;
     }
+
+
   }
 
   .镜片格 {
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.5fr 0.5fr 1fr;
     background-color: #F0F2F5;
+
+    .镜片进度 {
+      grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
+      grid-template-rows: 1fr;
+      grid-auto-flow: column;
+      background-color: #F0F2F5;
+    }
 
     .验光数据 {
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -297,50 +380,33 @@ let 旺旺号判定 = () => {
   }
 
   .镜框格 {
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-
-    .镜框选项 {
-      grid-template-columns: 1fr 50px;
-      grid-template-rows: 1fr;
-      //grid-column: 1 / span 2;
-      background-color: #b7c3d4;
-
-      input {
-        background-color: #b7c3d4;
-        border: none;
-      }
-
-      div {
-        background-color: #b7c3d4;
-        border: none;
-      }
-
-      input:focus {
-        outline: none;
-        box-shadow: none;
-        z-index: 99;
-      }
-    }
-
-    .镜框选项:focus-within {
-      box-shadow: 0px 0px 3px 1px rgb(50, 216, 4);
-      z-index: 99;
-    }
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.5fr 1fr 0.5fr;
 
     .镜框第一行 {
-      grid-auto-flow: column;
-      grid-column: 1 / span 3;
-      grid-template-columns: 1fr 2fr;
       grid-template-rows: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
     }
 
-    .试戴镜框 {
-      height: 50px;
-      align-content: start;
-      grid-template-rows: repeat(auto-fit, minmax(20px, 1fr));
+    .镜框第二行 {
+      grid-template-rows: 1fr 1fr;
       grid-template-columns: 1fr;
+
+      .试戴镜框 {
+        height: 30px;
+        align-content: start;
+        grid-template-rows: 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
     }
+
+    .镜框第三行 {
+      grid-template-rows: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
+    }
+
+
+
 
 
     .警告色 {
@@ -350,7 +416,7 @@ let 旺旺号判定 = () => {
 
   .图标格 {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
   }
 
 }

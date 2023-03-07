@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { pinia库, 订单类 } from '@仓库/pinia库';
 import lmB from "@组件/按钮.vue";
+
 import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 import { ref } from 'vue';
 
@@ -8,7 +9,7 @@ let 库 = pinia库();
 let 新值 = ref("");
 let 旧值 = ref("");
 
-let 替换 = async () => {
+let 替换镜片名字 = async () => {
   let 更改数量 = 0
   for (let i in 库.订单表) {
     if (库.订单表[i].镜片 == 旧值.value) {
@@ -25,6 +26,19 @@ let 订单号 = async () => {
     库.订单表[i].订单号 = 库.订单表[i].订单号.slice(0,8)
     await 库.通讯('订单', "改", 库.订单表[i]);
   }
+}
+let 订单进度 = async () => {
+  let 更改数量 = 0
+  for (let i in 库.订单表) {
+    if(库.订单表[i].订单进度 !='已完成'){
+      库.订单表[i].订单完成日=库.订单表[i].订单进度
+      库.订单表[i].订单进度 = '已完成'
+      console.log(库.订单表[i].订单号+库.订单表[i].订单完成日+库.订单表[i].订单进度);
+      更改数量 += 1
+    }
+    await 库.通讯('订单', "改", 库.订单表[i]);
+  }
+  console.log("一共更改了" + 更改数量 + "个");
 }
 
 let 旺旺号判定 = (行数据) => {
@@ -58,10 +72,11 @@ let 购买记录 = async () => {
 
 <template>
   <div class="第三页">
-    <h1>这是第三页 cookie</h1>
+    <h1>这是第2页测试</h1>
     <div class="首行">
-      <lmB @click="替换()">替换</lmB>
-      <lmB @click="订单号()">订单号</lmB>
+      <lmB @click="替换镜片名字()">替换镜片名字</lmB>
+      <lmB @click="订单号()">订单号压力测试</lmB>
+      <lmB @click="订单进度()">订单进度修改</lmB>
       <lmB @click="购买记录()">购买记录</lmB>
     </div>
     <div class="横向 平均行">
@@ -70,7 +85,6 @@ let 购买记录 = async () => {
     </div>
     <div class="滑条 开始">
       <div v-for=" i in  库.订单表">{{ i.订单号}}</div>
-      <!-- <div v-for=" i in  库.订单表">{{ i.旺旺名 }}____________{{i.购买记录.length }} </div> -->
     </div>
   </div>
 </template>
