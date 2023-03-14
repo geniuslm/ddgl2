@@ -12,7 +12,7 @@ import { onMounted, ref, toRef, computed, reactive } from 'vue';
 
 let 库 = pinia库();
 onMounted(() => {
-    库.初始化()
+    //库.初始化()
 })
 
 let 添加新订单 = () => {
@@ -34,11 +34,13 @@ let 添加新订单 = () => {
             return 年 + 月 + 日 + "01"
         }
     }
-    新订单.旺旺名 = "新订单 请输入旺旺名"
+    新订单.旺旺名 = "请输入旺旺名"
     新订单.订单号 = 订单号()
     新订单.镜片 = ""
     新订单.镜框运单号 = ""
     新订单.订单进度 = "新建"
+    新订单.订单进度 = "新建"
+    //新订单.镜片下单日 = "未下单"
     新订单.编辑记录 = []
     新订单.购买记录 = []
     新订单.编辑记录.push(库.月日 + 库.当前登录用户 + '创建#' + JSON.stringify(新订单))
@@ -108,10 +110,8 @@ let 全部订单数量 = computed(() => 库.订单表.length)
         </div>
         <!-- 表格模块 -->
         <div class="表格">
-            <!-- <lmSH></lmSH> -->
 
-            <!-- <lmInput v-for="(i, k) in 库.筛选过的订单" :key="i._id" :行数据="库.筛选过的订单[k]"></lmInput> -->
-            <lmInput v-for="(i, k) in 库.筛选过的订单" :key="i._id" :序号="k"></lmInput>
+                <lmInput v-for="(i, k) in 库.筛选过的订单" :key="i._id" :序号="k"></lmInput>
 
         </div>
         <!-- 分页模块 -->
@@ -175,12 +175,13 @@ let 全部订单数量 = computed(() => 库.订单表.length)
             }
 
         }
-        .筛选数字{
+
+        .筛选数字 {
             font-size: large;
             color: $浅灰;
             font-weight: bold;
             border-radius: 5px;
-           
+
         }
 
         .搜索 {
@@ -235,4 +236,6 @@ let 全部订单数量 = computed(() => 库.订单表.length)
 input:focus {
     outline: none;
 }
+
+
 </style>

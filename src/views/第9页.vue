@@ -12,7 +12,7 @@ import { onMounted, ref, toRef, computed, reactive, watch } from 'vue';
 
 let 库 = pinia库();
 onMounted(() => {
-    库.初始化()
+   
 })
 
 let 测试 = () => {}

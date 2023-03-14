@@ -26,6 +26,10 @@ export class 订单类 {
   镜片下单日: string;
   镜片订货日: string;
   镜片备好日: string;
+  镜片供应商: string;
+  镜片进货价: number;
+  镜片售价: number;
+    
 
   镜框选项: string;
   镜框运单号: string;
@@ -58,28 +62,25 @@ export class 镜片类 {
   品牌名: string;
   系列名: string;
   折射率: string;
-  高散车房?: string;
+  高散定制?: string;
   染色变色?: string;
 
-  最高近视光度: number;
-  最高散光光度: number;
-  最高联合光度: number;
-  最高远视光度: number;
-  最高远视散光: number;
-  供应商: string;
+ 
+
   售价: number;
-  进货价: number;
   湖北和益?: number;
-  湖北蔡司?: number;
+  山东臻视?: number;
   上海老周?: number;
-  丹阳臻视?: number;
+  湖北蔡司?: number;
+  丹阳夏总?: number;
+  光度范围: string[];
   constructor() {
     this.镜片名 = "";
     this.品牌名 = "";
     this.系列名 = "";
     this.折射率 = "";
     this.染色变色 = "";
-    this.高散车房 = "";
+    this.高散定制 = "";
 
   }
 }
@@ -124,6 +125,7 @@ export const pinia库 = defineStore("pinia库", {
       镜片全局搜索值: '',
       镜片排序的属性: '镜片名',
       镜片正逆序: 1,
+      镜片显示:'全部',
 
       镜片名选项: [] as string[],
       品牌名选项: [] as string[],
@@ -255,11 +257,15 @@ export const pinia库 = defineStore("pinia库", {
 
   //函数 同步和异步函数
   actions: {
-    初始化() {
-      console.log("初始化");
-      socket.emit('订单', '获', (返回数据: any) => { this.订单表 = 返回数据 });
+    async 初始化() {
+      socket.emit('订单', '获', (返回数据: any) => { this.订单表 = 返回数据; console.log("xiazaiwan"); });
       socket.emit('用户', '获', (返回数据: any) => { this.用户表 = 返回数据 });
       socket.emit('镜片', '获', (返回数据: any) => { this.镜片表 = 返回数据, this.镜片选项() });
+      let date = new Date();
+      this.年 = date.getFullYear().toString().slice(2)
+      this.月 = ("0" + (date.getMonth() + 1)).slice(-2)
+      this.日 = ("0" + date.getDate()).slice(-2)
+      console.log("初始化完成");
     },
     async 通讯(类型: string, 操作: string, 数据?: any) {
       if (类型 == "测试") { socket.emit('测试', 操作, 数据, (返回数据: any) => { console.log(返回数据); }); }

@@ -52,7 +52,7 @@ div {
 .平均行{ grid-template-columns: repeat(auto-fit, minmax(1px, 1fr)); }
 .镜片行{ 
     gap: 3px;
-    grid-template-columns:1fr repeat(5, 60px) repeat(5, 60px) repeat(7, 50px) 100px; 
+    grid-template-columns:1fr 80px 100px repeat(9, 70px)  130px; 
     grid-template-rows:1fr; 
 }   
 

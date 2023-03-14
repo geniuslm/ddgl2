@@ -7,7 +7,7 @@ import { onMounted, ref, toRef, computed, reactive, watch } from 'vue';
 
 let 库 = pinia库();
 onMounted(() => {
-    库.初始化()
+   
     库.镜片搜索值 = new 镜片类
     delete 库.镜片搜索值._id
 })
@@ -18,8 +18,8 @@ let 测试 = () => {
 let 添加镜片 = () => { 
     let 新镜片=new 镜片类
     新镜片.镜片名="A新镜片"
-    新镜片.高散车房=" "
-    新镜片.染色变色=" "
+    新镜片.高散定制=""
+    新镜片.染色变色=""
     库.通讯("镜片", "增", 新镜片) 
 }
 let 镜片keys = Object.keys(new 镜片类).slice(1)
@@ -41,10 +41,9 @@ let 排序 = (k: any) => {
         </div>
         <!-- 表格模块 -->
         <div class="表格">
-
+            <div class="搜索按钮">以{{ 库.镜片排序的属性 }}排序</div>
             <div class="横向 镜片行">
                 <input class="搜索按钮" v-for="(i, k) in 库.镜片搜索值" v-model="库.镜片搜索值[k]" :placeholder="k">
-                <div class="搜索按钮">以{{ 库.镜片排序的属性 }}排序</div>
             </div>
             <div class="横向 镜片行">
                 <lmButton @click="排序(k)" v-for="(i, k) in 库.镜片搜索值">
@@ -73,7 +72,7 @@ let 排序 = (k: any) => {
     .表格 {
         gap: 3px;
         align-content: start;
-        grid-template-rows:  50px auto;
+        grid-template-rows:  40px 40px auto;
         overflow: auto;
     }
 }
