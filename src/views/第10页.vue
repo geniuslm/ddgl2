@@ -30,7 +30,7 @@ for (let i = 0; i < parseInt(日); i++) {
 </script>
 
 <template>
-    <div class="第十页  滑条">
+    <div class="第十页 ">
         <h1>第十页 利润</h1>
         <input  v-model.lazy="查年" placeholder="年" >
         <input  v-model.lazy="查月" placeholder="月" >

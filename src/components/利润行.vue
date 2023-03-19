@@ -12,7 +12,7 @@ let 编辑记录附加页 = ref(false)
 let 购买记录附加页 = ref(false)
 
 let { 序号 } = defineProps(['序号'])
-let 行数据 = 库.筛选过的订单[序号]
+let 行数据 = 库.订单表[序号]
 let 订单号分解 = 行数据.订单号.slice(2, 4) + "月" + 行数据.订单号.slice(4, 6) + "日 第" + 行数据.订单号.slice(6, 8) + "单"
 let 改 = async (行数据: any) => {
   if (图标颜色.value == "#67C23A") {

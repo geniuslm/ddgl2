@@ -29,7 +29,7 @@ export class 订单类 {
   镜片供应商: string;
   镜片进货价: number;
   镜片售价: number;
-    
+
 
   镜框选项: string;
   镜框运单号: string;
@@ -47,6 +47,48 @@ export class 订单类 {
   试戴镜框: string[];
   编辑记录: string[];
   购买记录: string[];
+  constructor() {
+    this.订单号 = '';
+    this.收件人 = '';
+    this.旺旺名 = '';
+    this.镜片 = '';
+
+    this.收件人='' ;
+    this.旺旺名='' ;
+    this.镜片='' ;
+
+    this.右近视='' ;
+    this.右散光='' ;
+    this.右轴向='' ;
+    this.右瞳距='' ;
+
+    this.左近视='' ;
+    this.左散光='' ;
+    this.左轴向='' ;
+    this.左瞳距='' ;
+    this.备注='' ;
+
+    this.镜片下单日='' ;
+    this.镜片订货日='' ;
+    this.镜片备好日='' ;
+    this.镜片供应商='' ;
+    this.镜片进货价=0;
+    this.镜片售价=0;
+
+
+    this.镜框选项='' ;
+    this.镜框运单号='' ;
+    this.镜框下单日='' ;
+    this.镜框发货日='' ;
+    this.镜框备好日='' ;
+    this.订单进度='' ;
+    this.订单完成日='' ;
+
+    this.镜片利润=0;
+    this.镜框利润=0;
+    this.优惠=null;
+    this.总利润=0;
+  }
 }
 
 export class 用户类 {
@@ -65,7 +107,7 @@ export class 镜片类 {
   高散定制?: string;
   染色变色?: string;
 
- 
+
 
   售价: number;
   湖北和益?: number;
@@ -94,6 +136,7 @@ export const pinia库 = defineStore("pinia库", {
       订单表: [] as 订单类[],
       镜片表: [] as 镜片类[],
       用户表: [] as 用户类[],
+      筛选过的订单: [] as 用户类[],
 
       订单表11: [] as any[],
       旧订单: [] as any[],
@@ -110,7 +153,7 @@ export const pinia库 = defineStore("pinia库", {
       订单分类: ['本月', '未完成'],
       通过筛选的数量: 0,
       按时间筛选订单: [] as 订单类[],
-  
+
 
 
       订单排序的属性: '订单号',
@@ -125,7 +168,7 @@ export const pinia库 = defineStore("pinia库", {
       镜片全局搜索值: '',
       镜片排序的属性: '镜片名',
       镜片正逆序: 1,
-      镜片显示:'全部',
+      镜片显示: '全部',
 
       镜片名选项: [] as string[],
       品牌名选项: [] as string[],
@@ -183,89 +226,88 @@ export const pinia库 = defineStore("pinia库", {
 
     },
 
-    筛选过的订单: (state) => {
-      let 要显示的订单: any = state.订单表;
-      let 要搜索的值: any = state.订单搜索值;
-      let 序号: any
-      let date = new Date();
-      state.年 = date.getFullYear().toString().slice(2)
-      state.月 = ("0" + (date.getMonth() + 1)).slice(-2)
-      state.日 = ("0" + date.getDate()).slice(-2)
-      //订单分类 时间
-      if (state.订单分类[0] == '本年') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
-          return 行.订单号.slice(0, 2) == state.年
-        })
-      }
-      if (state.订单分类[0] == '本月') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
-          return 行.订单号.slice(0, 4) == state.年 + state.月
-        })
-      }
-      if (state.订单分类[0] == '本日') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
-          return 行.订单号.slice(0, 6) == state.年 + state.月 + state.日
-        })
-      }
-      state.按时间筛选订单=要显示的订单
-      //订单分类 状态
-      if (state.订单分类[1] == '未完成') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
-          return 行.订单进度 != '已完成'
-        })
-      }
-      if (state.订单分类[1] == '已完成') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
-          return 行.订单进度 == '已完成'
-        })
-      }
+    // 筛选过的订单: (state) => {
+    //   let 要显示的订单: any = state.订单表;
+    //   let 要搜索的值: any = state.订单搜索值;
+    //   let 序号: any
+    //   let date = new Date();
+    //   state.年 = date.getFullYear().toString().slice(2)
+    //   state.月 = ("0" + (date.getMonth() + 1)).slice(-2)
+    //   state.日 = ("0" + date.getDate()).slice(-2)
+    //   //订单分类 时间
+    //   if (state.订单分类[0] == '本年') {
+    //     要显示的订单 = 要显示的订单.filter((行: any) => {
+    //       return 行.订单号.slice(0, 2) == state.年
+    //     })
+    //   }
+    //   if (state.订单分类[0] == '本月') {
+    //     要显示的订单 = 要显示的订单.filter((行: any) => {
+    //       return 行.订单号.slice(0, 4) == state.年 + state.月
+    //     })
+    //   }
+    //   if (state.订单分类[0] == '本日') {
+    //     要显示的订单 = 要显示的订单.filter((行: any) => {
+    //       return 行.订单号.slice(0, 6) == state.年 + state.月 + state.日
+    //     })
+    //   }
+    //   state.按时间筛选订单 = 要显示的订单
+    //   //订单分类 状态
+    //   if (state.订单分类[1] == '未完成') {
+    //     要显示的订单 = 要显示的订单.filter((行: any) => {
+    //       return 行.订单进度 != '已完成'
+    //     })
+    //   }
+    //   if (state.订单分类[1] == '已完成') {
+    //     要显示的订单 = 要显示的订单.filter((行: any) => {
+    //       return 行.订单进度 == '已完成'
+    //     })
+    //   }
 
 
 
-      //全局搜索
-      if (state.订单全局搜索值) {
-        要显示的订单 = 要显示的订单.filter((行: any) => {       //过滤出要显示的订单           
-          return Object.keys(行).some((key) => {   // key是行的每个属性名，some是检查行的属性是否有搜索的值
-            return String(行[key]).indexOf(state.订单全局搜索值) > -1
-          })
-        })
-      }
-      //分属性搜索
-      for (序号 in 要搜索的值) {
-        if (要搜索的值[序号]) {
-          console.log("在 " + 序号 + " 中搜索 " + 要搜索的值[序号])
-          要显示的订单 = 要显示的订单.filter((行: any) => {
-            return String(行[序号]).indexOf(要搜索的值[序号]) >= 0
-          })
-        }
-      }
-      state.通过筛选的数量 = 要显示的订单.length
+    //   //全局搜索
+    //   if (state.订单全局搜索值) {
+    //     要显示的订单 = 要显示的订单.filter((行: any) => {       //过滤出要显示的订单           
+    //       return Object.keys(行).some((key) => {   // key是行的每个属性名，some是检查行的属性是否有搜索的值
+    //         return String(行[key]).indexOf(state.订单全局搜索值) > -1
+    //       })
+    //     })
+    //   }
+    //   //分属性搜索
+    //   for (序号 in 要搜索的值) {
+    //     if (要搜索的值[序号]) {
+    //       console.log("在 " + 序号 + " 中搜索 " + 要搜索的值[序号])
+    //       要显示的订单 = 要显示的订单.filter((行: any) => {
+    //         return String(行[序号]).indexOf(要搜索的值[序号]) >= 0
+    //       })
+    //     }
+    //   }
+    //   state.通过筛选的数量 = 要显示的订单.length
 
-      //排序
-      要显示的订单 = 要显示的订单.sort((前一个值: any, 后一个值: any) => {
-        return (前一个值[state.订单排序的属性] >= 后一个值[state.订单排序的属性] ? 1 : -1) * state.订单正逆序
-      })
-      //分页模块
-      state.订单页数 = Math.ceil(要显示的订单.length / state.每页显示的数量)
-      要显示的订单 = 要显示的订单.slice((state.当前页 - 1) * state.每页显示的数量, state.当前页 * state.每页显示的数量)
+    //   //排序
+    //   要显示的订单 = 要显示的订单.sort((前一个值: any, 后一个值: any) => {
+    //     return (前一个值[state.订单排序的属性] >= 后一个值[state.订单排序的属性] ? 1 : -1) * state.订单正逆序
+    //   })
+    //   //分页模块
+    //   state.订单页数 = Math.ceil(要显示的订单.length / state.每页显示的数量)
+    //   要显示的订单 = 要显示的订单.slice((state.当前页 - 1) * state.每页显示的数量, state.当前页 * state.每页显示的数量)
 
-      return 要显示的订单
-    },
+    //   return 要显示的订单
+    // },
 
   },
 
 
   //函数 同步和异步函数
   actions: {
-    async 初始化() {
-      socket.emit('订单', '获', (返回数据: any) => { this.订单表 = 返回数据; console.log("xiazaiwan"); });
+    初始化() {
+      socket.emit('订单', '获', (返回数据: any) => { this.订单表 = 返回数据; console.log("订单初始化完成"); });
       socket.emit('用户', '获', (返回数据: any) => { this.用户表 = 返回数据 });
       socket.emit('镜片', '获', (返回数据: any) => { this.镜片表 = 返回数据, this.镜片选项() });
       let date = new Date();
       this.年 = date.getFullYear().toString().slice(2)
       this.月 = ("0" + (date.getMonth() + 1)).slice(-2)
       this.日 = ("0" + date.getDate()).slice(-2)
-      console.log("初始化完成");
     },
     async 通讯(类型: string, 操作: string, 数据?: any) {
       if (类型 == "测试") { socket.emit('测试', 操作, 数据, (返回数据: any) => { console.log(返回数据); }); }

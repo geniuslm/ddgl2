@@ -50,7 +50,7 @@ socket.on("disconnect", () => {
 
 <template>
     <div class="登录页">
-        <h1>登录页面-V1.3</h1>
+        <h1>登录页面-V1.3.18-最新版</h1>
 
         <input type="text" placeholder="用户名" v-model.lazy="用户.用户名">
         <input type="text" placeholder="密码" v-model.lazy="用户.密码">
