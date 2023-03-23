@@ -34,12 +34,12 @@ let 同步判定函数 = () => {
 
 <template>
   <div class="底部">
-    <div></div>
+    <!-- <div></div>
 
     <button @click="同步判定函数()">订单同步判定</button>
     <div>{{ 同步判定 }}</div>
 
-    <div>订单表数目=={{ 库.订单表.length }}</div>
+    <div>订单表数目=={{ 库.订单表.length }}</div> -->
 
 
 

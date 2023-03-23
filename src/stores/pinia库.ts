@@ -25,8 +25,14 @@ export class 订单类 {
 
   镜片下单日: string;
   镜片订货日: string;
+  右镜片订货日: string;
+  左镜片订货日: string;
   镜片备好日: string;
+  右镜片备好日: string;
+  左镜片备好日: string;
   镜片供应商: string;
+  右镜片供应商: string;
+  左镜片供应商: string;
   镜片进货价: number;
   镜片售价: number;
 
@@ -70,8 +76,15 @@ export class 订单类 {
 
     this.镜片下单日='' ;
     this.镜片订货日='' ;
+    this.右镜片订货日='' ;
+    this.左镜片订货日='' ;
     this.镜片备好日='' ;
+    this.右镜片备好日='' ;
+    this.左镜片备好日='' ;
     this.镜片供应商='' ;
+    this.右镜片供应商='' ;
+    this.左镜片供应商='' ;
+    
     this.镜片进货价=0;
     this.镜片售价=0;
 

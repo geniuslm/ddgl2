@@ -21,6 +21,6 @@
       "@仓库/*":["src/stores/*"],  
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "env.d.ts", "env.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "env.d.ts", "env.d.ts","报错.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -111,14 +111,20 @@ let log不在表镜片 = () => {
 
 let 各种设置 = () => {
   for (let i in 库.订单表) {
-    if (库.订单表[i].镜框运单号==undefined||库.订单表[i].镜框运单号==null) {
-      库.订单表[i].镜框运单号 = ''
+    
+    if (库.订单表[i].右镜片备好日) {
+      库.订单表[i].右镜片备好日=库.订单表[i].右镜片备好日.slice(0,5)
+      库.订单表[i].左镜片备好日=库.订单表[i].左镜片备好日.slice(0,5)
+      console.log(库.订单表[i].右镜片备好日);
       库.通讯('订单', "改", 库.订单表[i]);
     }
   }
 }
 
+let new订单 = () => {
+  console.log(new (订单类));
 
+}
 
 
 </script>
@@ -132,6 +138,7 @@ let 各种设置 = () => {
       <lmB @click="订单进度()">订单进度修改</lmB>
       <lmB @click="购买记录()">购买记录</lmB>
       <lmB @click="log不在表镜片()">log不在表镜片</lmB>
+      <lmB @click="new订单()">new订单</lmB>
       <lmB @click="各种设置()">各种设置</lmB>
     </div>
     <div class="横向 平均行">
@@ -141,7 +148,7 @@ let 各种设置 = () => {
       <input v-model.lazy="供应商" placeholder="供应商" list="镜片供应商">
     </div>
     <div class="滑条 开始">
-      <div v-for=" i in  订单表">{{ i.订单号 }} {{ i.镜片 }}-{{ i.镜片备好日 }}</div>
+      <div v-for=" i in  订单表">{{ i.订单号 }} {{ i.镜片 }}-{{ i.右镜片备好日}}</div>
     </div>
   </div>
   <datalist id="镜片名">

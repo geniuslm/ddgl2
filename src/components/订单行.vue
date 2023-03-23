@@ -1,9 +1,13 @@
 <script setup lang = "ts">
 import { useRouter } from 'vue-router';
-import { ref, toRefs, reactive, computed, watch } from 'vue';
+import { ref, toRefs, reactive, computed, watch, onMounted } from 'vue';
 import Icon from './icons/Icon.vue';
 import { socket } from "../stores/socket链接";
 import { pinia库, 镜片类, 订单类 } from '../stores/pinia库';
+import JsBarcode from "jsbarcode";
+import { values } from 'lodash';
+
+
 
 let 库 = pinia库();
 let { 行数据 } = defineProps(['行数据'])
@@ -18,6 +22,13 @@ let 打印范围附加页 = ref(false)
 let 删除附加页 = ref(false)
 let 镜片供应商 = ref('镜片供应商')
 let 镜片备好日 = ref('镜片备好日')
+let 湖北和益进价 = ref(0)
+let 山东臻视进价 = ref(0)
+let 上海老周进价 = ref(0)
+let 湖北蔡司进价 = ref(0)
+let 丹阳夏总进价 = ref(0)
+
+
 let 订单号分解 = 行数据.订单号.slice(2, 4) + "月" + 行数据.订单号.slice(4, 6) + " " + 行数据.订单号.slice(6, 8) + "单"
 
 
@@ -61,9 +72,14 @@ let 瞳距光度警告 = (值) => {
 
 watch(() => 行数据, (值) => {
   保存图标颜色.value = "#67C23A"
+  console.log('侦听器工作');
+
 
   库.通讯('订单', "改", 行数据);
 }, { deep: true })
+watch(() => 行数据.右近视, (值) => {
+  console.log('右近视变动');
+})
 
 //计算属性
 let 订单进度 = computed(() => {
@@ -76,37 +92,87 @@ let 订单进度 = computed(() => {
   else if (行数据.镜片下单日 != '') { 行数据.订单进度 = '镜片已下单'; return '镜片已下单' }
 
   else { 行数据.订单进度 = '新建订单'; return '新建订单' }
-
-
 })
 
 let 镜片名警告 = computed(() => {
   return !库.镜片名选项.includes(行数据.镜片)
 })
+let 镜片下单日 = computed(() => {
+  return 行数据.镜片下单日 != '' ? 行数据.镜片下单日 + "下单" : '镜片未下单'
+})
+
+let 右镜片订货日 = computed(() => {
+  return 行数据.右镜片订货日 != '' ? 行数据.右镜片订货日 + "订货" : '右镜片未订货'
+})
+let 左镜片订货日 = computed(() => {
+  return 行数据.左镜片订货日 != '' ? 行数据.左镜片订货日 + "订货" : '左镜片未订货'
+})
+let 右镜片备好日 = computed(() => {
+  return 行数据.右镜片备好日 != '' ? 行数据.右镜片备好日 : '右镜片未备好'
+})
+let 左镜片备好日 = computed(() => {
+  return 行数据.左镜片备好日 != '' ? 行数据.左镜片备好日 : '左镜片未备好'
+})
+
 
 //作用是 通过供应商判断利润
 let 订镜片判定 = () => {
+  if (行数据.镜片 == '') { alert('订镜片判定') }
+
+  console.log('右镜片供应商', 行数据);
   for (let obj of 库.镜片表) {
     if (obj.镜片名 == 行数据.镜片) {
-      行数据.镜片进货价 = obj[行数据.镜片供应商]
-      行数据.镜片售价 = obj.售价
-      行数据.镜片订货日 = 库.月日
-      行数据.镜片利润 = obj.售价 - obj[行数据.镜片供应商]
+      let 右镜片利润 = 0
+      let 左镜片利润 = 0
+      let 右镜片进货价 = 0
+      let 左镜片进货价 = 0
+      if (行数据.右镜片供应商) {
+        行数据.右镜片订货日 = 库.月 + '月' + 库.日
+        右镜片进货价 = obj[行数据.右镜片供应商] / 2
+        右镜片利润 = obj.售价 / 2 - 右镜片进货价
+      }
+      if (行数据.左镜片供应商) {
+        行数据.左镜片订货日 = 库.月 + '月' + 库.日
+        左镜片进货价 = obj[行数据.左镜片供应商] / 2
+        左镜片利润 = obj.售价 / 2 - 左镜片进货价
+      }
+      行数据.镜片进货价 = 右镜片进货价 + 左镜片进货价
+      行数据.镜片利润 = 右镜片利润 + 左镜片利润
     }
   }
 }
 //作用是 添加这个顾客的镜片的售价
 let 镜片判定 = () => {
-  行数据.镜片下单日 = 库.月日
+  console.log('镜片判定');
+  行数据.镜片下单日 = 库.月 + '月' + 库.日
+  console.log(行数据.镜片下单日);
   for (let obj of 库.镜片表) {
     if (obj.镜片名 == 行数据.镜片) {
       行数据.镜片售价 = obj.售价
       行数据.镜片进货价 = 0
       行数据.镜片利润 = 0
+      湖北和益进价.value = obj.湖北和益
+      山东臻视进价.value = obj.山东臻视
+      上海老周进价.value = obj.上海老周
+      湖北蔡司进价.value = obj.湖北蔡司
+      丹阳夏总进价.value = obj.丹阳夏总
+
     }
   }
-
 }
+
+
+let 镜片售价选项 = (镜片名: string) => {
+  for (let obj of 库.镜片表) {
+    if (obj.镜片名 == 镜片名) {
+
+      return obj.售价
+    }
+  }
+}
+
+
+
 //作用是 查询这个顾客的购买记录并添加
 let 旺旺号判定 = () => {
   行数据.购买记录 = []
@@ -163,42 +229,48 @@ let 优惠判定 = () => {
     </div>
 
     <div class="镜片格">
-      <div class="镜片第一行">
-
-        <div :class="{ 警告色: 行数据.镜片下单日 == '' }">{{ 行数据.镜片下单日 ? 行数据.镜片下单日 + "下单" : '镜片未下单' }}</div>
-        <div :class="{ 警告色: 行数据.镜片订货日 == '' }">{{ 行数据.镜片订货日 ? 行数据.镜片订货日 + '订片' : '镜片未订片' }}</div>
-        <div :class="{ 警告色: 行数据.镜片备好日 == '' }">{{ 行数据.镜片备好日 ? 行数据.镜片备好日 : '镜片未备好' }}</div>
-
-      </div>
 
       <div class="镜片第二行">
         <div class="镜片带按钮">
-          <input @change="镜片判定()" :class="{ 镜片: true, 警告色: !库.镜片名选项.includes(行数据.镜片) }" v-model.lazy="行数据.镜片" placeholder="镜片" list="镜片名">
+          <input @change="镜片判定()" :class="{ 镜片: true, 警告色: !库.镜片名选项.includes(行数据.镜片) }" v-model.lazy="行数据.镜片"
+            placeholder="镜片" list="镜片名">
           <icon :class="{ 图标: true, 警告色: 镜片名警告 }" 图标名="lm-close-circle-fill"
-            @click="行数据.镜片 = '', 行数据.镜片下单日 = '', 行数据.镜片售价 = 0" 颜色="#999" font-size='25px' />
+            @click="行数据.镜片 = '', 行数据.镜片下单日 = '', 行数据.镜片售价 = 0" 颜色="#999" font-size='26px' />
         </div>
-        <div v-if="库.当前登录用户类型 == '助理'" class="镜片带按钮">
-          <input :class="{ 警告色: !行数据.镜片供应商, 镜片: true, }" v-model.lazy="行数据.镜片供应商" @change="订镜片判定()" placeholder='请订片'
-            list="镜片供应商">
-          <icon :class="{ 警告色: !行数据.镜片供应商, 图标: true, }" 图标名="lm-close-circle-fill"
-            @click="行数据.镜片供应商 = '', 行数据.镜片订货日 = '', 行数据.镜片备好日 = '', 行数据.镜片利润 = 0, 行数据.镜片进货价 = 0" 颜色="#999"
-            font-size='25px' />
-        </div>
-        <div v-if="库.当前登录用户类型 == '客服'" class="镜片带按钮">
-          <div>{{ 行数据.镜片售价 }}元</div>
-        </div>
-
-
+        <div :class="{ 警告色: 行数据.镜片下单日 == '' }">{{ 行数据.镜片下单日?行数据.镜片下单日:'未订片' }}</div>
+        <input @change="优惠判定()" v-model.lazy="行数据.优惠" placeholder="无优惠">
       </div>
       <div class="验光数据 ">
-        <input :class="{ 警告色: 近视光度警告(行数据.右近视) }" v-model.lazy="行数据.右近视" placeholder="右近视">
-        <input :class="{ 警告色: 散光光度警告(行数据.右散光) }" v-model.lazy="行数据.右散光" placeholder="右散光">
-        <input :class="{ 警告色: 轴向光度警告(行数据.右轴向) }" v-model.lazy="行数据.右轴向" placeholder="右轴向">
-        <input :class="{ 警告色: 瞳距光度警告(行数据.右瞳距) }" v-model.lazy="行数据.右瞳距" placeholder="右瞳距">
-        <input :class="{ 警告色: 近视光度警告(行数据.左近视) }" v-model.lazy="行数据.左近视" placeholder="左近视">
-        <input :class="{ 警告色: 散光光度警告(行数据.左散光) }" v-model.lazy="行数据.左散光" placeholder="左散光">
-        <input :class="{ 警告色: 轴向光度警告(行数据.左轴向) }" v-model.lazy="行数据.左轴向" placeholder="左轴向">
-        <input :class="{ 警告色: 瞳距光度警告(行数据.左瞳距) }" v-model.lazy="行数据.左瞳距" placeholder="左瞳距">
+        <div :class="{ 光度: true, 客服光度: 库.当前登录用户类型 == '客服' }">
+          <input :class="{ 警告色: 近视光度警告(行数据.右近视) }" v-model.lazy="行数据.右近视" placeholder="右近视">
+          <input :class="{ 警告色: 散光光度警告(行数据.右散光) }" v-model.lazy="行数据.右散光" placeholder="右散光">
+          <input :class="{ 警告色: 轴向光度警告(行数据.右轴向) }" v-model.lazy="行数据.右轴向" placeholder="右轴向">
+          <input :class="{ 警告色: 瞳距光度警告(行数据.右瞳距) }" v-model.lazy="行数据.右瞳距" placeholder="右瞳距">
+          <div :class="{ 警告色: 行数据.右镜片订货日 == '' }">{{ 行数据.右镜片订货日 ? 行数据.右镜片订货日 + '订' : '未订货' }}</div>
+          <div :class="{ 警告色: 行数据.右镜片备好日 == '' }">{{ 行数据.右镜片备好日 ? 行数据.右镜片备好日 + '备好' : '未备好' }}</div>
+
+          <div v-if="库.当前登录用户类型 == '助理'" class="镜片带按钮">
+            <input :class="{ 警告色: !行数据.右镜片供应商, 镜片: true, }" v-model.lazy="行数据.右镜片供应商" @change="订镜片判定()" placeholder='右订片'
+              list="镜片供应商">
+            <icon :class="{ 警告色: !行数据.右镜片供应商, 图标: true, }" 图标名="lm-close-circle-fill"
+              @click="行数据.右镜片供应商 = '', 行数据.右镜片订货日 = '', 行数据.右镜片备好日 = '', 订镜片判定()" 颜色="#999" font-size='25px' />
+          </div>
+        </div>
+        <div :class="{ 光度: true, 客服光度: 库.当前登录用户类型 == '客服' }">
+          <input :class="{ 警告色: 近视光度警告(行数据.左近视) }" v-model.lazy="行数据.左近视" placeholder="左近视">
+          <input :class="{ 警告色: 散光光度警告(行数据.左散光) }" v-model.lazy="行数据.左散光" placeholder="左散光">
+          <input :class="{ 警告色: 轴向光度警告(行数据.左轴向) }" v-model.lazy="行数据.左轴向" placeholder="左轴向">
+          <input :class="{ 警告色: 瞳距光度警告(行数据.左瞳距) }" v-model.lazy="行数据.左瞳距" placeholder="左瞳距">
+          <div :class="{ 警告色: 行数据.左镜片订货日 == '' }">{{ 行数据.左镜片订货日 ? 行数据.左镜片订货日 + '订' : '未订货' }}</div>
+          <div :class="{ 警告色: 行数据.左镜片备好日 == '' }">{{ 行数据.左镜片备好日 ? 行数据.左镜片备好日 + '备好' : '未备好' }}</div>
+
+          <div v-if="库.当前登录用户类型 == '助理'" class="镜片带按钮">
+            <input :class="{ 警告色: !行数据.左镜片供应商, 镜片: true, }" v-model.lazy="行数据.左镜片供应商" @change="订镜片判定()" placeholder='左订片'
+              list="镜片供应商">
+            <icon :class="{ 警告色: !行数据.左镜片供应商, 图标: true, }" 图标名="lm-close-circle-fill"
+              @click="行数据.左镜片供应商 = '', 行数据.左镜片订货日 = '', 行数据.左镜片备好日 = '', 订镜片判定()" 颜色="#999" font-size='25px' />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -256,7 +328,7 @@ let 优惠判定 = () => {
     <div class="进度格">
       <div :class="{ 白色: true }">{{ 订单进度 }}</div>
       <div :class="{ 白色: true }"> {{ 行数据.编辑记录.length <= 1 ? '修改记录' : '修改记录' + (行数据.编辑记录.length - 1) }} </div>
-          <input @change="优惠判定()" v-model.lazy="行数据.优惠" placeholder="无优惠">
+         
 
           <div v-if="库.当前登录用户类型 == '助理'" :class="{ 绿色: 行数据.订单完成日 == '' }"
             @click="行数据.订单完成日 == '' ? 行数据.订单完成日 = 库.月日 : 行数据.订单完成日 = ''">
@@ -280,7 +352,14 @@ let 优惠判定 = () => {
 
       </div>
 
-      <div>{{ 行数据.镜片 }}</div>
+      <div class="第三行 ">
+        <div>
+          <Barcode class="条形码" :数值="行数据.订单号"
+            :设置="{ format: 'CODE128', width: 1, height: 30, margin: 0, displayValue: false }">
+          </Barcode>
+        </div>
+        <div>{{ 行数据.镜片 }}</div>
+      </div>
       <div class="光度行">
         <div>{{ 库.日 }}日</div>
         <div>近视 </div>
@@ -330,7 +409,6 @@ let 优惠判定 = () => {
           </div>
           <div class="第5块">
             优惠: {{ JSON.parse(i).优惠 }}
-
           </div>
 
         </div>
@@ -382,17 +460,18 @@ let 优惠判定 = () => {
       <option>直接加工</option>
     </datalist>
     <datalist id="镜片供应商">
-      <option>湖北和益</option>
-      <option>山东臻视</option>
-      <option>上海老周</option>
-      <option>湖北蔡司</option>
-      <option>丹阳夏总</option>
+      <option value="湖北和益"> 湖北和益</option>
+      <option value="山东臻视"> 山东臻视</option>
+      <option value="上海老周"> 上海老周</option>
+      <option value="湖北蔡司"> 湖北蔡司</option>
+      <option value="丹阳夏总"> 丹阳夏总</option>
+      <option value="库存">库存</option>
     </datalist>
     <datalist id="日期">
       <option :value=库.月日>今天</option>
     </datalist>
     <datalist id="镜片名">
-      <option v-for="i in 库.镜片名选项">{{ i }}</option>
+      <option v-for="i in 库.镜片名选项" :value=i>售价 {{ 镜片售价选项(i) }}</option>
     </datalist>
 </template>
 
@@ -510,6 +589,18 @@ let 优惠判定 = () => {
     grid-template-columns: 120px 1fr;
   }
 
+  .第三行 {
+    grid-template-rows: 1fr;
+    grid-template-columns: 120px 1fr;
+
+    .条形码 {
+      //  position: relative ;
+
+      grid-template-rows: 1fr;
+      grid-template-columns: 1fr;
+    }
+  }
+
   .最后行 {
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 30px;
@@ -525,14 +616,15 @@ let 优惠判定 = () => {
 
 
 .行整页 {
-  grid-template-columns: 280px 1fr 1fr 50px 100px;
+  grid-template-columns: 210px 1.5fr 1fr 50px 100px;
   grid-template-rows: 1fr;
   background-color: $背景;
   border: 2px solid $浅灰;
+  gap: 5px;
 
   .标识格 {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 2fr 1fr;
     background-color: none;
     gap: 2px;
 
@@ -543,9 +635,10 @@ let 优惠判定 = () => {
 
       .第一行1 {
         grid-template-rows: 1fr 1fr;
+        font-size: 14px;
 
         .订单号 {
-          font-size: large;
+          font-size: 18px;
           color: $深灰;
         }
       }
@@ -578,10 +671,7 @@ let 优惠判定 = () => {
     .第二行 {
       grid-template-columns: 1fr 50px;
       grid-template-rows: 1fr;
-      grid-column: 1 / span 2;
       gap: 3px;
-
-
 
       input {
         border: none;
@@ -602,22 +692,31 @@ let 优惠判定 = () => {
 
   .镜片格 {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 2fr;
+    grid-template-rows: 1fr 2fr;
     background-color: #F0F2F5;
     gap: 2px;
-
-
 
     .镜片第一行 {
       grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
       grid-template-rows: 1fr;
+      font-size: 10px;
       gap: 2px;
     }
 
     .镜片第二行 {
-      grid-template-columns: 1fr 100px;
+      grid-template-columns: 1fr 100px 100px;
       grid-template-rows: 1fr;
       gap: 2px;
+
+      div {
+        background: $纯白;
+        font-size: 8px;
+        height: 1fr;
+      }
+
+      .警告色 {
+        background-color: $正红;
+      }
 
 
       .镜片带按钮 {
@@ -626,13 +725,11 @@ let 优惠判定 = () => {
 
 
         .图标 {
+          background: $纯白;
 
-          border-radius: 0px 10px 10px 0px;
         }
 
         .镜片 {
-
-          border-radius: 10px 0px 0px 10px;
           border: none;
         }
 
@@ -641,9 +738,52 @@ let 优惠判定 = () => {
     }
 
     .验光数据 {
-
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 1px;
+      grid-template-columns: 1fr;
       grid-template-rows: 1fr 1fr;
+
+
+
+      .光度 {
+        gap: 1px;
+        grid-template-rows: 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
+
+        div {
+          background: $纯白;
+          font-size: 10px;
+        }
+
+        .警告色 {
+          background-color: $正红;
+        }
+
+        input {
+          border: none;
+        }
+
+        .镜片带按钮 {
+          grid-template-columns: 1fr auto;
+          grid-template-rows: 1fr;
+
+          .图标 {
+            background: $纯白;
+
+          }
+
+          .镜片 {
+            border: none;
+          }
+        }
+
+      }
+
+      .客服光度 {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      }
+
+
+
 
 
     }
@@ -658,6 +798,7 @@ let 优惠判定 = () => {
     grid-template-rows: 1fr;
     font-size: 32px;
     color: $浅灰;
+    background: $纯白;
   }
 
   .试戴镜框格 {

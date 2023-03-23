@@ -7,7 +7,7 @@ import lmSH from "@组件/首行.vue";
 import lmButton from "@组件/按钮.vue";
 import lmWin from "@组件/添加订单窗口.vue";
 import { socket } from "../stores/socket链接";
-import { onMounted, ref, toRef, computed, reactive, watch } from 'vue';
+import { onMounted, ref, toRef, computed, reactive, watch, nextTick } from 'vue';
 import { log } from 'console';
 
 
@@ -27,9 +27,9 @@ socket.on("广播", 接收数据 => {
         库.订单表.push(接收数据[1])
     }
     if (接收数据[0] == '删') {
-            库.订单表.splice(库.订单表.findIndex((行: any) => 行._id == 接收数据[1]._id), 1)
+        库.订单表.splice(库.订单表.findIndex((行: any) => 行._id == 接收数据[1]._id), 1)
     }
-    console.log(接收数据[0],接收数据[1]);
+    console.log(接收数据[0], 接收数据[1]);
 })
 
 
@@ -45,6 +45,7 @@ let 订单全局搜索 = ref("")
 let 未订片开关 = ref(false)
 let 框未回开关 = ref(false)
 let 通过全局搜索的数量 = ref()
+let 刷新表格 = ref(true)
 
 
 let 订单表 = computed(() => {
@@ -154,13 +155,14 @@ let 添加新订单 = () => {
     新订单.旺旺名 = "请输入旺旺名"
     新订单.订单号 = 订单号()
 
-    //新订单.镜片下单日 = "未下单"
+    //新订单.镜片下单日 = "未下单"        //
     新订单.编辑记录 = []
     新订单.购买记录 = []
     新订单.编辑记录.push(库.月日 + 库.当前登录用户 + '创建#' + JSON.stringify(新订单))
     socket.emit('订单', '增', 新订单, (返回数据: any) => {
         console.log(返回数据);
-        库.订单表.push(返回数据)
+        库.订单表.push(返回数据);
+        window.location.reload()
     });
 
 }
@@ -349,7 +351,8 @@ let 全部订单数量 = computed(() => 库.订单表.length)
     }
 
     .表格 {
-        gap: 10px;
+        gap: 15px;
+        background-color: #bbb;
         align-content: start;
         overflow: auto;
     }

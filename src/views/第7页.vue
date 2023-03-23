@@ -15,68 +15,117 @@ onMounted(() => {
 })
 
 
-let 湖北和益订单表 = computed(() => 库.订单表.filter((行: any) => { return 行.镜片供应商 == "湖北和益" && 行.订单进度 != '已完成' }))
-let 山东臻视订单表 = computed(() => 库.订单表.filter((行: any) => { return 行.镜片供应商 == "山东臻视" && 行.订单进度 != '已完成' }))
-let 上海老周订单表 = computed(() => 库.订单表.filter((行: any) => { return 行.镜片供应商 == "上海老周" && 行.订单进度 != '已完成' }))
-let 湖北蔡司订单表 = computed(() => 库.订单表.filter((行: any) => { return 行.镜片供应商 == "湖北蔡司" && 行.订单进度 != '已完成' }))
-let 丹阳夏总订单表 = computed(() => 库.订单表.filter((行: any) => { return 行.镜片供应商 == "丹阳夏总" && 行.订单进度 != '已完成' }))
+let 湖北和益订单表 = computed(() => {
+  let 湖北和益订单表 = 库.订单表.filter((行: any) => {
+    return (行.右镜片供应商 == "湖北和益" || 行.左镜片供应商 == "湖北和益") && 行.订单进度 != '已完成'
+  })
+  湖北和益订单表 = 湖北和益订单表.sort((前一个值: any, 后一个值: any) => {
+    return (前一个值['镜片下单日'] >= 后一个值['镜片下单日'] ? 1 : -1)
+  })
+  return 湖北和益订单表
+}
+)
+let 山东臻视订单表 = computed(() => {
+  let 山东臻视订单表 = 库.订单表.filter((行: any) => {
+    return (行.右镜片供应商 == "山东臻视" || 行.左镜片供应商 == "山东臻视") && 行.订单进度 != '已完成'
+  })
+  山东臻视订单表 = 山东臻视订单表.sort((前一个值: any, 后一个值: any) => {
+    return (前一个值['镜片下单日'] >= 后一个值['镜片下单日'] ? 1 : -1)
+  })
+  return 山东臻视订单表
+}
+)
+let 上海老周订单表 = computed(() => {
+  let 上海老周订单表 = 库.订单表.filter((行: any) => {
+    return (行.右镜片供应商 == "上海老周" || 行.左镜片供应商 == "上海老周") && 行.订单进度 != '已完成'
+  })
+  上海老周订单表 = 上海老周订单表.sort((前一个值: any, 后一个值: any) => {
+    return (前一个值['镜片下单日'] >= 后一个值['镜片下单日'] ? 1 : -1)
+  })
+  return 上海老周订单表
+}
+)
+let 湖北蔡司订单表 = computed(() => {
+  let 湖北蔡司订单表 = 库.订单表.filter((行: any) => {
+    return (行.右镜片供应商 == "湖北蔡司" || 行.左镜片供应商 == "湖北蔡司")&& 行.订单进度 != '已完成'
+  })
+  湖北蔡司订单表 = 湖北蔡司订单表.sort((前一个值: any, 后一个值: any) => {
+    return (前一个值['镜片下单日'] >= 后一个值['镜片下单日'] ? 1 : -1)
+  })
+  return 湖北蔡司订单表
+}
+)
+let 丹阳夏总订单表 = computed(() => {
+  let 丹阳夏总订单表 = 库.订单表.filter((行: any) => {
+    return (行.右镜片供应商 == "丹阳夏总" || 行.左镜片供应商 == "丹阳夏总") && 行.订单进度 != '已完成'
+  })
+  丹阳夏总订单表 = 丹阳夏总订单表.sort((前一个值: any, 后一个值: any) => {
+    return (前一个值['镜片下单日'] >= 后一个值['镜片下单日'] ? 1 : -1)
+  })
+  return 丹阳夏总订单表
+}
+)
 
 
 
 
-let 改 = async (行数据: any) => {
-  if (行数据.镜片备好日 == "") { 行数据.镜片备好日 = 库.月日+'收到' }
-  else { 行数据.镜片备好日 = "" }
+
+
+let 改右 = async (行数据: any) => {
+  if (行数据.右镜片备好日 == "") { 行数据.右镜片备好日 = 库.月 + '月' + 库.日 }
+  else { 行数据.右镜片备好日 = "" }
+  库.通讯('订单', "改", 行数据);
+}
+let 改左 = async (行数据: any) => {
+  if (行数据.左镜片备好日 == "") { 行数据.左镜片备好日 = 库.月 + '月' + 库.日 }
+  else { 行数据.左镜片备好日 = "" }
   库.通讯('订单', "改", 行数据);
 }
 
-let 改蔡司 = async (行数据: any) => {
-  if (行数据.镜片备好日 == "") { 行数据.镜片备好日 = 库.月日+"送蔡司" }
-  else { 行数据.镜片备好日 = "" }
-  库.通讯('订单', "改", 行数据);
-}
 
 
-let 和益日期显示判定 = (k) => {
+
+
+let 湖北和益日期显示判定 = (k) => {
   if (k > 0) {
 
-    if (湖北和益订单表.value[k].镜片订货日 == 湖北和益订单表.value[k - 1].镜片订货日)
+    if (湖北和益订单表.value[k].右镜片订货日 == 湖北和益订单表.value[k - 1].左镜片订货日)
       return false
     else return true
   }
   return true
 }
-let 臻视日期显示判定 = (k) => {
+let 山东臻视日期显示判定 = (k) => {
   if (k > 0) {
 
-    if (山东臻视订单表.value[k].镜片订货日 == 山东臻视订单表.value[k - 1].镜片订货日)
+    if (山东臻视订单表.value[k].右镜片订货日 == 山东臻视订单表.value[k - 1].左镜片订货日)
       return false
     else return true
   }
   return true
 }
-let 老周日期显示判定 = (k) => {
+let 上海老周日期显示判定 = (k) => {
   if (k > 0) {
 
-    if (上海老周订单表.value[k].镜片订货日 == 上海老周订单表.value[k - 1].镜片订货日)
+    if (上海老周订单表.value[k].右镜片订货日 == 上海老周订单表.value[k - 1].左镜片订货日)
       return false
     else return true
   }
   return true
 }
-let 蔡司日期显示判定 = (k) => {
+let 湖北蔡司日期显示判定 = (k) => {
   if (k > 0) {
 
-    if (湖北蔡司订单表.value[k].镜片订货日 == 湖北蔡司订单表.value[k - 1].镜片订货日)
+    if (湖北蔡司订单表.value[k].右镜片订货日 == 湖北蔡司订单表.value[k - 1].左镜片订货日)
       return false
     else return true
   }
   return true
 }
-let 夏总日期显示判定 = (k) => {
+let 丹阳夏总日期显示判定 = (k) => {
   if (k > 0) {
 
-    if (丹阳夏总订单表.value[k].镜片订货日 == 丹阳夏总订单表.value[k - 1].镜片订货日)
+    if (丹阳夏总订单表.value[k].右镜片订货日 == 丹阳夏总订单表.value[k - 1].左镜片订货日)
       return false
     else return true
   }
@@ -97,166 +146,163 @@ let 夏总日期显示判定 = (k) => {
 
     <div class="顶部 ">
 
-      哈哈订单
+     订货表
 
     </div>
     <!-- 表格模块 -->
-    <div class="主体 ">
-      <div class="湖北和益">
+    <div class="主体 滑条 ">
+      <div class="湖北和益  ">
         <h1>湖北和益</h1>
-        <div class="订单行" v-for=" i, k in 湖北和益订单表">
-          <!-- <input class="两列" v-model.lazy="湖北和益订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
-          <div class="整行">
-            <div v-if="和益日期显示判定(k)"> {{ 湖北和益订单表[k].镜片订货日 }}</div>
+        <div class="订单行  " v-for=" i, k in 湖北和益订单表">
+          <div class="日期行">
+            <div v-if="湖北和益日期显示判定(k)"> 订货日{{ 湖北和益订单表[k].右镜片订货日 }}</div>
           </div>
-
-          <div class="订单行内部1">
+          <div v-if="(湖北和益订单表[k].右近视 || 湖北和益订单表[k].右散光) && 湖北和益订单表[k].右镜片供应商 == '湖北和益'" class="光度行">
+            <div>{{ 湖北和益订单表[k].订单号 }}</div>
             <div>{{ 湖北和益订单表[k].镜片 }}</div>
+            <div>{{ 湖北和益订单表[k].右近视 }}</div>
+            <div>{{ 湖北和益订单表[k].右散光 }}</div>
+            <div :class="{ 警示: 湖北和益订单表[k].右镜片备好日 == '', 按钮: true }" @click="改右(湖北和益订单表[k])">
+              {{ 湖北和益订单表[k].右镜片备好日 != '' ? 湖北和益订单表[k].右镜片备好日 : "未收到" }}
+            </div>
+          </div>
+          <div class="日期行">
+            <div v-if="湖北和益订单表[k].左镜片订货日 != 湖北和益订单表[k].右镜片订货日"> 订货日{{ 湖北和益订单表[k].左镜片订货日 }}</div>
+          </div>
+          <div v-if="(湖北和益订单表[k].左近视 || 湖北和益订单表[k].左散光) && 湖北和益订单表[k].左镜片供应商 == '湖北和益'" class="光度行">
+            <div>{{ 湖北和益订单表[k].订单号 }}</div>
             <div>{{ 湖北和益订单表[k].镜片 }}</div>
-          </div>
-          <div class="订单行内部2">
-            <div v-if="湖北和益订单表[k].右近视 || 湖北和益订单表[k].右散光">
-              <div>近{{ 湖北和益订单表[k].右近视 }}</div>
-              <div>散{{ 湖北和益订单表[k].右散光 }}</div>
+            <div>{{ 湖北和益订单表[k].左近视 }}</div>
+            <div>{{ 湖北和益订单表[k].左散光 }}</div>
+            <div :class="{ 警示: 湖北和益订单表[k].左镜片备好日 == '', 按钮: true }" @click="改左(湖北和益订单表[k])">
+              {{ 湖北和益订单表[k].左镜片备好日 != '' ? 湖北和益订单表[k].左镜片备好日 : "未收到" }}
             </div>
-            <div v-if="湖北和益订单表[k].左近视 || 湖北和益订单表[k].左散光">
-              <div> 近{{ 湖北和益订单表[k].左近视 }}</div>
-              <div> 散{{ 湖北和益订单表[k].左散光 }}</div>
-            </div>
-          </div>
-          <div class="订单行内部3">
-            <!-- <input @change="改(湖北和益订单表[k])" :class="{}" v-model.lazy="湖北和益订单表[k].镜片备好日" placeholder="镜片备好日" list="日期"> -->
-            <div :class="{ 警示: 湖北和益订单表[k].镜片备好日 == '', 按钮: true }" @click="改(湖北和益订单表[k])">
-              {{ 湖北和益订单表[k].镜片备好日 != '' ? 湖北和益订单表[k].镜片备好日  : "未收到" }}
-            </div>
-          </div>
 
+          </div>
         </div>
       </div>
-      <div class="山东臻视">
+      <div class="山东臻视 滑条 ">
         <h1>山东臻视</h1>
-        <div class="订单行" v-for=" i, k in 山东臻视订单表">
-          <!-- <input class="两列" v-model.lazy="湖北和益订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
-          <div class="整行">
-            <div v-if="臻视日期显示判定(k)"> {{ 山东臻视订单表[k].镜片订货日 }}</div>
+        <div class="订单行 " v-for=" i, k in 山东臻视订单表">
+          <div class="日期行">
+            <div v-if="山东臻视日期显示判定(k)"> 订货日{{ 山东臻视订单表[k].右镜片订货日 }}</div>
           </div>
-
-          <div class="订单行内部1">
+          <div v-if="(山东臻视订单表[k].右近视 || 山东臻视订单表[k].右散光) && 山东臻视订单表[k].右镜片供应商 == '山东臻视'" class="光度行">
+            <div>{{ 山东臻视订单表[k].订单号 }}</div>
             <div>{{ 山东臻视订单表[k].镜片 }}</div>
+            <div>{{ 山东臻视订单表[k].右近视 }}</div>
+            <div>{{ 山东臻视订单表[k].右散光 }}</div>
+            <div :class="{ 警示: 山东臻视订单表[k].右镜片备好日 == '', 按钮: true }" @click="改右(山东臻视订单表[k])">
+              {{ 山东臻视订单表[k].右镜片备好日 != '' ? 山东臻视订单表[k].右镜片备好日 : "未收到" }}
+            </div>
+          </div>
+          <div class="日期行">
+            <div v-if="山东臻视订单表[k].左镜片订货日 != 山东臻视订单表[k].右镜片订货日"> 订货日{{ 山东臻视订单表[k].左镜片订货日 }}</div>
+          </div>
+          <div v-if="(山东臻视订单表[k].左近视 || 山东臻视订单表[k].左散光) && 山东臻视订单表[k].左镜片供应商 == '山东臻视'" class="光度行">
+            <div>{{ 山东臻视订单表[k].订单号 }}</div>
             <div>{{ 山东臻视订单表[k].镜片 }}</div>
-          </div>
-          <div class="订单行内部2">
-            <div v-if="山东臻视订单表[k].右近视">
-              <div>近{{ 山东臻视订单表[k].右近视 }}</div>
-              <div>散{{ 山东臻视订单表[k].右散光 }}</div>
+            <div>{{ 山东臻视订单表[k].左近视 }}</div>
+            <div>{{ 山东臻视订单表[k].左散光 }}</div>
+            <div :class="{ 警示: 山东臻视订单表[k].左镜片备好日 == '', 按钮: true }" @click="改左(山东臻视订单表[k])">
+              {{ 山东臻视订单表[k].左镜片备好日 != '' ? 山东臻视订单表[k].左镜片备好日 : "未收到" }}
             </div>
-            <div v-if="山东臻视订单表[k].左近视">
-              <div> 近{{ 山东臻视订单表[k].左近视 }}</div>
-              <div> 散{{ 山东臻视订单表[k].左散光 }}</div>
-            </div>
-          </div>
-          <div class="订单行内部3">
-            <!-- <input @change="改(山东臻视订单表[k])" :class="{}" v-model.lazy="山东臻视订单表[k].镜片备好日" placeholder="镜片备好日" list="日期"> -->
 
-            <div :class="{ 警示: 山东臻视订单表[k].镜片备好日 == '', 按钮: true }" @click="改(山东臻视订单表[k])">
-              {{ 山东臻视订单表[k].镜片备好日 != '' ? 山东臻视订单表[k].镜片备好日 : "未收到" }}
-            </div>
           </div>
         </div>
       </div>
-      <div class="上海老周">
+
+      <div class="上海老周 滑条 ">
         <h1>上海老周</h1>
-        <div class="订单行" v-for=" i, k in 上海老周订单表">
-          <!-- <input class="两列" v-model.lazy="湖北和益订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
-          <div class="整行">
-            <div v-if="老周日期显示判定(k)"> {{ 上海老周订单表[k].镜片订货日 }}</div>
+        <div class="订单行 " v-for=" i, k in 上海老周订单表">
+          <div class="日期行">
+            <div v-if="上海老周日期显示判定(k)"> 订货日{{ 上海老周订单表[k].右镜片订货日 }}</div>
           </div>
-
-          <div class="订单行内部1">
+          <div v-if="(上海老周订单表[k].右近视 || 上海老周订单表[k].右散光) && 上海老周订单表[k].右镜片供应商 == '上海老周'" class="光度行">
+            <div>{{ 上海老周订单表[k].订单号 }}</div>
             <div>{{ 上海老周订单表[k].镜片 }}</div>
-            <div>{{ 上海老周订单表[k].镜片 }}</div>
-          </div>
-          <div class="订单行内部2">
-            <div v-if="上海老周订单表[k].右近视">
-              <div>近{{ 上海老周订单表[k].右近视 }}</div>
-              <div>散{{ 上海老周订单表[k].右散光 }}</div>
-            </div>
-            <div v-if="上海老周订单表[k].左近视">
-              <div> 近{{ 上海老周订单表[k].左近视 }}</div>
-              <div> 散{{ 上海老周订单表[k].左散光 }}</div>
+            <div>{{ 上海老周订单表[k].右近视 }}</div>
+            <div>{{ 上海老周订单表[k].右散光 }}</div>
+            <div :class="{ 警示: 上海老周订单表[k].右镜片备好日 == '', 按钮: true }" @click="改右(上海老周订单表[k])">
+              {{ 上海老周订单表[k].右镜片备好日 != '' ? 上海老周订单表[k].右镜片备好日 : "未收到" }}
             </div>
           </div>
-          <div class="订单行内部3">
-            <!-- <input @change="改(上海老周订单表[k])" :class="{}" v-model.lazy="上海老周订单表[k].镜片备好日" placeholder="镜片备好日" list="日期"> -->
-            <div :class="{ 警示: 上海老周订单表[k].镜片备好日 == '', 按钮: true }" @click="改(上海老周订单表[k])">
-              {{ 上海老周订单表[k].镜片备好日 != '' ? 上海老周订单表[k].镜片备好日 : "未收到" }}
+          <div class="日期行">
+            <div v-if="上海老周订单表[k].左镜片订货日 != 上海老周订单表[k].右镜片订货日"> 订货日{{ 上海老周订单表[k].左镜片订货日 }}</div>
+          </div>
+          <div v-if="(上海老周订单表[k].左近视 || 上海老周订单表[k].左散光) && 上海老周订单表[k].左镜片供应商 == '上海老周'" class="光度行">
+            <div>{{ 上海老周订单表[k].订单号 }}</div>
+            <div>{{ 上海老周订单表[k].镜片 }}</div>
+            <div>{{ 上海老周订单表[k].左近视 }}</div>
+            <div>{{ 上海老周订单表[k].左散光 }}</div>
+            <div :class="{ 警示: 上海老周订单表[k].左镜片备好日 == '', 按钮: true }" @click="改左(上海老周订单表[k])">
+              {{ 上海老周订单表[k].左镜片备好日 != '' ? 上海老周订单表[k].左镜片备好日 : "未收到" }}
             </div>
           </div>
         </div>
-
       </div>
-      <div class="湖北蔡司">
+      <div class="湖北蔡司 滑条 ">
         <h1>湖北蔡司</h1>
-        <div class="订单行" v-for=" i, k in 湖北蔡司订单表">
-          <!-- <input class="两列" v-model.lazy="湖北和益订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
-          <div class="整行">
-            <div v-if="蔡司日期显示判定(k)"> {{ 湖北蔡司订单表[k].镜片订货日 }}</div>
+        <div class="订单行 " v-for=" i, k in 湖北蔡司订单表">
+          <!-- <input class="两列" v-model.lazy="湖北蔡司订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
+          <div class="日期行">
+            <div v-if="湖北蔡司日期显示判定(k)"> 订货日{{ 湖北蔡司订单表[k].右镜片订货日 }}</div>
           </div>
-
-          <div class="订单行内部1">
+          <div v-if="(湖北蔡司订单表[k].右近视 || 湖北蔡司订单表[k].右散光) && 湖北蔡司订单表[k].右镜片供应商 == '湖北蔡司'" class=" 光度行 蔡司光度行">
+            <div>{{ 湖北蔡司订单表[k].订单号 }}</div>
             <div>{{ 湖北蔡司订单表[k].镜片 }}</div>
+            <div>{{ 湖北蔡司订单表[k].右近视 }}</div>
+            <div>{{ 湖北蔡司订单表[k].右散光 }}</div>
+            <div :class="{ 警示: 湖北蔡司订单表[k].右镜片备好日 == '', 按钮: true }" @click="改右(湖北蔡司订单表[k])">
+              {{ 湖北蔡司订单表[k].右镜片备好日 != '' ? 湖北蔡司订单表[k].右镜片备好日 + '送蔡司' : "未收到" }}
+            </div>
+          </div>
+          <div class="日期行">
+            <div v-if="湖北蔡司订单表[k].左镜片订货日 != 湖北蔡司订单表[k].右镜片订货日"> 订货日{{ 湖北蔡司订单表[k].左镜片订货日 }}</div>
+          </div>
+          <div v-if="(湖北蔡司订单表[k].左近视 || 湖北蔡司订单表[k].左散光) && 湖北蔡司订单表[k].左镜片供应商 == '湖北蔡司'" class="光度行 蔡司光度行">
+            <div>{{ 湖北蔡司订单表[k].订单号 }}</div>
             <div>{{ 湖北蔡司订单表[k].镜片 }}</div>
-          </div>
-          <div class="订单行内部2">
-            <div v-if="湖北蔡司订单表[k].右近视">
-              <div>近{{ 湖北蔡司订单表[k].右近视 }}</div>
-              <div>散{{ 湖北蔡司订单表[k].右散光 }}</div>
+            <div>{{ 湖北蔡司订单表[k].左近视 }}</div>
+            <div>{{ 湖北蔡司订单表[k].左散光 }}</div>
+            <div :class="{ 警示: 湖北蔡司订单表[k].左镜片备好日 == '', 按钮: true }" @click="改左(湖北蔡司订单表[k])">
+              {{ 湖北蔡司订单表[k].左镜片备好日 != '' ? 湖北蔡司订单表[k].左镜片备好日 + '送蔡司' : "未收到" }}
             </div>
-            <div v-if="湖北蔡司订单表[k].左近视">
-              <div> 近{{ 湖北蔡司订单表[k].左近视 }}</div>
-              <div> 散{{ 湖北蔡司订单表[k].左散光 }}</div>
-            </div>
-          </div>
-          <div class="订单行内部3">
-            <!-- <input @change="改(湖北蔡司订单表[k])" :class="{}" v-model.lazy="湖北蔡司订单表[k].镜片备好日" placeholder="镜片备好日" list="日期"> -->
-            <div :class="{ 警示: 湖北蔡司订单表[k].镜片备好日 == '', 按钮: true }" @click="改蔡司(湖北蔡司订单表[k])">
-              {{ 湖北蔡司订单表[k].镜片备好日 != '' ? 湖北蔡司订单表[k].镜片备好日 : "未收到" }}
-            </div>
-
           </div>
         </div>
       </div>
-      <div class="丹阳夏总">
+      <div class="丹阳夏总 滑条 ">
         <h1>丹阳夏总</h1>
-        <div class="订单行" v-for=" i, k in 丹阳夏总订单表">
-          <!-- <input class="两列" v-model.lazy="湖北和益订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
-          <div class="整行">
-            <div v-if="夏总日期显示判定(k)"> {{ 丹阳夏总订单表[k].镜片订货日 }}</div>
+        <div class="订单行 " v-for=" i, k in 丹阳夏总订单表">
+          <!-- <input class="两列" v-model.lazy="丹阳夏总订单表[k].镜片订货日" placeholder="镜片订货日" list="日期"> -->
+          <div class="日期行">
+            <div v-if="丹阳夏总日期显示判定(k)"> 订货日{{ 丹阳夏总订单表[k].右镜片订货日 }}</div>
           </div>
-
-          <div class="订单行内部1">
+          <div v-if="(丹阳夏总订单表[k].右近视 || 丹阳夏总订单表[k].右散光) && 丹阳夏总订单表[k].右镜片供应商 == '丹阳夏总'" class="光度行">
+            <div>{{ 丹阳夏总订单表[k].订单号 }}</div>
             <div>{{ 丹阳夏总订单表[k].镜片 }}</div>
+            <div>{{ 丹阳夏总订单表[k].右近视 }}</div>
+            <div>{{ 丹阳夏总订单表[k].右散光 }}</div>
+            <div :class="{ 警示: 丹阳夏总订单表[k].右镜片备好日 == '', 按钮: true }" @click="改右(丹阳夏总订单表[k])">
+              {{ 丹阳夏总订单表[k].右镜片备好日 != '' ? 丹阳夏总订单表[k].右镜片备好日 : "未收到" }}
+            </div>
+          </div>
+          <div class="日期行">
+            <div v-if="丹阳夏总订单表[k].左镜片订货日 != 丹阳夏总订单表[k].右镜片订货日"> 订货日{{ 丹阳夏总订单表[k].左镜片订货日 }}</div>
+          </div>
+          <div v-if="(丹阳夏总订单表[k].左近视 || 丹阳夏总订单表[k].左散光) && 丹阳夏总订单表[k].左镜片供应商 == '丹阳夏总'" class="光度行">
+            <div>{{ 丹阳夏总订单表[k].订单号 }}</div>
             <div>{{ 丹阳夏总订单表[k].镜片 }}</div>
-          </div>
-          <div class="订单行内部2">
-            <div v-if="丹阳夏总订单表[k].右近视">
-              <div>近{{ 丹阳夏总订单表[k].右近视 }}</div>
-              <div>散{{ 丹阳夏总订单表[k].右散光 }}</div>
+            <div>{{ 丹阳夏总订单表[k].左近视 }}</div>
+            <div>{{ 丹阳夏总订单表[k].左散光 }}</div>
+            <div :class="{ 警示: 丹阳夏总订单表[k].左镜片备好日 == '', 按钮: true }" @click="改左(丹阳夏总订单表[k])">
+              {{ 丹阳夏总订单表[k].左镜片备好日 != '' ? 丹阳夏总订单表[k].左镜片备好日 : "未收到" }}
             </div>
-            <div v-if="丹阳夏总订单表[k].左近视">
-              <div> 近{{ 丹阳夏总订单表[k].左近视 }}</div>
-              <div> 散{{ 丹阳夏总订单表[k].左散光 }}</div>
-            </div>
-          </div>
-          <div class="订单行内部3">
-            <!-- <input @change="改(丹阳夏总订单表[k])" :class="{}" v-model.lazy="丹阳夏总订单表[k].镜片备好日" placeholder="镜片备好日" list="日期"> -->
-            <div :class="{ 警示: 丹阳夏总订单表[k].镜片备好日 == '', 按钮: true }" @click="改(丹阳夏总订单表[k])">
-              {{ 丹阳夏总订单表[k].镜片备好日 != '' ? 丹阳夏总订单表[k].镜片备好日 : "未收到" }}
-            </div>
-
           </div>
         </div>
       </div>
+
+
 
     </div>
 
@@ -269,104 +315,22 @@ let 夏总日期显示判定 = (k) => {
 
 
 <style  lang="scss" scoped>
-input {
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  border: 0.5px solid rgb(225, 225, 225);
-  text-align: center;
-  border-radius: 5px;
-  background-color: #F0F2F5;
-  font-weight: bolder;
-}
-
 .整页 {
   overflow: auto;
   gap: 3px;
   grid-template-rows: 30px 1fr;
   grid-template-columns: 1fr;
 
-  .顶部 {
-    gap: 10px;
-    grid-template-columns: 80px 300px 200px 45px 1fr 150px 150px;
-
-    .按钮组 {
-      gap: 1px;
-      background: $浅灰;
-      border-radius: 5px;
-      grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
-      grid-template-rows: 1fr;
-
-      .按钮 {
-        background-color: $浅灰;
-        color: $纯白;
-        font-weight: bold;
-        grid-auto-flow: column;
-
-        cursor: pointer;
-        transition: all 0.3s;
-
-        &:first-child {
-          border-radius: 5px 0px 0px 5px;
-        }
-
-        &:last-child {
-          border-radius: 0px 5px 5px 0px;
-        }
-
-        &:hover {
-          background-color: $正绿;
-        }
-      }
-
-      .选中按钮 {
-        background-color: $正绿;
-      }
-
-    }
-
-    .筛选数字 {
-      font-size: large;
-      color: $浅灰;
-      font-weight: bold;
-      border-radius: 5px;
-
-    }
-
-    .搜索 {
-      background-color: $正绿;
-      color: $纯白;
-      font-weight: bold;
-      grid-template-rows: 1fr;
-      grid-template-columns: 1fr 30px 30px;
-      border-radius: 5px;
-
-      .搜索框 {
-        border: none;
-        height: 100%;
-        width: 100%;
-        color: $纯白;
-        font-weight: bold;
-        background-color: $正绿;
-        border-radius: 5px;
-        text-align: center;
-
-      }
-
-    }
-
-
-  }
-
   .主体 {
     gap: 3px;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    align-content: start;
 
     .订单行 {
       height: auto;
-      grid-template-columns: 1fr 120px 55px;
-      grid-template-rows: 1fr;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
       border-radius: 5px;
       font-size: small;
       font-weight: bold;
@@ -374,75 +338,41 @@ input {
       cursor: pointer;
       transition: all 0.3s;
 
-      .整行 {
-        grid-column: 1 / span 3
-      }
-
-      .订单行内部1 {
-        gap: 3px;
-        grid-template-rows: 1fr 1fr;
-
-        div {
-          background-color: #ff990050;
-        }
-
-      }
-
-      .订单行内部2 {
-        gap: 3px;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr;
-        border-radius: 5px;
-
-
-        div {
-          background-color: #ff990020;
-          grid-template-rows: 1fr;
-          grid-template-columns: 1fr 1fr;
-
-
-          div {
-            justify-items: start;
-            grid-template-rows: 1fr;
-            grid-template-columns: 1fr;
-          }
-        }
-      }
-
-      .订单行内部3 {
+      .光度行 {
+        background-color: #ff990050;
         grid-template-rows: 1fr;
-        grid-template-columns: 1fr;
+        grid-template-columns: 65px 2.5fr 50px 50px 60px;
+        border-top: 2px solid #fff;
+      }
+
+      .蔡司光度行 {
+        grid-template-columns: 65px 2.5fr 50px 50px 90px;
       }
     }
 
 
     .湖北和益 {
       align-content: start;
-      gap: 3px;
       border: 3px solid $正黄;
     }
 
     .山东臻视 {
       align-content: start;
-      gap: 3px;
       border: 3px solid $正蓝;
     }
 
     .上海老周 {
       align-content: start;
-      gap: 3px;
       border: 3px solid $正红;
     }
 
     .湖北蔡司 {
       align-content: start;
-      gap: 3px;
       border: 3px solid $正绿;
     }
 
     .丹阳夏总 {
       align-content: start;
-      gap: 3px;
       border: 3px solid $暗黄;
     }
   }

@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     '十一页行 copy 2': typeof import('./src/components/十一页行 copy 2.vue')['default']
     '首行': typeof import('./src/components/首行.vue')['default']
     '添加订单窗口': typeof import('./src/components/添加订单窗口.vue')['default']
+    '条形码': typeof import('./src/components/条形码.vue')['default']
     '头部': typeof import('./src/components/头部.vue')['default']
     '新版按钮': typeof import('./src/components/新版按钮.vue')['default']
     '行': typeof import('./src/components/行.vue')['default']

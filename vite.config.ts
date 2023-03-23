@@ -10,6 +10,7 @@ export default defineConfig({
   plugins: [vue(), AutoImport({ resolvers: [ElementPlusResolver()], }), Components({ resolvers: [ElementPlusResolver()], })],
   server:{ host: '127.0.0.1', port: 30000 },
   resolve: {
+    dedupe: ["vue"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@组件": path.resolve(__dirname, "./src/components"),

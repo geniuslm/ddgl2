@@ -16,8 +16,6 @@ let 跳转 = (路径: any) => {
 
 let 菜单列表 = reactive([
     { 路径: "/11", 内容: "订单页", 图标: "lm-filedone" },
-    { 路径: "/04", 内容: "旧订单", 图标: "lm-filedone" },
-    { 路径: "/05", 内容: "删除单", 图标: "lm-question-circle" },
 
 ])
 
@@ -45,9 +43,7 @@ let 测试 = () => {
         </button>
 
         <button @click="开关 = !开关">{{ 开关 ? "开" : "关" }}</button>
-        <div class="展开按钮" @click="开关 = !开关"></div>
-        <button @click="测试()">测试</button>
-        <button @click="">客服菜单</button>
+
     </div>
 </template>
 
