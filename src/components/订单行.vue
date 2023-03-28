@@ -391,7 +391,10 @@ let 优惠判定 = () => {
     <Transition>
       <div class="购买记录附加页" v-if="购买记录附加页">
         <div v-for="i, k in 行数据.购买记录" class="购买记录">
-          <div class="第1块"> {{ JSON.parse(i).订单号.slice(2, 4) + "月" + JSON.parse(i).订单号.slice(4, 6) + "日" }}</div>
+          <div :class="{第1块:true,未完成:JSON.parse(i).订单进度!='已完成'}"> 
+            <div>{{JSON.parse(i).订单进度!='已完成'?'未完成':'已完成'}}</div>
+            {{ JSON.parse(i).订单号.slice(2, 4) + "月" + JSON.parse(i).订单号.slice(4, 6) + "日" }}
+          </div>
           <div class="第2块"> 第{{ k + 1 }}次购买</div>
           <div class="第3块">
             <div> {{ JSON.parse(i).旺旺名 }}</div>
@@ -532,6 +535,11 @@ let 优惠判定 = () => {
       border-radius: 20px 0px 0px 20px;
 
       background: $浅灰;
+    }
+    .未完成 {
+      border-radius: 20px 0px 0px 20px;
+
+      background: $正红;
     }
 
     .第3块 {

@@ -6,7 +6,6 @@ import { socket } from '@/stores/socket链接';
 import { onMounted, ref, reactive } from "vue";
 
 
-
 let 库 = pinia库();
 let 日期 = new Date()
 let 年 = 日期.getFullYear().toString().slice(2)
@@ -37,8 +36,6 @@ let 日利润计算 = (年: string, 月: string, 日: string) => {
             if (库.订单表[i].镜片利润) { 
                 本日利润 += Math.floor(库.订单表[i].镜片利润 )
                 本日订单数量 += 1
-             
-                
             }
         }
 
