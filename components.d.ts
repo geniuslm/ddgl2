@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     '菜单助理': typeof import('./src/components/菜单助理.vue')['default']
     '底部': typeof import('./src/components/底部.vue')['default']
     '订单行': typeof import('./src/components/订单行.vue')['default']
+    '订单行-打印附加页': typeof import('./src/components/订单行-打印附加页.vue')['default']
     '镜片行': typeof import('./src/components/镜片行.vue')['default']
     '镜片行V2': typeof import('./src/components/镜片行V2.vue')['default']
     '利润行': typeof import('./src/components/利润行.vue')['default']

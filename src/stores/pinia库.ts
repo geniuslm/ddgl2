@@ -38,10 +38,14 @@ export class 订单类 {
 
 
   镜框选项: string;
+  选定镜框 :string;
   镜框运单号: string;
   镜框下单日: string;
   镜框发货日: string;
   镜框备好日: string;
+  镜框进货价: number;
+  镜框售价: number;
+
   订单进度: string;
   订单完成日: string;
 
@@ -59,48 +63,48 @@ export class 订单类 {
     this.旺旺名 = '';
     this.镜片 = '';
 
-    this.收件人='' ;
-    this.旺旺名='' ;
-    this.镜片='' ;
+    this.收件人 = '';
+    this.旺旺名 = '';
+    this.镜片 = '';
 
-    this.右近视='' ;
-    this.右散光='' ;
-    this.右轴向='' ;
-    this.右瞳距='' ;
+    this.右近视 = '';
+    this.右散光 = '';
+    this.右轴向 = '';
+    this.右瞳距 = '';
 
-    this.左近视='' ;
-    this.左散光='' ;
-    this.左轴向='' ;
-    this.左瞳距='' ;
-    this.备注='' ;
+    this.左近视 = '';
+    this.左散光 = '';
+    this.左轴向 = '';
+    this.左瞳距 = '';
+    this.备注 = '';
 
-    this.镜片下单日='' ;
-    this.镜片订货日='' ;
-    this.右镜片订货日='' ;
-    this.左镜片订货日='' ;
-    this.镜片备好日='' ;
-    this.右镜片备好日='' ;
-    this.左镜片备好日='' ;
-    this.镜片供应商='' ;
-    this.右镜片供应商='' ;
-    this.左镜片供应商='' ;
-    
-    this.镜片进货价=0;
-    this.镜片售价=0;
+    this.镜片下单日 = '';
+    this.镜片订货日 = '';
+    this.右镜片订货日 = '';
+    this.左镜片订货日 = '';
+    this.镜片备好日 = '';
+    this.右镜片备好日 = '';
+    this.左镜片备好日 = '';
+    this.镜片供应商 = '';
+    this.右镜片供应商 = '';
+    this.左镜片供应商 = '';
+
+    this.镜片进货价 = 0;
+    this.镜片售价 = 0;
 
 
-    this.镜框选项='' ;
-    this.镜框运单号='' ;
-    this.镜框下单日='' ;
-    this.镜框发货日='' ;
-    this.镜框备好日='' ;
-    this.订单进度='' ;
-    this.订单完成日='' ;
+    this.镜框选项 = '';
+    this.镜框运单号 = '';
+    this.镜框下单日 = '';
+    this.镜框发货日 = '';
+    this.镜框备好日 = '';
+    this.订单进度 = '';
+    this.订单完成日 = '';
 
-    this.镜片利润=0;
-    this.镜框利润=0;
-    this.优惠=null;
-    this.总利润=0;
+    this.镜片利润 = 0;
+    this.镜框利润 = 0;
+    this.优惠 = null;
+    this.总利润 = 0;
   }
 }
 
@@ -140,6 +144,57 @@ export class 镜片类 {
   }
 }
 
+export class 镜框类 {
+  _id?: string;
+  镜框名: string;
+  颜色: string;
+  颜色数量: {
+    [key: string]: number;
+  };
+  详细信息: string;
+  供货商: string;
+
+  库存数量: number;
+  进货价格: number;
+  售价: number;
+  库存变更记录: object[];
+  constructor() {
+    this.镜框名 = "";
+    this.颜色 = "";
+    this.颜色数量 = { 黑色: 15 };
+    this.详细信息 = "";
+    this.供货商 = "";
+    this.库存数量 = 0;
+    this.库存变更记录 = [];
+    this.库存变更记录.push( 
+      {
+        变更日期: new Date().toLocaleDateString(),
+        变更数量: 0,
+        变更后库存: 0,
+        变更原因: "初始化",
+      }
+    )
+    // this.进货价格 = 0;
+    // this.售价 = 0;
+  }
+}
+
+export class 镜框订单类 {
+  _id?: string;
+  镜框名: string;
+  订单日期: string;
+  订货数量: number;
+  进货价格: number;
+  订单状态: string;
+  
+  constructor() {
+    this.镜框名 = "";
+    this.订货数量 = 0;
+    this.订单日期 = new Date().toLocaleDateString();
+    this.订单状态 = "未收到";
+  }
+}
+
 
 export const pinia库 = defineStore("pinia库", {
   state: () => {
@@ -148,6 +203,8 @@ export const pinia库 = defineStore("pinia库", {
 
       订单表: [] as 订单类[],
       镜片表: [] as 镜片类[],
+      镜框表: [] as 镜框类[],
+      镜框订单表: [] as 镜框订单类[],
       用户表: [] as 用户类[],
       筛选过的订单: [] as 用户类[],
 
@@ -189,6 +246,8 @@ export const pinia库 = defineStore("pinia库", {
       折射率选项: [] as string[],
       供应商选项: [] as string[],
 
+      //镜框名选项: [] as string[],
+
       年: '',
       月: '',
       日: '',
@@ -205,6 +264,12 @@ export const pinia库 = defineStore("pinia库", {
       let 日 = ("0" + date.getDate()).slice(-2)
       let 月日 = 月 + "月" + 日 + "日"
       return 月日
+    },
+    镜框名选项: (state) => {
+      let 镜框名选项 = state.镜框表.map((行: any) => {
+        return 行.镜框名
+      })
+      return 镜框名选项
     },
 
     排序过的镜片: (state) => {
@@ -317,6 +382,8 @@ export const pinia库 = defineStore("pinia库", {
       socket.emit('订单', '获', (返回数据: any) => { this.订单表 = 返回数据; console.log("订单初始化完成"); });
       socket.emit('用户', '获', (返回数据: any) => { this.用户表 = 返回数据 });
       socket.emit('镜片', '获', (返回数据: any) => { this.镜片表 = 返回数据, this.镜片选项() });
+      socket.emit('镜框', '获', (返回数据: any) => { this.镜框表 = 返回数据 });
+      socket.emit('镜框订单', '获', (返回数据: any) => { this.镜框订单表 = 返回数据.sort((a,b)=>{return a.订单日期 >= b.订单日期 ? 1 : -1 })  });//this.镜框名选项函数()
       let date = new Date();
       this.年 = date.getFullYear().toString().slice(2)
       this.月 = ("0" + (date.getMonth() + 1)).slice(-2)
@@ -327,6 +394,7 @@ export const pinia库 = defineStore("pinia库", {
       if (类型 == "订单") { socket.emit('订单', 操作, 数据, (返回数据: any) => { console.log(返回数据); }); }
       if (类型 == "用户") { socket.emit('用户', 操作, 数据, (返回数据: any) => { console.log(返回数据); }); }
       if (类型 == "镜片") { socket.emit('镜片', 操作, 数据, (返回数据: any) => { this.镜片表 = 返回数据, this.镜片选项() }); }
+      if (类型 == "镜框") { socket.emit('镜框', 操作, 数据, (返回数据: any) => { this.镜框表 = 返回数据 }); }
     },
 
 
@@ -339,6 +407,11 @@ export const pinia库 = defineStore("pinia库", {
         if (!(this.供应商选项.indexOf(this.镜片表[i].供应商) > -1)) this.供应商选项.push(this.镜片表[i].供应商)
       }
     },
+    // 镜框名选项函数() {
+    //   for (let i in this.镜框表) {
+    //     if (!(this.镜框名选项.indexOf(this.镜框表[i].镜框名) > -1)) this.镜框名选项.push(this.镜框表[i].镜框名)
+    //   }
+    // },
 
 
     对比测试(数据1, 数据2) {

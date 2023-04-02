@@ -6,6 +6,7 @@ import { socket } from "../stores/socket链接";
 import { pinia库, 镜片类, 订单类 } from '../stores/pinia库';
 import JsBarcode from "jsbarcode";
 import { values } from 'lodash';
+import lmPrint from "@组件/订单行-打印附加页.vue";
 
 
 
@@ -30,7 +31,28 @@ let 丹阳夏总进价 = ref(0)
 
 
 let 订单号分解 = 行数据.订单号.slice(2, 4) + "月" + 行数据.订单号.slice(4, 6) + " " + 行数据.订单号.slice(6, 8) + "单"
-
+let 发货 = () => {
+  if (行数据.订单完成日 == '') {
+    //镜框表的库存减1
+    if (库.镜框表.find((行: any) => 行.镜框名 == 行数据.选定镜框)) {
+      console.log('镜框表的库存减1');
+      
+      let 镜框 = 库.镜框表.find((行: any) => 行.镜框名 == 行数据.选定镜框)
+      镜框.库存数量 = 镜框.库存数量 - 1
+      镜框.库存变更记录.push({
+                变更日期: new Date().toLocaleDateString(),
+                变更数量: -1,
+                变更后库存: 镜框.库存数量,
+                变更原因: '销售',
+            });
+      socket.emit('镜框', '改', 镜框, (返回数据: any) => { console.log(返回数据) });
+    }
+    行数据.订单完成日 = 库.月日
+  }
+  else {
+    行数据.订单完成日 = ''
+  }
+}
 
 let 改 = async (行数据: any) => {
   if (保存图标颜色.value == "#67C23A") {
@@ -77,8 +99,18 @@ watch(() => 行数据, (值) => {
 
   库.通讯('订单', "改", 行数据);
 }, { deep: true })
-watch(() => 行数据.右近视, (值) => {
-  console.log('右近视变动');
+
+watch(() => 行数据.选定镜框, (值) => {
+  if (库.镜框表.find((行: any) => 行.镜框名 == 值)) {
+    let 镜框 = 库.镜框表.find((行: any) => 行.镜框名 == 值)
+    行数据.镜框进货价 = 镜框.进货价格
+    行数据.镜框售价 = 镜框.售价
+    行数据.镜框利润 = 行数据.镜框售价 - 行数据.镜框进货价
+    行数据.总利润 = 行数据.镜框利润 + 行数据.镜片利润
+  } else {
+    //警告
+    alert('就没这个镜框 再找找');
+  }
 })
 
 //计算属性
@@ -237,7 +269,7 @@ let 优惠判定 = () => {
           <icon :class="{ 图标: true, 警告色: 镜片名警告 }" 图标名="lm-close-circle-fill"
             @click="行数据.镜片 = '', 行数据.镜片下单日 = '', 行数据.镜片售价 = 0" 颜色="#999" font-size='26px' />
         </div>
-        <div :class="{ 警告色: 行数据.镜片下单日 == '' }">{{ 行数据.镜片下单日?行数据.镜片下单日:'未订片' }}</div>
+        <div :class="{ 警告色: 行数据.镜片下单日 == '' }">{{ 行数据.镜片下单日 ? 行数据.镜片下单日 : '未订片' }}</div>
         <input @change="优惠判定()" v-model.lazy="行数据.优惠" placeholder="无优惠">
       </div>
       <div class="验光数据 ">
@@ -285,10 +317,11 @@ let 优惠判定 = () => {
 
 
       <div class="镜框第三行 ">
-        <input v-for="i in [0, 1, 2]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="i == 0 ? '选定' : '试戴' + i">
+        <input v-model.lazy="行数据.选定镜框" class="" placeholder="选定镜框" list="镜框名">
+        <input v-for="i in [0, 1]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + (i + 1)">
       </div>
       <div class="镜框第三行 ">
-        <input v-for="i in [3, 4, 5]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + i">
+        <input v-for="i in [2, 3, 4]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + (i + 1)">
       </div>
 
 
@@ -298,7 +331,7 @@ let 优惠判定 = () => {
 
     <div v-if="行数据.镜框选项 == '直接加工'" class="直接加工镜框格">
       <div class="直接加工">直接加工</div>
-      <input v-model.lazy="行数据.试戴镜框[0]" placeholder="使用镜框">
+      <input v-model.lazy="行数据.选定镜框" placeholder="选定镜框" list="镜框名">
       <input v-model.lazy="行数据.备注" placeholder="备注">
     </div>
 
@@ -328,71 +361,27 @@ let 优惠判定 = () => {
     <div class="进度格">
       <div :class="{ 白色: true }">{{ 订单进度 }}</div>
       <div :class="{ 白色: true }"> {{ 行数据.编辑记录.length <= 1 ? '修改记录' : '修改记录' + (行数据.编辑记录.length - 1) }} </div>
-         
 
-          <div v-if="库.当前登录用户类型 == '助理'" :class="{ 绿色: 行数据.订单完成日 == '' }"
-            @click="行数据.订单完成日 == '' ? 行数据.订单完成日 = 库.月日 : 行数据.订单完成日 = ''">
+
+          <div v-if="库.当前登录用户类型 == '助理'" :class="{ 绿色: 行数据.订单完成日 == '' }" @click="发货()">
             {{ 行数据.订单完成日 ? 行数据.订单完成日 : '发货' }}
           </div>
       </div>
 
     </div>
 
-    <div v-if="库.当前登录用户类型 == '助理'"> 利润{{ 行数据.镜片利润 }} 进货价{{ 行数据.镜片进货价 }} 售价{{ 行数据.镜片售价 }}</div>
+    <div v-if="库.当前登录用户类型 == '助理'"> 镜片利润{{ 行数据.镜片利润 }} 镜片进货价{{ 行数据.镜片进货价 }} 镜片售价{{ 行数据.镜片售价 }}</div>
+    <div v-if="库.当前登录用户类型 == '助理'"> 镜框利润{{ 行数据.镜框利润 }} 镜框进货价{{ 行数据.镜框进货价 }} 镜框售价{{ 行数据.镜框售价 }} 总利润{{ 行数据.总利润 }}</div>
 
-    <div v-if="打印范围附加页" id="打印范围">
-      <div class="第一行 ">
-        <div>{{ 行数据.订单号 }}</div>
-        <div>{{ 行数据.收件人 }}</div>
-      </div>
 
-      <div class="第二行 ">
-        <div>{{ 行数据.镜框选项 }}</div>
-        <div>{{ 行数据.旺旺名 }}</div>
-
-      </div>
-
-      <div class="第三行 ">
-        <div>
-          <Barcode class="条形码" :数值="行数据.订单号"
-            :设置="{ format: 'CODE128', width: 1, height: 30, margin: 0, displayValue: false }">
-          </Barcode>
-        </div>
-        <div>{{ 行数据.镜片 }}</div>
-      </div>
-      <div class="光度行">
-        <div>{{ 库.日 }}日</div>
-        <div>近视 </div>
-        <div>散光 </div>
-        <div>轴向 </div>
-        <div>瞳距 </div>
-      </div>
-      <div class="光度行">
-        <div>右R</div>
-        <div>{{ 行数据.右近视 }}</div>
-        <div>{{ 行数据.右散光 }}</div>
-        <div>{{ 行数据.右轴向 }}</div>
-        <div>{{ 行数据.右瞳距 }}</div>
-      </div>
-      <div class="光度行">
-        <div>左L</div>
-        <div>{{ 行数据.左近视 }}</div>
-        <div>{{ 行数据.左散光 }}</div>
-        <div>{{ 行数据.左轴向 }}</div>
-        <div>{{ 行数据.左瞳距 }}</div>
-      </div>
-
-      <div class="最后行 ">
-        <div>{{ 行数据.备注 }}</div>
-        <icon 图标名="lm-printer" v-print="'#打印范围'" 颜色="#67C23A" font-size='30px' />
-      </div>
-
-    </div>
+    <Transition>
+      <lmPrint v-if="打印范围附加页" :行数据="行数据"></lmPrint>
+    </Transition>
     <Transition>
       <div class="购买记录附加页" v-if="购买记录附加页">
         <div v-for="i, k in 行数据.购买记录" class="购买记录">
-          <div :class="{第1块:true,未完成:JSON.parse(i).订单进度!='已完成'}"> 
-            <div>{{JSON.parse(i).订单进度!='已完成'?'未完成':'已完成'}}</div>
+          <div :class="{ 第1块: true, 未完成: JSON.parse(i).订单进度 != '已完成' }">
+            <div>{{ JSON.parse(i).订单进度 != '已完成' ? '未完成' : '已完成' }}</div>
             {{ JSON.parse(i).订单号.slice(2, 4) + "月" + JSON.parse(i).订单号.slice(4, 6) + "日" }}
           </div>
           <div class="第2块"> 第{{ k + 1 }}次购买</div>
@@ -476,6 +465,9 @@ let 优惠判定 = () => {
     <datalist id="镜片名">
       <option v-for="i in 库.镜片名选项" :value=i>售价 {{ 镜片售价选项(i) }}</option>
     </datalist>
+    <datalist id="镜框名">
+      <option v-for="i in 库.镜框名选项" :value=i>{{ i }}</option>
+    </datalist>
 </template>
 
 
@@ -536,6 +528,7 @@ let 优惠判定 = () => {
 
       background: $浅灰;
     }
+
     .未完成 {
       border-radius: 20px 0px 0px 20px;
 
