@@ -109,19 +109,12 @@ let log不在表镜片 = () => {
   }
 }
 
-let 各种设置 = () => {
-  for (let i in 库.订单表) {
-    
-    if (库.订单表[i].试戴镜框[0] ) {
 
-      库.订单表[i].选定镜框 = 库.订单表[i].试戴镜框[0]
-     
-    }
-    else {
-      库.订单表[i].选定镜框 = ''
-    }
-    库.通讯('订单', "改", 库.订单表[i]);
-  }
+
+let 各种设置 = () => {
+
+  console.log('各种设置');
+  
 }
 
 let new订单 = () => {
@@ -149,6 +142,7 @@ let new订单 = () => {
       <input v-model.lazy="旧值" placeholder="旧值">
       <input v-model.lazy="镜片名片段" placeholder="镜片名片段" list="镜片名">
       <input v-model.lazy="供应商" placeholder="供应商" list="镜片供应商">
+  
     </div>
     <div class="滑条 开始">
       <div v-for=" i in  订单表">{{ i.订单号 }} {{ i.试戴镜框[0] }}-{{ i.选定镜框}}</div>
