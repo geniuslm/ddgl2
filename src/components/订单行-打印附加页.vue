@@ -15,7 +15,7 @@ let { 行数据 } = defineProps(['行数据'])
 let 镜框列表 = computed(() => {
   let 镜框列表 = '';
   for (let i = 0; i < 行数据.试戴镜框.length; i++) {
-    if (i) 镜框列表 += 行数据.试戴镜框[i] + ' ';
+     镜框列表 =镜框列表+ 行数据.试戴镜框[i] + ' ';
   }
   return 镜框列表;
 })
@@ -135,7 +135,7 @@ let 镜框列表 = computed(() => {
 
       <div class="第二行 ">
         <div>{{ 库.日 }}日送蔡司</div>
-        <div>{{ 行数据.旺旺名 }}</div>
+        <div>{{ 行数据.旺旺名 }}-{{ 行数据.收件人 }}</div>
       </div>
       <div class="第三行 ">
         <div>

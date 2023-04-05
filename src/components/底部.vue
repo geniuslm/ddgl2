@@ -8,41 +8,43 @@ import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 
 let 库 = pinia库()
 
-//一个测试
-let 同步判定 = ref("同步判定")
-let 同步判定函数 = () => {
-  let 订单表排序 = 库.订单表.sort((a: any, b: any) => { return a.订单号 - b.订单号 })
-  let 筛选过的订单排序 = 库.筛选过的订单.sort((a: any, b: any) => { return a.订单号 - b.订单号 })
-  socket.emit('订单', "获", (返回数据: any) => {
-    let 返回数据排序 = 返回数据.sort((a: any, b: any) => { return a.订单号 - b.订单号 })
 
-    if (JSON.stringify(返回数据排序) == JSON.stringify(订单表排序)) {
-      console.log("服务器和订单表一样")
-      同步判定.value = "一样"
-    }
-    else {
-      console.log("服务器和订单表不一样")
-      同步判定.value = "不一样"
-    }
-  });
 
+const 下载链接 = ref('');
+const 文件名 = ref('');
+
+const 备份订单表 = () => {
+  const json = JSON.stringify(库.订单表, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  let date = new Date();
+  let 年 = date.getFullYear() - 2000;
+  let 月 = date.getMonth() + 1;
+  let 日 = date.getDate();
+  let 小时 = date.getHours();
+  let 分钟 = date.getMinutes();
+  文件名.value = `订单表- ${年}年${月}月${日}日-${小时}点${分钟}备份.json`;
+  下载链接.value = url;
 }
-
-
-
+const 备份镜片表 = () => {
+  const json = JSON.stringify(库.镜片表, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  let date = new Date();
+  let 年 = date.getFullYear() - 2000;
+  let 月 = date.getMonth() + 1;
+  let 日 = date.getDate();
+  let 小时 = date.getHours();
+  let 分钟 = date.getMinutes();
+  文件名.value = `镜片表-${年}年${月}月${日}日-${小时}点${分钟}备份.json`;
+  下载链接.value = url;
+}
 </script>
 
 <template>
   <div class="底部">
-    <!-- <div></div>
-
-    <button @click="同步判定函数()">订单同步判定</button>
-    <div>{{ 同步判定 }}</div>
-
-    <div>订单表数目=={{ 库.订单表.length }}</div> -->
-
-
-
+    <button v-if="库.当前登录用户类型==='助理'" @click="备份订单表()">备份订单表</button>
+    <a v-if="下载链接" :href="下载链接" :download="文件名" @click="下载链接 = ''">点击下载</a>
   </div>
 </template>
 
@@ -51,7 +53,7 @@ let 同步判定函数 = () => {
 .底部 {
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr ;
   grid-template-rows: 1fr;
   grid-column-gap: 10px;
   grid-auto-flow: column;

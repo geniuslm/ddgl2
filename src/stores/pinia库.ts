@@ -114,6 +114,9 @@ export class 用户类 {
   密码: string;
   类型: string;
 }
+interface 库存 {
+  [key: string]: any;
+}
 
 export class 镜片类 {
   _id?: string;
@@ -133,12 +136,15 @@ export class 镜片类 {
   湖北蔡司?: number;
   丹阳夏总?: number;
   光度范围: string[];
+  库存: 库存;
+  库存变更记录: string[];
   constructor() {
     this.镜片名 = "";
     this.品牌名 = "";
     this.系列名 = "";
     this.折射率 = "";
     this.染色变色 = "";
+    this.库存 = {};
     this.高散定制 = "";
 
   }
@@ -185,12 +191,13 @@ export class 镜框订单类 {
   订单日期: string;
   订货数量: number;
   进货价格: number;
+  供货商: string;
   订单状态: string;
   
   constructor() {
     this.镜框名 = "";
     this.订货数量 = 0;
-    this.订单日期 = new Date().toLocaleDateString();
+    this.订单日期 = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
     this.订单状态 = "未收到";
   }
 }

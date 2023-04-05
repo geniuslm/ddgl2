@@ -7,8 +7,7 @@ import { 设置Cookie } from "@/stores/cookie";
 import JsBarcode from "jsbarcode";
 import { onMounted, defineProps } from "vue";
 let { 数值,设置 } = defineProps(["数值","设置"])
-console.log(数值)
-console.log(设置)
+
 onMounted(() => {
     JsBarcode("#my-barcode", 数值, 设置);
 });

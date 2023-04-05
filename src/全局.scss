@@ -49,6 +49,10 @@ div {
 .两列{ grid-column: 1 / span 2 }
 .滑条{ overflow: auto;}
 .黑背景{ background: #000; }
+.正红{ background: $正红; }
+.正绿{ background: $正绿; }
+.正蓝{ background: $正蓝; }
+.正黄{ background: $正黄; }
 .平均行{ grid-template-columns: repeat(auto-fit, minmax(1px, 1fr)); }
 .镜片行{ 
     gap: 3px;
