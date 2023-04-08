@@ -10,6 +10,9 @@ onMounted(() => {
    
     库.镜片搜索值 = new 镜片类
     delete 库.镜片搜索值._id
+    delete 库.镜片搜索值.库存
+    delete 库.镜片搜索值.光度范围
+    delete 库.镜片搜索值.库存变更记录
 })
 
 let 测试 = () => {

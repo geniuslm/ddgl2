@@ -11,7 +11,9 @@ import { socket } from "@仓库/socket链接";
 let 库 = pinia库();
 
 let 状态 = reactive({
-  供应商: '',
+  供应商: '全部供应商',
+  日期筛选: '全部订单',
+  今日日期: new Date().toLocaleDateString('zh-CN').replace(/\//g, '-'),
 });
 
 
@@ -79,6 +81,7 @@ let 收到订单 = (订单) => {
   }
 
 };
+
 let 获取库存与供货商 = (订单) => {
   let 镜框对象 = 库.镜框表.find(item => item.镜框名 === 订单.镜框名);
   if (镜框对象) { 订单.供货商 = 镜框对象.供货商; return 镜框对象.库存数量; } else { return 0; }
@@ -94,21 +97,23 @@ let 修改 = (镜框: 镜框类) => {
 
 let 今日订单总价 = computed(() => {
   let 总价 = 0;
+  let 总数 = 0;
   let 今日日期 = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')
   for (let 行 of 库.镜框订单表) {
-    if (行.订单日期 === 今日日期&&行.供货商===状态.供应商&&行.订单状态 !== '已收到') {
+    if (行.订单日期 === 状态.今日日期 && 行.订单状态 !== '已收到' && (行.供货商 === 状态.供应商 || 状态.供应商 === '全部供应商')) {
       if (行.进货价格 && 行.订货数量)
         总价 = 总价 + 行.进货价格 * 行.订货数量;
+      总数 = 总数 + 行.订货数量;
     }
 
   }
 
-  return 总价;
+  return { 总价: 总价, 总数: 总数 };
 })
 
 let 供货商列表 = computed(() => {
   let 供货商列表 = [];
-  for (let 行 of 库.镜框订单表) {
+  for (let 行 of 库.镜框表) {
     if (行.供货商 && !供货商列表.includes(行.供货商)) {
       供货商列表.push(行.供货商);
     }
@@ -118,6 +123,18 @@ let 供货商列表 = computed(() => {
 })
 
 
+let 订单表 = computed(() => {
+  let 订单表 = 库.镜框订单表;
+  //筛选供应商
+  if (状态.供应商 !== '全部供应商') {
+    订单表 = 订单表.filter((行: any) => 行.供货商 === 状态.供应商);
+  }
+  //日期筛选
+  if (状态.日期筛选 !== '全部订单') {
+    订单表 = 订单表.filter((行: any) => 行.订单日期 === 状态.今日日期 );
+  }
+  return 订单表;
+})
 </script>
 
 <template>
@@ -125,30 +142,40 @@ let 供货商列表 = computed(() => {
 
     <div class="镜框订货表 滑条">
       <div class="首行">
+        <select id="supplier" v-model="状态.供应商">
+          <option>全部供应商</option>
+          <option v-for="(supplier, index) in 供货商列表" :key="index" :value="supplier">
+            {{ 供货商列表[index] }}
+          </option>
+        </select>
+        <select v-model="状态.日期筛选">
+          <option>全部订单</option>
+          <option>今日订单</option>
+        </select>
         <lmButton @click="添加订单()">添加订单</lmButton>
-     
       </div>
       <div class="订单表">
-        <div class="订单行" v-for="i, k in 库.镜框订单表">
-          <div>{{ 库.镜框订单表[k].订单日期 }}</div>
-          <input v-if="库.镜框订单表[k].订单状态 === '未收到'" @change="修改订单(库.镜框订单表[k])" v-model.lazy="库.镜框订单表[k].镜框名" placeholder="镜框名" list="镜片名" />
-          <input v-if="库.镜框订单表[k].订单状态 === '未收到'" @change="修改订单(库.镜框订单表[k])" v-model.lazy="库.镜框订单表[k].订货数量" placeholder="订货数量" type="number" />
-          <div v-if="库.镜框订单表[k].订单状态 === '已收到'" > {{ 库.镜框订单表[k].镜框名 }}</div>
-          <div v-if="库.镜框订单表[k].订单状态 === '已收到'" > {{ 库.镜框订单表[k].订货数量 }}</div>
-          <div>当前库存 {{ 获取库存与供货商(库.镜框订单表[k]) }}</div>
-          <div>供货商: {{ 库.镜框订单表[k].供货商 }}</div>
-          <div>{{ 库.镜框订单表[k].进货价格 }}元</div>
-          <div :class="{ 正红: 库.镜框订单表[k].订单状态 === '未收到', 正绿: 库.镜框订单表[k].订单状态 === '已收到' }">
-            {{ 库.镜框订单表[k].订单状态 }}</div>
+        <div class="订单行" v-for="i, k in 订单表" :key="k">
+          <div>{{ 订单表[k].订单日期 }}</div>
+          <input v-if="订单表[k].订单状态 === '未收到'" @change="修改订单(订单表[k])" v-model.lazy="订单表[k].镜框名" placeholder="镜框名"
+            list="镜片名" />
+          <input v-if="订单表[k].订单状态 === '未收到'" @change="修改订单(订单表[k])" v-model.lazy="订单表[k].订货数量" placeholder="订货数量"
+            type="number" />
+          <div v-if="订单表[k].订单状态 === '已收到'"> {{ 订单表[k].镜框名 }}</div>
+          <div v-if="订单表[k].订单状态 === '已收到'"> {{ 订单表[k].订货数量 }}</div>
+          <div>当前库存 {{ 获取库存与供货商(订单表[k]) }}</div>
+          <div>供货商: {{ 订单表[k].供货商 }}</div>
+          <div>{{ 订单表[k].进货价格 }}元</div>
+          <div :class="{ 正红: 订单表[k].订单状态 === '未收到', 正绿: 订单表[k].订单状态 === '已收到' }">
+            {{ 订单表[k].订单状态 }}</div>
 
-          <lmButton @click="删除订单(库.镜框订单表[k])">删除</lmButton>
-          <lmButton @click="收到订单(库.镜框订单表[k])">收到</lmButton>
+          <lmButton @click="删除订单(订单表[k])">删除</lmButton>
+          <lmButton @click="收到订单(订单表[k])">收到</lmButton>
 
         </div>
         <div class="尾行">
           <div></div>
-          <input v-model.lazy="状态.供应商" placeholder="供应商" list="供货商" />
-          <div>今日{{ 状态.供应商 }} 订单应付总价:{{ 今日订单总价 }}元</div>
+          <div> {{状态.今日日期}} 日 {{ 状态.供应商 }} 订单 总数为:{{ 今日订单总价.总数 }}个 应付总价:{{ 今日订单总价.总价 }}元</div>
         </div>
       </div>
     </div>
@@ -158,6 +185,7 @@ let 供货商列表 = computed(() => {
   </datalist>
   <datalist id="供货商">
     <option v-for="i in 供货商列表" :value=i> {{ i }}</option>
+    <option> 全部供应商</option>
   </datalist>
 </template>
 
@@ -180,13 +208,13 @@ let 供货商列表 = computed(() => {
     .首行 {
       gap: 6px;
       grid-template-rows: 1fr;
-      grid-template-columns: 1fr 0.3fr 0.3fr;
+      grid-template-columns: 1fr 150px auto;
     }
 
     .尾行 {
       gap: 6px;
       grid-template-rows: 1fr;
-      grid-template-columns: 1fr 0.3fr 0.3fr;
+      grid-template-columns: 1fr 0.6fr;
     }
 
     .订单表 {
@@ -214,6 +242,18 @@ let 供货商列表 = computed(() => {
     height: 100%;
     font-size: 18px;
     font-weight: bold;
+  }
+
+  select {
+    text-align: center;
+    box-sizing: border-box;
+    border: none;
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    background: $浅灰;
+    border-radius: 5px;
   }
 }
 </style>
