@@ -45,7 +45,6 @@ let 订单全局搜索 = ref("")
 let 未订片开关 = ref(false)
 let 框未回开关 = ref(false)
 let 通过全局搜索的数量 = ref()
-let 刷新表格 = ref(true)
 
 
 let 订单表 = computed(() => {

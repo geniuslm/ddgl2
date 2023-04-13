@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 import { ref, toRefs, reactive, computed, watch, onMounted } from 'vue';
 import Icon from './icons/Icon.vue';
 import { socket } from "../stores/socket链接";
-import { pinia库, 镜片类, 订单类 } from '../stores/pinia库';
+import { pinia库, 镜片类, 订单类, 镜片订单类 } from '../stores/pinia库';
 import JsBarcode from "jsbarcode";
 import { values } from 'lodash';
 import lmPrint from "@组件/订单行-打印附加页.vue";
@@ -185,10 +185,43 @@ let 镜框减库存并计算总利润 = () => {
     socket.emit('镜框', '改', 找到的镜框, (返回数据: any) => { console.log(返回数据) });
   }
 }
+
 let 右镜片订货日并计算总利润 = () => {
   总利润计算()
   行数据.右镜片订货日 = 库.月 + '月' + 库.日
+  if (行数据.右镜片供应商!=='库存') {
+    alert(`${行数据.右镜片供应商}添加到镜片订单表`)
+    let 找到的镜片 = 库.镜片表.find(item => item.镜片名 === 行数据.镜片);
+    let 新镜片订单 = new 镜片订单类()
+    新镜片订单.订单日期 = new Date().toLocaleString('zh-CN')
+    新镜片订单.镜片名 = 行数据.镜片;
+    新镜片订单.近视 =行数据.右近视 
+    新镜片订单.散光 = 行数据.右散光 
+    新镜片订单.进货价格 = 找到的镜片[行数据.右镜片供应商]/2;
+    新镜片订单.供货商 = 行数据.右镜片供应商;
+    新镜片订单.订单类型 = '销售';
+    新镜片订单.订单号 = 行数据.订单号;
+    新镜片订单.镜片收到日 = '未收到';
+    socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+  }
+  if (行数据.右镜片供应商==='库存') {
+    alert(`${行数据.右镜片供应商}有库存 库存将从${右镜片库存判断.value}到${右镜片库存判断.value-1}`)
+    let 找到的镜片 = 库.镜片表.find(item => item.镜片名 === 行数据.镜片);
+    找到的镜片.库存[`近${行数据.右近视}散${行数据.右散光}`] = 找到的镜片.库存[`近${行数据.右近视}散${行数据.右散光}`] - 1
+    socket.emit('镜片', '改', 找到的镜片, (返回数据: any) => { console.log(返回数据) });
+  }
 }
+let 右镜片库存判断 = computed(() => {
+  let 找到的镜片 = 库.镜片表.find(item => item.镜片名 === 行数据.镜片);
+  let 右镜片近视 = 行数据.右近视 
+  let 右镜片散光 = 行数据.右散光 
+  if (找到的镜片) {
+    return 找到的镜片.库存[`近${右镜片近视}散${右镜片散光}`]
+  }
+
+  return 0
+})
+
 let 左镜片订货日并计算总利润 = () => {
   总利润计算()
   行数据.左镜片订货日 = 库.月 + '月' + 库.日
@@ -203,6 +236,7 @@ watch(() => 行数据.右镜片供应商, 右镜片订货日并计算总利润)
 watch(() => 行数据.左镜片供应商, 左镜片订货日并计算总利润)
 watch(() => 行数据.选定镜框, 镜框减库存并计算总利润)
 watch(() => 行数据.优惠, 总利润计算)
+
 
 </script>
 
@@ -294,10 +328,10 @@ watch(() => 行数据.优惠, 总利润计算)
 
       <div class="镜框第三行 ">
         <input v-model.lazy="行数据.选定镜框" class="" placeholder="选定镜框" list="镜框名">
-        <input v-for="i in [0, 1]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + (i + 1)">
+        <input v-for="i in [0, 1]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + (i + 1)"  list="镜框名">
       </div>
       <div class="镜框第三行 ">
-        <input v-for="i in [2, 3, 4]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + (i + 1)">
+        <input v-for="i in [2, 3, 4]" v-model.lazy="行数据.试戴镜框[i]" class="" :placeholder="'试戴' + (i + 1)"  list="镜框名">
       </div>
 
 
@@ -346,6 +380,7 @@ watch(() => 行数据.优惠, 总利润计算)
 
     </div>
 
+    <div v-if="库.当前登录用户类型 == '助理'"> 右镜片库存判断{{ 右镜片库存判断 }}</div>
     <div v-if="库.当前登录用户类型 == '助理'"> 镜片利润{{ 行数据.镜片利润 }} 镜片进货价{{ 行数据.镜片进货价 }} 镜片售价{{ 行数据.镜片售价 }}</div>
     <div v-if="库.当前登录用户类型 == '助理'"> 镜框利润{{ 行数据.镜框利润 }} 镜框进货价{{ 行数据.镜框进货价 }} 镜框售价{{ 行数据.镜框售价 }} 总利润{{ 行数据.总利润 }}</div>
 
@@ -434,7 +469,7 @@ watch(() => 行数据.优惠, 总利润计算)
       <option value="上海老周"> 上海老周</option>
       <option value="湖北蔡司"> 湖北蔡司</option>
       <option value="丹阳夏总"> 丹阳夏总</option>
-      <option value="库存">库存</option>
+      <option value="库存">库存{{ 右镜片库存判断 }}</option>
     </datalist>
     <datalist id="日期">
       <option :value=库.月日>今天</option>

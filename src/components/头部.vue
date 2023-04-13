@@ -37,19 +37,11 @@ let 推出登录样式 = ref(true)
 <template>
   <div class="头部">
     <div></div>
-
-
-    <lmButton> {{ 库.菜单页面名 }}</lmButton>
-
     <lmButton :class="{ 退出登录: 库.当前数据库状态 != '已连接' }"> 服务器 {{ 库.当前数据库状态 }}</lmButton>
-
-
-
     <lmButton>日期:{{ 库.月日 }}</lmButton>
-
     <lmButton>当前用户:{{ 库.当前登录用户 }} {{ 库.当前登录用户类型 }}</lmButton>
     <lmButton :class="{ 退出登录: 推出登录样式 }" @click="退出登录">
-      <icon 图标名="icon-close-circle" 颜色="#fff" font-size='23px' /> 退出登录
+      <icon 图标名="lm-close-circle" 颜色="#fff" font-size='23px' /> 退出登录
     </lmButton>
   </div>
 </template>

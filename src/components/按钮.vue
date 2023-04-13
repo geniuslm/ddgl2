@@ -2,14 +2,11 @@
 import { useRouter } from 'vue-router';
 
 
-let 路由 = useRouter()
-let 跳转 = (目标页: string) =>{
-  路由.push(目标页);
-}
-
 
 
 </script>
+
+
 
 <template>
   <button >
@@ -32,7 +29,7 @@ button {
   font-size         : 14px;
   font-weight       : bold;
   color             : #ffffff;
-  height            : 30px;
+  height            : 25px;
   overflow          : hidden;
   align-content     : center;
   align-items       : center;

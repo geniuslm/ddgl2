@@ -113,14 +113,12 @@ let log不在表镜片 = () => {
 
 let 各种设置 = () => {
 
-//循环订单表 如果总利润为空或者0 就把镜片利润赋值给总利润
-  for (let i in 库.订单表) {
-    if (库.订单表[i].总利润 == 0 || 库.订单表[i].总利润 == null) {
-      库.订单表[i].总利润 = 库.订单表[i].镜片利润
-    }
-    库.通讯('订单', "改", 库.订单表[i]);
+  for (let i in 库.镜片表) {
+    库.镜片表[i].库存 = { "近0散0": 0 }
+    console.log(库.镜片表[i].库存);
+    库.通讯('镜片', "改", 库.镜片表[i]);
   }
-  
+
 }
 
 let new订单 = () => {
@@ -148,10 +146,10 @@ let new订单 = () => {
       <input v-model.lazy="旧值" placeholder="旧值">
       <input v-model.lazy="镜片名片段" placeholder="镜片名片段" list="镜片名">
       <input v-model.lazy="供应商" placeholder="供应商" list="镜片供应商">
-  
+
     </div>
     <div class="滑条 开始">
-      <div v-for=" i in  订单表">{{ i.订单号 }} {{ i.镜片利润 }}-{{ i.总利润}}</div>
+      <div v-for=" i in  库.镜片表">{{ i.镜片名 }} -{{ i.库存 }}</div>
     </div>
   </div>
   <datalist id="镜片名">

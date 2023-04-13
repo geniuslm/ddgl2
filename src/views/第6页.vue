@@ -64,6 +64,7 @@ let 复制 = (镜框: 镜框类) => {
         库.镜框表.sort((a, b) => { return a.镜框名 >= b.镜框名 ? 1 : -1 })
     });
 };
+
 let 供货商列表 = computed(() => {
     let 供货商列表 = [];
     for (let 行 of 库.镜框表) {
@@ -74,6 +75,7 @@ let 供货商列表 = computed(() => {
 
     return 供货商列表;
 })
+
 let 镜框表 = computed(() => {
     return 库.镜框表.sort((a, b) => { return a.镜框名 >= b.镜框名 ? 1 : -1 })
 })

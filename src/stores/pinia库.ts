@@ -38,7 +38,7 @@ export class 订单类 {
 
 
   镜框选项: string;
-  选定镜框 :string;
+  选定镜框: string;
   镜框运单号: string;
   镜框下单日: string;
   镜框发货日: string;
@@ -150,6 +150,25 @@ export class 镜片类 {
   }
 }
 
+
+export class 镜片订单类 {       // 定义数据模型 之后通过这个class建立对象
+  镜片名: string;
+  近视: string;
+  散光: string;
+  订单日期: string;
+  进货价格: number;
+  充值金额: number;
+  预存余额:number;
+  供货商: string;
+  订单类型: string;
+  订单号: string;
+  镜片收到日: string;
+  constructor() {
+    this.镜片名 = ''
+  }
+}
+
+
 export class 镜框类 {
   _id?: string;
   镜框名: string;
@@ -172,7 +191,7 @@ export class 镜框类 {
     this.供货商 = "";
     this.库存数量 = 0;
     this.库存变更记录 = [];
-    this.库存变更记录.push( 
+    this.库存变更记录.push(
       {
         变更日期: new Date().toLocaleDateString(),
         变更数量: 0,
@@ -193,7 +212,7 @@ export class 镜框订单类 {
   进货价格: number;
   供货商: string;
   订单状态: string;
-  
+
   constructor() {
     this.镜框名 = "";
     this.订货数量 = 0;
@@ -210,6 +229,8 @@ export const pinia库 = defineStore("pinia库", {
 
       订单表: [] as 订单类[],
       镜片表: [] as 镜片类[],
+      镜片订单表: [] as 镜片订单类[],
+
       镜框表: [] as 镜框类[],
       镜框订单表: [] as 镜框订单类[],
       用户表: [] as 用户类[],
@@ -390,7 +411,8 @@ export const pinia库 = defineStore("pinia库", {
       socket.emit('用户', '获', (返回数据: any) => { this.用户表 = 返回数据 });
       socket.emit('镜片', '获', (返回数据: any) => { this.镜片表 = 返回数据, this.镜片选项() });
       socket.emit('镜框', '获', (返回数据: any) => { this.镜框表 = 返回数据 });
-      socket.emit('镜框订单', '获', (返回数据: any) => { this.镜框订单表 = 返回数据.sort((a,b)=>{return a.订单日期 >= b.订单日期 ? 1 : -1 })  });//this.镜框名选项函数()
+      socket.emit('镜框订单', '获', (返回数据: any) => { this.镜框订单表 = 返回数据.sort((a, b) => { return a.订单日期 >= b.订单日期 ? 1 : -1 }) });//this.镜框名选项函数()
+      socket.emit('镜片订单', '获', (返回数据: any) => { this.镜片订单表 = 返回数据.sort((a, b) => { return a.订单日期 >= b.订单日期 ? 1 : -1 }) });
       let date = new Date();
       this.年 = date.getFullYear().toString().slice(2)
       this.月 = ("0" + (date.getMonth() + 1)).slice(-2)

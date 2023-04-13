@@ -158,7 +158,7 @@ let 订单表 = computed(() => {
         <div class="订单行" v-for="i, k in 订单表" :key="k">
           <div>{{ 订单表[k].订单日期 }}</div>
           <input v-if="订单表[k].订单状态 === '未收到'" @change="修改订单(订单表[k])" v-model.lazy="订单表[k].镜框名" placeholder="镜框名"
-            list="镜片名" />
+            list="镜框名" />
           <input v-if="订单表[k].订单状态 === '未收到'" @change="修改订单(订单表[k])" v-model.lazy="订单表[k].订货数量" placeholder="订货数量"
             type="number" />
           <div v-if="订单表[k].订单状态 === '已收到'"> {{ 订单表[k].镜框名 }}</div>
@@ -180,7 +180,7 @@ let 订单表 = computed(() => {
       </div>
     </div>
   </div>
-  <datalist id="镜片名">
+  <datalist id="镜框名">
     <option v-for="i in 库.镜框名选项" :value=i> {{ i }}</option>
   </datalist>
   <datalist id="供货商">

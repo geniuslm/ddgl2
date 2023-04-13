@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { pinia数据中心 } from "../stores/pinia数据";
 import { pinia库 } from "@仓库/pinia库";
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, computed } from "vue";
 
 import { useRouter } from 'vue-router';
 
@@ -9,17 +9,18 @@ let pinia = pinia数据中心();
 let 库 = pinia库();
 let 路由 = useRouter()
 let 跳转 = (路径: any) => {
-    库.菜单页面名 = 路径.内容
+    库.菜单页面名 = 路径.路径
     路由.push(路径.路径);
 }
 
 
 let 菜单列表 = reactive([
     { 路径: "/mr", 内容: "默认页", 图标: "lm-file" },
-    { 路径: "/01", 内容: "1图标页", 图标: "lm-star-fill" },
+
     { 路径: "/02", 内容: "测试页面", 图标: "lm-question-circle" },
-    { 路径: "/03", 内容: "3用户页", 图标: "lm-team" },
-    { 路径: "/04", 内容: "尼德克库存", 图标: "lm-filedone" },
+    { 路径: "/03", 内容: "cookie测试", 图标: "lm-team" },
+    { 路径: "/04", 内容: "镜片库存", 图标: "lm-filedone" },
+    { 路径: "/01", 内容: "镜片订单", 图标: "lm-star-fill" },
     { 路径: "/06", 内容: "镜框列表", 图标: "lm-table" },
     { 路径: "/05", 内容: "镜框订单", 图标: "lm-accountbook" },
 
@@ -35,8 +36,8 @@ let 开关 = ref(true);
 
 let 测试 = () => {
     console.log('登录类型' + 库.当前登录用户类型);
-
 }
+
 
 
 </script>
@@ -44,10 +45,16 @@ let 测试 = () => {
 <template>
     <div class="菜单" :style="[开关 ? ' width:  130px' : 'width: 50px']">
 
-        <button v-for="按钮, index in 菜单列表" :key="index" @click="跳转(菜单列表[index])" :class="{ 当前: 菜单列表[index].内容 == 库.菜单页面名 }">
+        <button v-for="按钮, index in 菜单列表" :key="index" @click="跳转(菜单列表[index])" :class="{ 当前: 菜单列表[index].路径 === 库.菜单页面名 }">
             <icon v-show="!开关" :图标名="按钮.图标" color="#fff" font-size="30px" />
             <icon v-show="开关" :图标名="按钮.图标" color="#fff" font-size="20px" />
             <p v-if="开关">{{ 按钮.内容 }}</p>
+        </button>
+        <h2>镜框相关</h2>
+        
+        <button @click="跳转({路径: '/02'})">
+            <icon :图标名="'lm-taobao'" color="#fff" :font-size="开关?'20px':'30px'" />
+            <p v-if="开关">默认页</p>
         </button>
 
         <button @click="开关 = !开关">{{ 开关 ? "开" : "关" }}</button>

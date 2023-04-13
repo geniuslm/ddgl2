@@ -15,7 +15,7 @@ let { 行数据 } = defineProps(['行数据'])
 let 镜框列表 = computed(() => {
   let 镜框列表 = '';
   for (let i = 0; i < 行数据.试戴镜框.length; i++) {
-     镜框列表 =镜框列表+ 行数据.试戴镜框[i] + ' ';
+    镜框列表 = 镜框列表 + 行数据.试戴镜框[i] + ' ';
   }
   return 镜框列表;
 })
@@ -41,7 +41,7 @@ let 镜框列表 = computed(() => {
             :设置="{ format: 'CODE128', width: 1, height: 30, margin: 0, displayValue: false }">
           </Barcode>
         </div>
-        <div>{{ 行数据.镜片?行数据.镜片:'还未购买镜片' }}</div>
+        <div>{{ 行数据.镜片 ? 行数据.镜片 : '还未购买镜片' }}</div>
       </div>
       <div class="光度行">
         <div>{{ 库.日 }}日</div>
@@ -66,10 +66,10 @@ let 镜框列表 = computed(() => {
       </div>
       <div class="镜框行 ">
         <!-- <div v-for="i in 行数据.试戴镜框">{{ i }}</div> -->
-        <div>{{ 镜框列表 }}</div>
+        <div> {{ 行数据.镜框选项  }}{{ 镜框列表 }}</div>
       </div>
       <div class="最后行 ">
-        <div>{{ 行数据.备注 }}</div>
+        <div>{{ 行数据.镜框选项 == "只买镜框" ? 行数据.选定镜框 : '还未购买镜片' }} {{ 行数据.备注 }}</div>
         <icon 图标名="lm-printer" v-print="'#盒子标签'" 颜色="#67C23A" font-size='30px' />
       </div>
     </div>
@@ -82,14 +82,14 @@ let 镜框列表 = computed(() => {
         <div>亲 请确认 {{ 行数据.旺旺名 }}</div>
       </div>
 
- 
+
       <div class="第三行 ">
         <div>
           <Barcode class="条形码" :数值="行数据.订单号"
             :设置="{ format: 'CODE128', width: 1, height: 30, margin: 0, displayValue: false }">
           </Barcode>
         </div>
-        <div>{{ 行数据.镜片?行数据.镜片:'还未购买镜片' }}</div>
+        <div>{{ 行数据.镜片 ? 行数据.镜片 : '还未购买镜片' }}</div>
       </div>
       <div class="光度行">
         <div>{{ 库.日 }}日</div>
@@ -185,14 +185,14 @@ let 镜框列表 = computed(() => {
         <div>请确认度数亲 {{ 行数据.旺旺名 }}</div>
       </div>
 
- 
+
       <div class="第三行 ">
         <div>
           <Barcode class="条形码" :数值="行数据.订单号"
             :设置="{ format: 'CODE128', width: 1, height: 30, margin: 0, displayValue: false }">
           </Barcode>
         </div>
-        <div>{{ 行数据.镜片?行数据.镜片:'还未购买镜片' }}</div>
+        <div>{{ 行数据.镜片 ? 行数据.镜片 : '还未购买镜片' }}</div>
       </div>
       <div class="光度行">
         <div>{{ 库.日 }}日</div>
@@ -240,7 +240,8 @@ let 镜框列表 = computed(() => {
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr 1fr;
 }
-.客服整页组件{
+
+.客服整页组件 {
   grid-template-columns: 1fr;
 }
 
