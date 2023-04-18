@@ -74,6 +74,7 @@ let 镜片名 = () => {
       <input v-model.lazy="行数据.上海老周" class="上海老周" placeholder="上海老周" list="上海老周">
       <input v-model.lazy="行数据.湖北蔡司" class="湖北蔡司" placeholder="湖北蔡司" list="湖北蔡司">
       <input v-model.lazy="行数据.丹阳夏总" class="丹阳夏总" placeholder="丹阳夏总" list="丹阳夏总">
+      <input v-model.lazy="行数据.店铺库存" class="店铺库存" placeholder="店铺库存" list="店铺库存">
     
       <div class="横向 平均行">
         <icon @click=改(行数据) 图标名="lm-cloud-upload" font-size='30px' :颜色=图标颜色 />

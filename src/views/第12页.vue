@@ -11,6 +11,7 @@ import { onMounted, ref, toRef, computed, reactive, watch, nextTick } from 'vue'
 import { log } from 'console';
 import { cloneDeep as deepCopy } from 'lodash';
 
+
 let 库 = pinia库();
 onMounted(() => {
     //库.初始化()
@@ -49,39 +50,45 @@ let 全局状态 = reactive({
     通过全局搜索的数量: 0,
 })
 
-
+let 要显示的订单: any =reactive([]);
 
 let 订单表 = computed(() => {
     let 开始时间 = new Date().getTime()
-    let 要显示的订单: any = 库.订单表;
+    要显示的订单 = 库.订单表;
 
     //订单分类 状态
     if (全局状态.订单状态分类 === '未完成') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
+        要显示的订单 = 库.订单表.filter((行: any) => {
             return 行.订单进度 !== '已完成'
         })
     }
+    if (全局状态.订单状态分类 === '没镜片未完成') {
+        要显示的订单 = 库.订单表.filter((行: any) => {
+            return 行.订单进度 !== '已完成'&&行.镜片 !== ''
+        })
+    }
     if (全局状态.订单状态分类 === '已完成') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
+        要显示的订单 = 库.订单表.filter((行: any) => {
             return 行.订单进度 === '已完成'
         })
     }
 
     if (全局状态.订单状态分类 === '未定片') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
+        要显示的订单 = 库.订单表.filter((行: any) => {
             return 行.订单进度 !== '已完成' && (!行.右镜片供应商 || !行.左镜片供应商) && 行.镜片 !== ''
         })
     }
     if (全局状态.订单状态分类 === '没买镜片') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
+        要显示的订单 = 库.订单表.filter((行: any) => {
             return 行.订单进度 !== '已完成' && !行.镜片
         })
     }
     if (全局状态.订单状态分类 === '未发镜框') {
-        要显示的订单 = 要显示的订单.filter((行: any) => {
+        要显示的订单 = 库.订单表.filter((行: any) => {
             return 行.订单进度 !== '已完成' && (行.选定镜框 || 行.试戴镜框.filter((item) => item !== null && item !== "").length !== 0) && !行.镜框发货日
         })
     }
+    
 
 
 
@@ -122,7 +129,6 @@ let 订单表 = computed(() => {
 
 
 let 添加新订单 = () => {
-    库.订单正逆序 = 1
     let 新订单 = new 订单类
     let date = new Date()
     let 年 = date.getFullYear().toString().slice(2)
@@ -146,29 +152,26 @@ let 添加新订单 = () => {
             return 年 + 月 + 日 + "01"
         }
     }
-    新订单.旺旺名 = "请输入旺旺名"
+    新订单.旺旺名 = "测试订单"
     新订单.订单号 = 订单号()
-    新订单.订单进度 = "未完成"
+    //新订单.订单完成日 = '未2完成'
+    新订单.订单进度='未完成'
     新订单.编辑记录 = []
     新订单.购买记录 = []
     新订单.编辑记录.push(库.月日 + 库.当前登录用户 + '创建#' + JSON.stringify(新订单))
     socket.emit('订单', '增', 新订单, (返回数据: any) => {
-        console.log(返回数据);
+        console.log("返回的是:"+ 返回数据);
         库.订单表.push(返回数据);
         //不添加下面那行 函数都没有反应
-      // window.location.reload()
     });
-
 }
 
 
-let 本年订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单号.slice(0, 2) == 库.年 }).length)
-let 本月订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单号.slice(0, 4) == 库.年 + 库.月 }).length)
-let 本日订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单号.slice(0, 6) == 库.年 + 库.月 + 库.日 }).length)
+
 let 已完成订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单进度 === "已完成" }).length)
 let 未完成订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单进度 !== "已完成" }).length)
 let 未订片订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单进度 !== '已完成' && (!行.右镜片供应商 || !行.左镜片供应商) && 行.镜片 !== '' }).length)
-let 没买镜片订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单进度 !== '已完成' && !行.镜片 }).length)
+let 没买镜片订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单进度 !== '已完成'&&行.镜片 !== '' }).length)
 let 未发镜框订单数量 = computed(() => 库.订单表.filter((行: any) => { return 行.订单进度 !== '已完成' && 行.试戴镜框.filter((item) => item !== null && item !== "").length !== 0 && !行.镜框发货日 }).length)
 
 
@@ -198,7 +201,10 @@ let 未发镜框订单数量 = computed(() => 库.订单表.filter((行: any) =>
 
             <div class="按钮组">
                 <div @click="全局状态.订单状态分类 = '未完成', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未完成' }" class="按钮">
-                    未完成{{ 未完成订单数量 }}
+                    未完成{{ 未完成订单数量 }} 
+                </div>
+                <div @click="全局状态.订单状态分类 = '没镜片未完成', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '没镜片未完成' }" class="按钮">
+                    无镜片{{ 没买镜片订单数量 }}
                 </div>
                 <div @click="全局状态.订单状态分类 = '未定片', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未定片' }" class="按钮">
                     未定片{{ 未订片订单数量 }}
@@ -212,7 +218,7 @@ let 未发镜框订单数量 = computed(() => 库.订单表.filter((行: any) =>
                             </div> -->
 
             </div>
-            <div></div>
+       
             <!-- <div class="筛选数字">{{ 订单表.length }}</div> -->
 
 
@@ -259,7 +265,7 @@ let 未发镜框订单数量 = computed(() => 库.订单表.filter((行: any) =>
     .顶部 {
         gap: 10px;
         height: 35px;
-        grid-template-columns: 80px 120px 350px 45px 1fr 200px 150px;
+        grid-template-columns: 80px 120px 400px   1fr 200px 150px;
         grid-template-rows: 1fr;
 
         .按钮 {

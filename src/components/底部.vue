@@ -12,9 +12,12 @@ let 库 = pinia库()
 
 const 下载链接 = ref('');
 const 文件名 = ref('');
+const 种类 = ref('订单表');
 
 const 备份订单表 = () => {
-  const json = JSON.stringify(库.订单表, null, 2);
+  let json:any;
+  if( 种类.value==='订单表') json = JSON.stringify(库.订单表, null, 2);
+  if( 种类.value==='镜片表') json = JSON.stringify(库.镜片表, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   let date = new Date();
@@ -23,28 +26,24 @@ const 备份订单表 = () => {
   let 日 = date.getDate();
   let 小时 = date.getHours();
   let 分钟 = date.getMinutes();
-  文件名.value = `订单表- ${年}年${月}月${日}日-${小时}点${分钟}备份.json`;
+  文件名.value = `${种类.value}- ${年}年${月}月${日}日-${小时}点${分钟}备份.json`;
   下载链接.value = url;
 }
-const 备份镜片表 = () => {
-  const json = JSON.stringify(库.镜片表, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  let date = new Date();
-  let 年 = date.getFullYear() - 2000;
-  let 月 = date.getMonth() + 1;
-  let 日 = date.getDate();
-  let 小时 = date.getHours();
-  let 分钟 = date.getMinutes();
-  文件名.value = `镜片表-${年}年${月}月${日}日-${小时}点${分钟}备份.json`;
-  下载链接.value = url;
-}
+
 </script>
 
 <template>
   <div class="底部">
-    <button v-if="库.当前登录用户类型==='助理'" @click="备份订单表()">备份订单表</button>
+    <!-- 一个选项 -->
+
+    <select v-if="库.当前登录用户类型==='助理'" v-model="种类">
+      <option value="订单表">订单表</option>
+      <option value="镜片表">镜片表</option>
+    </select>
+ 
+    <button v-if="库.当前登录用户类型==='助理'" @click="备份订单表()">备份{{ 种类 }}</button>
     <a v-if="下载链接" :href="下载链接" :download="文件名" @click="下载链接 = ''">点击下载</a>
+
   </div>
 </template>
 

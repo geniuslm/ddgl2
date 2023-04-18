@@ -47,6 +47,7 @@ let 排序 = (k: any) => {
             <div class="搜索按钮">以{{ 库.镜片排序的属性 }}排序</div>
             <div class="横向 镜片行">
                 <input class="搜索按钮" v-for="(i, k) in 库.镜片搜索值" v-model="库.镜片搜索值[k]" :placeholder="k">
+               
             </div>
             <div class="横向 镜片行">
                 <lmButton @click="排序(k)" v-for="(i, k) in 库.镜片搜索值">

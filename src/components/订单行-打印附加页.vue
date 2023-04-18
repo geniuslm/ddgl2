@@ -69,7 +69,7 @@ let 镜框列表 = computed(() => {
         <div> {{ 行数据.镜框选项  }}{{ 镜框列表 }}</div>
       </div>
       <div class="最后行 ">
-        <div>{{ 行数据.镜框选项 == "只买镜框" ? 行数据.选定镜框 : '还未购买镜片' }} {{ 行数据.备注 }}</div>
+        <div>{{ 行数据.镜框选项 == "只买镜框" ? 行数据.选定镜框 : '' }} {{ 行数据.备注 }}</div>
         <icon 图标名="lm-printer" v-print="'#盒子标签'" 颜色="#67C23A" font-size='30px' />
       </div>
     </div>
@@ -79,7 +79,7 @@ let 镜框列表 = computed(() => {
     <div id="盒内标签" class="打印范围">
       <div class="第一行 ">
         <div>{{ 行数据.订单号 }}</div>
-        <div>亲 请确认 {{ 行数据.旺旺名 }}</div>
+        <div>{{ 行数据.收件人  }} {{ 行数据.旺旺名 }}</div>
       </div>
 
 
@@ -121,7 +121,7 @@ let 镜框列表 = computed(() => {
         <div>{{ 行数据.备注 }}</div>
       </div>
       <div class="最后行 ">
-        <div>这个贴纸请随镜框一起邮寄回来哦</div>
+        <div>这个贴纸不要扔哦</div>
         <icon 图标名="lm-printer" v-print="'#盒内标签'" 颜色="#67C23A" font-size='30px' />
       </div>
     </div>

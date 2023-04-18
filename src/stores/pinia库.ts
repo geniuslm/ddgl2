@@ -127,14 +127,13 @@ export class 镜片类 {
   高散定制?: string;
   染色变色?: string;
 
-
-
   售价: number;
   湖北和益?: number;
   山东臻视?: number;
   上海老周?: number;
   湖北蔡司?: number;
   丹阳夏总?: number;
+  店铺库存?: number;
   光度范围: string[];
   库存: 库存;
   库存变更记录: string[];
@@ -152,6 +151,7 @@ export class 镜片类 {
 
 
 export class 镜片订单类 {       // 定义数据模型 之后通过这个class建立对象
+  _id?:any;
   镜片名: string;
   近视: string;
   散光: string;

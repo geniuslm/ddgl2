@@ -25,7 +25,7 @@ function 登录() {
             设置Cookie("当前登录用户", 返回数据[1].用户名, 1)
             设置Cookie("当前登录用户类型", 返回数据[1].类型, 1)
             设置Cookie("token", "通过", 1)
-            router.push("/01")
+            router.push("/11")
         }
         else if (返回数据.length == 0) { alert('用户名不存在') }
         else if (返回数据 == "密码错误") { alert(返回数据) }
@@ -50,7 +50,7 @@ socket.on("disconnect", () => {
 
 <template>
     <div class="登录页" @keyup.enter="登录">
-        <h1>李默眼镜工作室-V1.4.13-修改版</h1>
+        <h1>李默眼镜工作室-V1.4.18-新增功能版</h1>
 
         <input type="text" placeholder="用户名" v-model.lazy="用户.用户名">
         <input type="text" placeholder="密码" v-model.lazy="用户.密码">

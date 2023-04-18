@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { pinia库, 订单类 } from '@仓库/pinia库';
 import lmB from "@组件/按钮.vue";
+import { socket } from "../stores/socket链接";
 
 import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 import { ref, computed, reactive } from 'vue';
@@ -112,19 +113,22 @@ let log不在表镜片 = () => {
 
 
 let 各种设置 = () => {
-
-  for (let i in 库.镜片表) {
-    库.镜片表[i].库存 = { "近0散0": 0 }
-    console.log(库.镜片表[i].库存);
-    库.通讯('镜片', "改", 库.镜片表[i]);
-  }
+//在库的镜片表中循环 把空的镜片变成空字符串
+ for(let i in 库.订单表){
+   if(库.订单表[i].镜片===null){
+     库.订单表[i].镜片=''
+     console.log(库.订单表[i].镜片);
+     
+   }
+   库.通讯('订单', "改", 库.订单表[i]);
+ }
 
 }
+
 
 let new订单 = () => {
-  console.log(new (订单类));
 
-}
+};
 
 
 </script>
@@ -149,7 +153,7 @@ let new订单 = () => {
 
     </div>
     <div class="滑条 开始">
-      <div v-for=" i in  库.镜片表">{{ i.镜片名 }} -{{ i.库存 }}</div>
+      <div v-for=" i in  库.订单表">{{ i.订单号 }} -{{i.镜片  }}</div>
     </div>
   </div>
   <datalist id="镜片名">

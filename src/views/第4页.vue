@@ -11,13 +11,13 @@ let 库 = pinia库();
 let 全局状态 = reactive({
   镜片名: '尼德克单光1.74',
   供应商: '供应商',
-  显示库存表: false,
+  显示库存表: true,
 })
 
 
 
 let 格子范围 = computed(() => {
-  if (全局状态.镜片名 === '尼德克单光1.74') return { 起点: -525, 终点: -1400 }
+  if (全局状态.镜片名 === '尼德克单光1.74') return { 起点: -500, 终点: -1400 }
   else if (全局状态.镜片名 === '视特耐非球1.60') return { 起点: 0, 终点: -500 }
   else if (全局状态.镜片名 === '视特耐非球1.67') return { 起点: -200, 终点: -800 }
   else if (全局状态.镜片名 === '凯米U2-1.60') return { 起点: 0, 终点: -500 }
@@ -60,7 +60,7 @@ let 尼德克镜片库存数量 = computed(() => {
     for (let 光度 in 镜片.库存) {
       if (镜片.库存[光度]) 数量 = 数量 + 镜片.库存[光度]
     }
-    总价 = 数量 * 镜片.上海老周
+    总价 = 数量 * 镜片.上海老周 / 2
   }
   return `数量:${数量} 总价:${总价}`
 })
@@ -177,6 +177,7 @@ let 添加订单 = () => {
   新镜片订单.订单日期 = new Date().toLocaleString('zh-CN')
   新镜片订单.进货价格 = 0;
   新镜片订单.供货商 = '';
+  if (全局状态.镜片名 === '尼德克单光1.74') { 新镜片订单.供货商 = '上海老周'; 新镜片订单.进货价格 = 66.5 }
   新镜片订单.订单类型 = '进货';
   新镜片订单.镜片收到日 = '未收到';
   socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
@@ -214,6 +215,9 @@ let 加库存 = (订单) => {
   else {
     alert('请填写近视散光和供货商')
   }
+}
+let 修改订单 = (订单) => {
+  socket.emit('镜片订单', "改", 订单);
 }
 
 let 进货价 = (订单) => {
@@ -260,7 +264,7 @@ let 测试 = () => {
       <div class="按钮" @click="全局状态.显示库存表 = !全局状态.显示库存表">显示镜片库存</div>
       <Transition name="dh">
         <div v-show="全局状态.显示库存表" class="镜片表 滑条">
-          <div v-for="i in 镜片格子" class="镜片块">
+          <div v-for="i in 镜片格子" :class="{ 镜片块: true, 无: 选定镜片库存[i] < 1 }">
             <div> {{ i }}</div>
             <input @change="改变库存(i)" type="number" v-model="选定镜片库存[i]">
           </div>
@@ -289,8 +293,8 @@ let 测试 = () => {
             <option>湖北蔡司</option>
             <option>丹阳夏总</option>
           </select>
-          <input v-if="镜片订单表[k].镜片收到日 === '未收到'" v-model="镜片订单表[k].近视" placeholder="近视" list="近视">
-          <input v-if="镜片订单表[k].镜片收到日 === '未收到'" v-model="镜片订单表[k].散光" placeholder="散光" list="散光">
+          <input @change="修改订单(镜片订单表[k])" v-if="镜片订单表[k].镜片收到日 === '未收到'" v-model="镜片订单表[k].近视" placeholder="近视">
+          <input @change="修改订单(镜片订单表[k])" v-if="镜片订单表[k].镜片收到日 === '未收到'" v-model="镜片订单表[k].散光" placeholder="散光">
           <div v-if="镜片订单表[k].镜片收到日 !== '未收到'" class="订单行元素"> {{ 镜片订单表[k].供货商 }}</div>
           <div v-if="镜片订单表[k].镜片收到日 !== '未收到'" class="订单行元素"> {{ 镜片订单表[k].近视 }}</div>
           <div v-if="镜片订单表[k].镜片收到日 !== '未收到'" class="订单行元素"> {{ 镜片订单表[k].近视 }}</div>
@@ -354,6 +358,14 @@ let 测试 = () => {
 
       }
 
+      .无 {
+        background-color: $正红;
+      }
+
+      .多 {
+        background-color: $正绿;
+      }
+
     }
   }
 
@@ -377,6 +389,9 @@ let 测试 = () => {
         gap: 2px;
         grid-template-columns: 1.5fr 1fr 0.5fr 0.8fr 1fr 0.5fr 0.5fr 1.5fr 100px;
         grid-template-rows: 1fr;
+        input{
+          background-color: $深灰;
+        }
 
         .按钮组 {
           gap: 2px;
@@ -397,7 +412,7 @@ input {
   border: none;
   width: 100%;
   height: 100%;
-  background-color: $浅绿;
+  background-color: #00000000;
 }
 
 select {
@@ -408,7 +423,7 @@ select {
   height: 100%;
   font-size: 18px;
   font-weight: bold;
-  background: $浅绿;
+  background: $浅黄;
   border-radius: 5px;
 }
 
@@ -427,7 +442,7 @@ select {
   height: 100%;
   font-size: 18px;
   font-weight: bold;
-  background: $正绿;
+  background: $浅黄;
 
 }
 
@@ -438,9 +453,11 @@ select {
 .正红 {
   background-color: $正红;
 }
+
 .正蓝 {
   background-color: $正蓝;
 }
+
 .dh-enter-active,
 .dh-leave-active {
   /* 添加 transform 属性以实现垂直移动 */
@@ -458,6 +475,4 @@ select {
   opacity: 0;
   /* 结束状态：元素回到上方 */
   transform: translateX(100%);
-}
-
-</style>
+}</style>

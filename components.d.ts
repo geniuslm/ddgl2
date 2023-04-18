@@ -28,7 +28,6 @@ declare module '@vue/runtime-core' {
     '行': typeof import('./src/components/行.vue')['default']
     '用户行': typeof import('./src/components/用户行.vue')['default']
     '用户行V2': typeof import('./src/components/用户行V2.vue')['default']
-    ElButton: typeof import('element-plus/es')['ElButton']
     Icon: typeof import('./src/components/icons/Icon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

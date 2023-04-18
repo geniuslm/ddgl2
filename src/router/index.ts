@@ -12,6 +12,7 @@ import 第08页 from '../views/第8页.vue';
 import 第09页 from '../views/第9页.vue';
 import 第10页 from '../views/第10页.vue';
 import 第11页 from '../views/第11页.vue';
+import 第12页 from '../views/第12页.vue';
 import 默认页 from '../views/默认页.vue';
 import 登录页 from '../views/登录页.vue';
 import { pinia库 } from '../stores/pinia库';
@@ -32,6 +33,7 @@ let 主页子菜单 = [
     { path: '09',  components: { 内容: 第09页 },  },
     { path: '10',  components: { 内容: 第10页 },  },
     { path: '11',  components: { 内容: 第11页 },  },
+    { path: '12',  components: { 内容: 第12页 },  },
 ]
 
 const router = createRouter({
