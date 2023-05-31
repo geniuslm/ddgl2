@@ -7,7 +7,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    2: typeof import('./src/components/十一页行 copy 2.vue')['default']
     '按钮': typeof import('./src/components/按钮.vue')['default']
     '菜单': typeof import('./src/components/菜单.vue')['default']
     '菜单客服': typeof import('./src/components/菜单客服.vue')['default']
@@ -28,7 +27,6 @@ declare module '@vue/runtime-core' {
     '行': typeof import('./src/components/行.vue')['default']
     '用户行': typeof import('./src/components/用户行.vue')['default']
     '用户行V2': typeof import('./src/components/用户行V2.vue')['default']
-    ElButton: typeof import('element-plus/es')['ElButton']
     Icon: typeof import('./src/components/icons/Icon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

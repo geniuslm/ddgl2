@@ -1,14 +1,9 @@
 <script setup lang = "ts">
-import { pinia数据中心, 镜片类 } from '../stores/pinia数据';
-import { pinia库, 订单类 } from '../stores/pinia库';
+import { pinia库, 订单类 } from '@仓库/pinia库';
 import lmInput from "@/components/订单行.vue";
-import lmh from "@/components/菜单客服.vue";
-import lmSH from "@组件/首行.vue";
 import lmButton from "@组件/按钮.vue";
-import lmWin from "@组件/添加订单窗口.vue";
-import { socket } from "../stores/socket链接";
-import { onMounted, ref, toRef, computed, reactive, watch, nextTick } from 'vue';
-import { log } from 'console';
+import { socket } from "@仓库/socket链接";
+import { onMounted, computed, reactive } from 'vue';
 import { cloneDeep as deepCopy } from 'lodash';
 
 
@@ -190,23 +185,23 @@ let 未发镜框订单数量 = computed(() => 库.订单表.filter((行: any) =>
 
 
 
-            <div @click="全局状态.订单状态分类 = '已完成', 库.当前页 = 1" :class="{ 按钮: true, 选中按钮: 全局状态.订单状态分类 == '已完成' }" class="按钮">
+            <div @click="全局状态.订单状态分类 = '已完成'; 库.当前页 = 1" :class="{ 按钮: true, 选中按钮: 全局状态.订单状态分类 == '已完成' }" class="按钮">
                 已完成{{ 已完成订单数量 }}
             </div>
 
 
 
             <div class="按钮组">
-                <div @click="全局状态.订单状态分类 = '未完成', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未完成' }" class="按钮">
+                <div @click="全局状态.订单状态分类 = '未完成'; 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未完成' }" class="按钮">
                     未完成{{ 未完成订单数量 }} 
                 </div>
-                <div @click="全局状态.订单状态分类 = '有镜片未完成', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '有镜片未完成' }" class="按钮">
+                <div @click="全局状态.订单状态分类 = '有镜片未完成'; 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '有镜片未完成' }" class="按钮">
                     有镜片{{ 有镜片未完成订单数量 }}
                 </div>
-                <div @click="全局状态.订单状态分类 = '未定片', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未定片' }" class="按钮">
+                <div @click="全局状态.订单状态分类 = '未定片'; 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未定片' }" class="按钮">
                     未定片{{ 未订片订单数量 }}
                 </div>
-                <div @click="全局状态.订单状态分类 = '未发镜框', 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未发镜框' }" class="按钮">
+                <div @click="全局状态.订单状态分类 = '未发镜框'; 库.当前页 = 1" :class="{ 选中按钮: 全局状态.订单状态分类 == '未发镜框' }" class="按钮">
                     未发镜框{{ 未发镜框订单数量 }}
                 </div>
             
@@ -293,11 +288,11 @@ let 未发镜框订单数量 = computed(() => 库.订单表.filter((行: any) =>
                 transition: all 0.3s;
 
                 &:first-child {
-                    border-radius: 5px 0px 0px 5px;
+                    border-radius: 5px 0 0 5px;
                 }
 
                 &:last-child {
-                    border-radius: 0px 5px 5px 0px;
+                    border-radius: 0 5px 5px 0;
                 }
 
                 &:hover {

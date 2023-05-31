@@ -270,7 +270,7 @@ let 镜片订单表 = computed(() => {
             <!-- <input v-model="镜片订单表[k].镜片名" placeholder="镜片名" list="镜片名"> -->
             <div class="订单行元素"> 进货价{{ 镜片订单表[k].进货价格 }} </div>
             <select class="订单行元素" @change="进货价(i)" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected="selected">供货商</option>
+              <option value="" disabled selected >供货商</option>
               <option>湖北和益</option>
               <option>山东臻视</option>
               <option>上海老周</option>
@@ -301,7 +301,7 @@ let 镜片订单表 = computed(() => {
             <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
             <div class="元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>
             <select class="元素" @change="提交更改(镜片订单表[k])" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected="selected">供货商</option>
+              <option value="" disabled selected>供货商</option>
               <option>湖北和益</option>
               <option>山东臻视</option>
               <option>上海老周</option>
@@ -317,7 +317,7 @@ let 镜片订单表 = computed(() => {
             <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
             <div class="元素"> 进货价{{ 镜片订单表[k].进货价格 }} </div>
             <select class="元素" @change="进货价(i)" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected="selected">供货商</option>
+              <option value="" disabled selected>供货商</option>
               <option>湖北和益</option>
               <option>山东臻视</option>
               <option>上海老周</option>
