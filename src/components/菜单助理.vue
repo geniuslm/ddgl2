@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { pinia数据中心 } from "../stores/pinia数据";
+import { pinia数据中心 } from "@仓库/pinia数据";
 import { pinia库 } from "@仓库/pinia库";
-import { reactive, ref, onMounted, computed } from "vue";
+import { reactive, ref } from "vue";
 
 import { useRouter } from 'vue-router';
 
@@ -29,7 +29,7 @@ let 菜单列表 = reactive([
     { 路径: "/10", 内容: "利润", 图标: "lm-linechart" },
     { 路径: "/07", 内容: "镜片对账", 图标: "lm-accountbook" },
     { 路径: "/11", 内容: "订单表", 图标: "lm-taobao" },
-    { 路径: "/12", 内容: "测试表", 图标: "lm-question-circle" },
+ //   { 路径: "/12", 内容: "测试表", 图标: "lm-question-circle" },
 
 ])
 
@@ -47,17 +47,21 @@ let 测试 = () => {
 <template>
     <div class="菜单" :style="[开关 ? ' width:  130px' : 'width: 50px']">
 
-        <button v-for="按钮, index in 菜单列表" :key="index" @click="跳转(菜单列表[index])" :class="{ 当前: 菜单列表[index].路径 === 库.菜单页面名 }">
+        <button v-for="(按钮,index) in 菜单列表" :key="index" @click="跳转(菜单列表[index])" :class="{ 当前: 菜单列表[index].路径 === 库.菜单页面名,按钮:true }">
             <icon v-show="!开关" :图标名="按钮.图标" color="#fff" font-size="30px" />
             <icon v-show="开关" :图标名="按钮.图标" color="#fff" font-size="20px" />
             <p v-if="开关">{{ 按钮.内容 }}</p>
+         
         </button>
+      
+      
+      
         <h2>镜框相关</h2>
         
-        <button @click="跳转({路径: '/02'})">
+        <div :class="{ 当前: '/02' === 库.菜单页面名,按钮:true}" @click="跳转({路径: '/02'})">
             <icon :图标名="'lm-taobao'" color="#fff" :font-size="开关?'20px':'30px'" />
             <p v-if="开关">默认页</p>
-        </button>
+        </div>
 
         <button @click="开关 = !开关">{{ 开关 ? "开" : "关" }}</button>
         <div class="展开按钮" @click="开关 = !开关"></div>
@@ -113,16 +117,16 @@ p {
     background-color: #337ecc;
 }
 
-button {
+.按钮 {
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: 1fr;
+    grid-template-columns: 30px 1fr;
     box-sizing: border-box;
     border: 2px solid #409EFF;
     width: 100%;
     border-radius: 4px;
     padding: 4px 8px;
-    font-family: Arial;
     font-size: 14px;
     font-weight: bold;
     color: #ffffff;
@@ -136,14 +140,20 @@ button {
     transition: all 0.2s;
 }
 
-button:hover {
+.按钮:hover {
 
     background-color: #79bbff;
     border: 2px solid #79bbff;
 }
 
-button:active {
+.按钮:active {
     background-color: #337ecc;
     border: 2px solid #337ecc;
 }
+
+.当前 {
+  height: 50px;
+  background-color: #1c82e7;
+}
+
 </style>

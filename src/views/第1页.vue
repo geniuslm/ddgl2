@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { pinia库, 订单类, 镜片订单类 } from '@仓库/pinia库';
+import { pinia库, 镜片订单类 } from '@仓库/pinia库';
 import lmB from "@组件/按钮.vue";
-import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
-import { ref, onMounted, reactive, computed, watch } from 'vue';
+import { reactive, computed } from 'vue';
 import { socket } from "@仓库/socket链接";
-import { emitKeypressEvents } from 'readline';
 
 let 库 = pinia库();
 let 全局状态 = reactive({
@@ -25,6 +23,18 @@ let 充值 = () => {
   新镜片订单.订单类型 = '充值';
   socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
 }
+let 运费 = () => {
+  let 新镜片订单 = new 镜片订单类()
+  新镜片订单.订单日期 = new Date().toLocaleString('zh-CN')
+  新镜片订单.充值金额 = 0;
+  新镜片订单.进货价格 = 0;
+  新镜片订单.供货商 = 全局状态.供应商;
+  新镜片订单.订单类型 = '运费';
+  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+}
+
+
+
 let 添加订单 = () => {
   let 新镜片订单 = new 镜片订单类()
   新镜片订单.镜片名 = ''
@@ -72,6 +82,25 @@ let 加库存 = (订单) => {
     alert('请填写近视散光和供货商')
   }
 }
+let 加店铺库存 = (镜片订单) => {
+  if (镜片订单.供货商 && 镜片订单.近视 && 镜片订单.散光) {
+    let 镜片数据 = 库.镜片表.find(镜片 => 镜片.镜片名 === 镜片订单.镜片名)
+    if (!镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`]) {镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`] = 0}
+    //镜片库存-1 镜片订单收到日改到今天 订单的镜片收到日改到今天
+    镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`] += 1
+    镜片订单.镜片收到日 = new Date().toLocaleString('zh-CN')
+
+
+    socket.emit('镜片', "改", 镜片数据);
+
+    socket.emit('镜片订单', "改", 镜片订单);
+    let 光度库存数量 = 镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`]
+    alert(`${镜片订单.镜片名}近视${镜片订单.近视}散光${镜片订单.散光}的镜片 库存从${光度库存数量-1}加到${光度库存数量}`)
+  }
+  else {
+    alert('请填写近视散光和供货商')
+  }
+}
 let 减店铺库存 = (镜片订单) => {
   if (镜片订单.供货商 && 镜片订单.近视 && 镜片订单.散光) {
     let 镜片数据 = 库.镜片表.find(镜片 => 镜片.镜片名 === 镜片订单.镜片名)
@@ -101,7 +130,7 @@ let 收货 = (镜片订单) => {
     //同步
     socket.emit('订单', "改", 订单数据);
     socket.emit('镜片订单', "改", 镜片订单);
-    alert(`${镜片订单.订单号}的${镜片订单.镜片名}于${`${库.月}月${库.日}`}  收货成功`)
+    alert(`${镜片订单.订单号}的${镜片订单.镜片名}于${库.月}月${库.日}  收货成功`)
   }
   else {
     alert('请填写近视散光和供货商')
@@ -153,6 +182,7 @@ let 镜片订单表 = computed(() => {
       }
       if (镜片订单表[订单].订单类型 !== '充值') {
         和益预存余额 = 和益预存余额 - 镜片订单表[订单].进货价格
+        if(镜片订单表[订单].订单类型 === '运费'){和益预存余额 = 和益预存余额 - 镜片订单表[订单].充值金额}
         镜片订单表[订单].预存余额 = parseFloat(和益预存余额.toFixed(2))
       }
     }
@@ -163,6 +193,7 @@ let 镜片订单表 = computed(() => {
       }
       if (镜片订单表[订单].订单类型 !== '充值') {
         蔡司预存余额 = 蔡司预存余额 - 镜片订单表[订单].进货价格
+        if(镜片订单表[订单].订单类型 === '运费'){蔡司预存余额 = 蔡司预存余额 - 镜片订单表[订单].充值金额}
         镜片订单表[订单].预存余额 = parseFloat(蔡司预存余额.toFixed(2))
       }
     }
@@ -228,17 +259,18 @@ let 镜片订单表 = computed(() => {
         <div class="按钮 正蓝" @click="添加订单()">添加订单</div>
         <div class="按钮 正蓝" @click="添加测试订单()">添加测试订单</div>
         <div class="按钮 正蓝" @click="充值()">充值</div>
+        <div class="按钮 正蓝" @click="运费()">运费</div>
       </div>
       <div class="订单表 滑条">
-        <div v-for="i, k in 镜片订单表">
-          <div v-if="镜片订单表[k].订单类型 !== '充值' && 镜片订单表[k].订单类型 !== '进货'" class="销售订单行">
+        <div v-for="(i,k) in 镜片订单表">
+          <div v-if="镜片订单表[k].订单类型 !== '充值' && 镜片订单表[k].订单类型 !== '进货'&&镜片订单表[k].订单类型 !== '运费'" class="销售订单行">
 
             <div class="订单行元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
 
             <!-- <input v-model="镜片订单表[k].镜片名" placeholder="镜片名" list="镜片名"> -->
             <div class="订单行元素"> 进货价{{ 镜片订单表[k].进货价格 }} </div>
             <select class="订单行元素" @change="进货价(i)" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected="true">供货商</option>
+              <option value="" disabled selected="selected">供货商</option>
               <option>湖北和益</option>
               <option>山东臻视</option>
               <option>上海老周</option>
@@ -256,7 +288,7 @@ let 镜片订单表 = computed(() => {
             </div>
             <div v-if="镜片订单表[k].供货商 !== '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
-              <lmB @click="收货(i)">收货</lmB>
+              <lmB v-if="镜片订单表[k].镜片收到日 === '未收到'" @click="收货(i)">收货</lmB>
             </div>
             <div v-if="镜片订单表[k].供货商 === '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
@@ -264,12 +296,12 @@ let 镜片订单表 = computed(() => {
             </div>
           </div>
 
-          <div v-if="镜片订单表[k].订单类型 === '充值'" class="充值订单行">
+          <div v-if="镜片订单表[k].订单类型 === '充值'||镜片订单表[k].订单类型 === '运费'" class="充值订单行">
 
             <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
             <div class="元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>
             <select class="元素" @change="提交更改(镜片订单表[k])" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected="true">供货商</option>
+              <option value="" disabled selected="selected">供货商</option>
               <option>湖北和益</option>
               <option>山东臻视</option>
               <option>上海老周</option>
@@ -283,10 +315,9 @@ let 镜片订单表 = computed(() => {
 
           <div v-if="镜片订单表[k].订单类型 === '进货'" class="进货订单行">
             <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
-            <!-- <input v-model="镜片订单表[k].镜片名" placeholder="镜片名" list="镜片名"> -->
             <div class="元素"> 进货价{{ 镜片订单表[k].进货价格 }} </div>
             <select class="元素" @change="进货价(i)" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected="true">供货商</option>
+              <option value="" disabled selected="selected">供货商</option>
               <option>湖北和益</option>
               <option>山东臻视</option>
               <option>上海老周</option>
@@ -305,6 +336,7 @@ let 镜片订单表 = computed(() => {
             </div>
             <div v-if="镜片订单表[k].供货商 !== '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
+              <lmB  v-if="镜片订单表[k].镜片收到日 === '未收到'" @click="加店铺库存(i)">加库存</lmB>
             </div>
             <div v-if="镜片订单表[k].供货商 === '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
@@ -360,7 +392,7 @@ let 镜片订单表 = computed(() => {
 
   .首行 {
     gap: 2px;
-    grid-template-columns: 1fr 300px 300px 300px;
+    grid-template-columns: 1fr 300px 300px 300px 300px;
     grid-template-rows: 1fr;
   }
 

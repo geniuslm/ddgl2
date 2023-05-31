@@ -2,9 +2,9 @@
 
 import { useRouter } from 'vue-router';
 import { pinia库, 用户类 } from '@/stores/pinia库';
-import { socket } from "../stores/socket链接";
-import { ref, toRefs, reactive, computed, watch } from 'vue';
-import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
+import { socket } from "@仓库/socket链接";
+import { reactive } from 'vue';
+import { 设置Cookie } from "@仓库/cookie";
 import lmButton from "@组件/按钮.vue";
 let 库 = pinia库()
 let router = useRouter()
@@ -50,7 +50,7 @@ socket.on("disconnect", () => {
 
 <template>
     <div class="登录页" @keyup.enter="登录">
-        <h1>李默眼镜工作室-V1.4.18-新增功能版</h1>
+        <h1>李默眼镜工作室-V1.5.25-rider测试</h1>
 
         <input type="text" placeholder="用户名" v-model.lazy="用户.用户名">
         <input type="text" placeholder="密码" v-model.lazy="用户.密码">

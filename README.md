@@ -16,3 +16,4 @@ TypeScript默认无法处理`.vue`导入的类型信息，因此我们使用`vue
    1. 在VSCode的命令面板中运行`Extensions: Show Built-in Extensions`
     2. 找到`TypeScript and JavaScript Language Features`，右键并选择`Disable (Workspace)`
 2. 通过运行命令面板中的`Developer: Reload Window`重新加载VSCode窗口。
+3. 更新了编辑器用rider来编辑.vue文件的语言服务

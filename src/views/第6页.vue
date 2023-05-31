@@ -98,7 +98,7 @@ let 镜框表 = computed(() => {
                 <div></div>
                 <div></div>
             </div>
-            <div v-for="镜框, k in 镜框表" :key="镜框表[k]._id">
+            <div v-for="(镜框,k) in 镜框表" :key="镜框表[k]._id">
                 <div class="镜框行">
                     <input @change="修改(库.镜框表[k])" :class="{ 正红: !库.镜框表[k].镜框名 }" v-model.lazy="库.镜框表[k].镜框名"
                         placeholder="镜框名" />
