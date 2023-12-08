@@ -26,19 +26,15 @@ let 菜单列表 = reactive([
   {路径: "/09", 内容: "用户表", 图标: "lm-team"},
   {路径: "/10", 内容: "利润", 图标: "lm-linechart"},
   {路径: "/07", 内容: "镜片对账", 图标: "lm-accountbook"},
-  {路径: "/11", 内容: "订单表", 图标: "lm-taobao"},
-  //   { 路径: "/12", 内容: "测试表", 图标: "lm-question-circle" },
+  {路径: "/11", 内容: "订单表", 图标: "lm-taobao"}, 
+  { 路径: "/08T", 内容: "镜片测试", 图标: "lm-question-circle" },
 ])
 let 常用列表 = reactive([
   {路径: "/11", 内容: "订单表", 图标: "lm-taobao"},
   {路径: "/10", 内容: "利润", 图标: "lm-linechart"},
   {路径: "/01", 内容: "镜片订单", 图标: "lm-star-fill"},
   {路径: "/04", 内容: "镜片库存", 图标: "lm-filedone"},
-    
-
   {路径: "/08", 内容: "镜片列表", 图标: "lm-table"},
-
-
 ])
 
 
@@ -59,7 +55,7 @@ let 测试 = () => {
       <icon :图标名="按钮.图标" color="#fff" :font-size="开关?'20px':'30px'"/>
       <p v-if="开关">{{ 按钮.内容 }}</p>
     </div>
-    <div class="间隔"></div> 
+    <div class="间隔"></div>
     <div class="按钮">其他</div>
 
     <div v-for="(按钮,index) in 菜单列表" :key="index" @click="跳转(菜单列表[index])"
@@ -67,7 +63,7 @@ let 测试 = () => {
       <icon :图标名="按钮.图标" color="#fff" :font-size="开关?'20px':'30px'"/>
       <p v-if="开关">{{ 按钮.内容 }}</p>
     </div>
-    
+
     <div class="展开按钮" @click="开关 = !开关"></div>
 
   </div>
@@ -90,13 +86,16 @@ let 测试 = () => {
   transition: all 0.2s;
   position: relative;
 }
-.间隔{
+
+.间隔 {
   height: 30px;
 }
-.其他{
+
+.其他 {
   height: 30px;
   text-align: center;
 }
+
 .当前 {
   height: 50px;
   background-color: #1c82e7;

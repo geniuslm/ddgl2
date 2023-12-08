@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {socket} from "./socket链接";
 import {objectToString} from "@vue/shared";
+import {log} from "console";
 
 
 export class 订单类 {
@@ -268,7 +269,7 @@ export const pinia库 = defineStore("pinia库", {
 
             //镜片选项
             镜片搜索值: {} as 镜片类,
-            镜片全局搜索值: '',
+            镜片全局搜索值: "",
             镜片排序的属性: '镜片名',
             镜片正逆序: 1,
             镜片显示: '全部',
@@ -317,24 +318,13 @@ export const pinia库 = defineStore("pinia库", {
                     })
                 })
             }
-            //分属性搜索
-            for (序号 in state.镜片搜索值) {
-                if (要搜索的值[序号]) {
-                    console.log("在 " + 序号 + " 中搜索 " + 要搜索的值[序号])
-                    要显示的镜片 = 要显示的镜片.filter((行: any) => {
-                        return String(行[序号]).indexOf(要搜索的值[序号]) >= 0
-                    })
-                }
-            }
+
             state.通过筛选的数量 = 要显示的镜片.length
 
             //排序
-            
-                要显示的镜片 = 要显示的镜片.sort((前一个值: any, 后一个值: any) => {
-                    return (前一个值[state.镜片排序的属性] >= 后一个值[state.镜片排序的属性] ? 1 : -1) * state.镜片正逆序
-                })
-            
-            //去掉_id
+            要显示的镜片 = 要显示的镜片.sort((前一个值: any, 后一个值: any) => {
+                return (前一个值["镜片名"] >= 后一个值["镜片名"] ? 1 : -1) * state.镜片正逆序
+            })
             return 要显示的镜片
 
         },
@@ -394,7 +384,20 @@ export const pinia库 = defineStore("pinia库", {
             }
             if (类型 == "镜片") {
                 socket.emit('镜片', 操作, 数据, (返回数据: any) => {
-                    this.镜片表 = 返回数据, this.镜片选项()
+                    if(操作 != "改"){
+                        this.镜片表 = 返回数据;
+                        this.镜片选项()
+                        console.log(操作 + 数据.镜片名 + 操作+ "成功");
+                    }
+                    if (操作 == "改") {
+                        const index = this.镜片表.findIndex(item => item._id === 数据._id);
+                        if (index !== -1) {
+                            this.镜片表[index] = 数据;
+                        }
+                        console.log(操作 + 数据.镜片名 + "修改成功");
+                        console.log(操作 + 数据._id + "修改成功");
+                    }
+                    
                 });
             }
             if (类型 == "镜框") {
@@ -414,11 +417,6 @@ export const pinia库 = defineStore("pinia库", {
                 if (!(this.供应商选项.indexOf(this.镜片表[i].供应商) > -1)) this.供应商选项.push(this.镜片表[i].供应商)
             }
         },
-        // 镜框名选项函数() {
-        //   for (let i in this.镜框表) {
-        //     if (!(this.镜框名选项.indexOf(this.镜框表[i].镜框名) > -1)) this.镜框名选项.push(this.镜框表[i].镜框名)
-        //   }
-        // },
 
 
         对比测试(数据1, 数据2) {

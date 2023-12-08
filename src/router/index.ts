@@ -9,6 +9,7 @@ import 第05页 from '../views/第5页.vue';
 import 第06页 from '../views/第6页.vue';
 import 第07页 from '../views/第7页.vue';
 import 第08页 from '../views/第8页.vue';
+import 第08页T from '../views/第8页T.vue';
 import 第09页 from '../views/第9页.vue';
 import 第10页 from '../views/第10页.vue';
 import 第11页 from '../views/第11页.vue';
@@ -29,8 +30,9 @@ let 主页子菜单 = [
     { path: '05',  components: { 内容: 第05页 },  },
     { path: '06',  components: { 内容: 第06页 },  },
     { path: '07',  components: { 内容: 第07页 },  },
-    { path: '08',  components: { 内容: 第08页 },  },
     { path: '09',  components: { 内容: 第09页 },  },
+    { path: '08',  components: { 内容: 第08页 },  },
+    { path: '08T',  components: { 内容: 第08页T },  },
     { path: '10',  components: { 内容: 第10页 },  },
     { path: '11',  components: { 内容: 第11页 },  },
     { path: '12',  components: { 内容: 第12页 },  },

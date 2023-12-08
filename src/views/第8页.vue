@@ -7,7 +7,6 @@ import { onMounted, ref, toRef, computed, reactive, watch } from 'vue';
 
 let 库 = pinia库();
 onMounted(() => {
-   
     库.镜片搜索值 = new 镜片类
     delete 库.镜片搜索值._id
     delete 库.镜片搜索值.库存
@@ -57,10 +56,9 @@ let 排序 = (k: any) => {
 
 
             <lmH v-for="(i, k) in 库.排序过的镜片" :key="i._id" :序号="k"></lmH>
-
-
-
-
+能不能输入能不能输入 
+能不能好使能不能好使能不能好使能不能好使 
+哈喽 
         </div>
     </div>
 </template>
