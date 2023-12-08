@@ -337,10 +337,17 @@ export const pinia库 = defineStore("pinia库", {
     actions: {
         初始化() {
             let 开始时间 = Date.now()
-            socket.emit('订单', '获', (返回数据: any) => {
-                this.订单表 = 返回数据;
+            socket.emit('订单', "未", (返回数据: any) => {
+                this.订单表 = this.订单表.concat(返回数据);
+                console.log("获未完成 返回数据条数" + 返回数据.length);
                 let 结束时间 = Date.now() - 开始时间;
-                console.log("订单初始化完成 用时" + 结束时间);
+                console.log("订单表 初步用时: " + 结束时间);
+            });       
+            socket.emit('订单', "非", (返回数据: any) => {
+                this.订单表 = this.订单表.concat(返回数据);
+                console.log("获未完成 返回数据条数" + 返回数据.length);
+                let 结束时间 = Date.now() - 开始时间;
+                console.log("订单表 完成用时:" + 结束时间);
             });
             socket.emit('用户', '获', (返回数据: any) => {
                 this.用户表 = 返回数据
@@ -365,6 +372,7 @@ export const pinia库 = defineStore("pinia库", {
             this.年 = date.getFullYear().toString().slice(2)
             this.月 = ("0" + (date.getMonth() + 1)).slice(-2)
             this.日 = ("0" + date.getDate()).slice(-2)
+      
         },
         async 通讯(类型: string, 操作: string, 数据?: any) {
             if (类型 == "测试") {
@@ -384,10 +392,10 @@ export const pinia库 = defineStore("pinia库", {
             }
             if (类型 == "镜片") {
                 socket.emit('镜片', 操作, 数据, (返回数据: any) => {
-                    if(操作 != "改"){
+                    if (操作 != "改") {
                         this.镜片表 = 返回数据;
                         this.镜片选项()
-                        console.log(操作 + 数据.镜片名 + 操作+ "成功");
+                        console.log(操作 + 数据.镜片名 + 操作 + "成功");
                     }
                     if (操作 == "改") {
                         const index = this.镜片表.findIndex(item => item._id === 数据._id);
@@ -395,9 +403,8 @@ export const pinia库 = defineStore("pinia库", {
                             this.镜片表[index] = 数据;
                         }
                         console.log(操作 + 数据.镜片名 + "修改成功");
-                        console.log(操作 + 数据._id + "修改成功");
                     }
-                    
+
                 });
             }
             if (类型 == "镜框") {

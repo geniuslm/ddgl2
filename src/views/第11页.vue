@@ -3,18 +3,18 @@ import {pinia库, 订单类} from '@仓库/pinia库';
 import lmInput from "@/components/订单行.vue";
 import lmButton from "@组件/按钮.vue";
 import {socket} from "@仓库/socket链接";
-import {onMounted, computed, reactive} from 'vue';
+import {onMounted, computed, reactive, ref} from 'vue';
 import {cloneDeep as deepCopy} from 'lodash';
 
 
 let 库 = pinia库();
-
+let 刷新器 = ref(0)
 socket.on("广播", 接收数据 => {
   if (接收数据[0] === '改') {
-    for (let i in 库.订单表) {
-      if (库.订单表[i]._id === 接收数据[1]._id) {
-        库.订单表[i] = deepCopy(接收数据[1])
-      }
+    const index = 库.订单表.findIndex(item => item._id === 接收数据[1]._id);
+    if (index !== -1) {
+      库.订单表.splice(index, 1, 接收数据[1]);
+      刷新器.value += 1
     }
   }
   if (接收数据[0] === '增') {
@@ -23,7 +23,7 @@ socket.on("广播", 接收数据 => {
   if (接收数据[0] === '删') {
     库.订单表.splice(库.订单表.findIndex((行: any) => 行._id == 接收数据[1]._id), 1)
   }
-  console.log('收到的广播', 接收数据[0], 接收数据[1]);
+  console.log('收到的广播', 接收数据[0]);
 })
 
 let 全局状态 = reactive({
@@ -73,8 +73,8 @@ let 订单表 = computed(() => {
   }
   if (全局状态.订单状态分类 === '未发镜框') {
     要显示的订单 = 库.订单表.filter((行: any) => {
-      return 行.订单进度 !== '已完成' && (行.选定镜框 || 行.试戴镜框.filter((item) => item !== null && item !== "").length !== 0) 
-             && !行.镜框发货日 && 行.镜框选项 !== '直接加工'
+      return 行.订单进度 !== '已完成' && (行.选定镜框 || 行.试戴镜框.filter((item) => item !== null && item !== "").length !== 0)
+          && !行.镜框发货日 && 行.镜框选项 !== '直接加工'
     })
   }
   if (全局状态.订单状态分类 === '直接加工') {
@@ -103,18 +103,8 @@ let 订单表 = computed(() => {
       })
     })
   }
-  //分属性搜索
-  // for (序号 in 要搜索的值) {
-  //     if (要搜索的值[序号]) {
-  //         console.log("在 " + 序号 + " 中搜索 " + 要搜索的值[序号])
-  //         要显示的订单 = 要显示的订单.filter((行: any) => {
-  //             return String(行[序号]).indexOf(要搜索的值[序号]) >= 0
-  //         })
-  //     }
-  // }
+
   全局状态.通过全局搜索的数量 = 要显示的订单.length
-
-
   //排序
   要显示的订单 = 要显示的订单.sort((前一个值: any, 后一个值: any) => {
     return (前一个值[全局状态.订单排序属性] >= 后一个值[全局状态.订单排序属性] ? 1 : -1) * 全局状态.订单排序正反
@@ -193,7 +183,7 @@ let 只买镜框订单数量 = computed(() => 库.订单表.filter((行: any) =>
 }).length)
 
 let 蔡司镜片订单数量 = computed(() => 库.订单表.filter((行: any) => {
-  return  行.镜片.includes('蔡司') && 行.订单进度 !== '已完成'
+  return 行.镜片.includes('蔡司') && 行.订单进度 !== '已完成'
 }).length)
 
 
@@ -232,8 +222,8 @@ let 蔡司镜片订单数量 = computed(() => 库.订单表.filter((行: any) =>
              :class="{ 选中按钮: 全局状态.订单状态分类 == '蔡司镜片' }" class="按钮">
           蔡司镜片{{ 蔡司镜片订单数量 }}
         </div>
-  
- 
+
+
       </div>
 
 
@@ -256,9 +246,6 @@ let 蔡司镜片订单数量 = computed(() => 库.订单表.filter((行: any) =>
         </div>
 
 
-
-
-
       </div>
 
 
@@ -276,7 +263,7 @@ let 蔡司镜片订单数量 = computed(() => 库.订单表.filter((行: any) =>
     <!-- 表格模块 -->
     <div class="表格">
 
-      <lmInput v-for="(i, k) in 订单表 " :key="订单表[k]._id" :行数据="订单表[k]"></lmInput>
+      <lmInput v-for="(i, k) in 订单表 " :key="订单表[k]._id+刷新器" :行数据="订单表[k]"></lmInput>
 
     </div>
     <!-- 分页模块 -->
