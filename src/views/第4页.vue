@@ -4,6 +4,7 @@ import lmB from "@组件/按钮.vue";
 import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 import { ref, onMounted, reactive, computed, watch } from 'vue';
 import { socket } from "@仓库/socket链接";
+import Icon from "@组件/icons/Icon.vue";
 
 
 
@@ -182,6 +183,19 @@ let 添加订单 = () => {
   新镜片订单.镜片收到日 = '未收到';
   socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
 }
+let 添加有度数的订单 = (度数) => {
+  let 新镜片订单 = new 镜片订单类()
+  新镜片订单.镜片名 = 全局状态.镜片名
+  新镜片订单.订单日期 = new Date().toLocaleString('zh-CN')
+  新镜片订单.进货价格 = 0;
+  新镜片订单.供货商 = '';
+  新镜片订单.近视 = 度数.split('散')[0].split('近')[1]
+  新镜片订单.散光 = 度数.split('散')[1]
+  if (全局状态.镜片名 === '尼德克单光1.74') { 新镜片订单.供货商 = '上海老周'; 新镜片订单.进货价格 = 66.5 }
+  新镜片订单.订单类型 = '进货';
+  新镜片订单.镜片收到日 = '未收到';
+  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+}
 
 let 删除订单 = (订单) => {
 
@@ -267,6 +281,7 @@ let 测试 = () => {
           <div v-for="i in 镜片格子" :class="{ 镜片块: true, 无: 选定镜片库存[i] < 1 }">
             <div> {{ i }}</div>
             <input @change="改变库存(i)" type="number" v-model="选定镜片库存[i]">
+            <icon 图标名="lm-plus-circle"  @click="添加有度数的订单(i)"  颜色="#333" font-size='20px' />
           </div>
         </div>
       </Transition>
@@ -351,7 +366,7 @@ let 测试 = () => {
       // background-color: $暗绿;
 
       .镜片块 {
-        grid-template-columns: 1fr 30px;
+        grid-template-columns: 1fr 30px 20px;
         grid-template-rows: 1fr;
         background-color: $浅绿;
 

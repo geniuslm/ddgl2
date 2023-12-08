@@ -1,11 +1,10 @@
-<script setup lang="ts">
-
-
-import { ref} from 'vue'
+﻿<script setup lang="ts">
+import {onMounted, ref} from 'vue'
 import { socket } from "@仓库/socket链接";
 
-//计算连接到socket 服务器的延迟函数
+
 let 延时 = ref(0)
+//计算连接到socket 服务器的延迟函数
 let 计算延时 = () => {
   let 开始时间 = Date.now()
   socket.emit('测试', '查','',() => {
@@ -14,6 +13,9 @@ let 计算延时 = () => {
   })
 }
 
+onMounted(() => {
+  计算延时()
+})
 
 </script>
 
@@ -30,8 +32,9 @@ let 计算延时 = () => {
 .延时 {
   &:hover {
     cursor: default;
+    color: $暗绿;
   }
-  font: 24px/1.5 "Microsoft YaHei";
+  font: 18px/1.5 "Microsoft YaHei";
   font-weight: bold;
   color: $正绿;
 }

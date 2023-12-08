@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { pinia库, 订单类 } from '@仓库/pinia库';
+import {pinia库, 订单类} from '@仓库/pinia库';
 import lmB from "@组件/按钮.vue";
-import { socket } from "../stores/socket链接";
+import {socket} from "../stores/socket链接";
 
-import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
-import { ref, computed, reactive } from 'vue';
+import {获取Cookie, 删除Cookie, 设置Cookie} from "@仓库/cookie";
+import {ref, computed, reactive} from 'vue';
 
 let 库 = pinia库();
 let 新值 = ref("");
@@ -44,8 +44,7 @@ let 订单号修正 = async () => {
     if (parseInt(i) > 0 && 订单表[i].订单号.slice(0, 6) == 订单表[parseInt(i) - 1].订单号.slice(0, 6)) {
       尾数 = ('0' + (parseInt(尾数) + 1).toString()).slice(-2)
       订单表[i].订单号 = 订单表[i].订单号.slice(0, 6) + 尾数;
-    }
-    else {
+    } else {
       尾数 = '01'
       订单表[i].订单号 = 订单表[i].订单号.slice(0, 6) + 尾数;
     }
@@ -65,7 +64,6 @@ let 订单进度 = async () => {
       库.订单表[i].订单完成日 = 库.订单表[i].订单号.slice(2, 4) + '月' + 库.订单表[i].订单号.slice(4, 6) + '日'
       更改数量 += 1
     }
-
 
 
     await 库.通讯('订单', "改", 库.订单表[i]);
@@ -111,18 +109,14 @@ let log不在表镜片 = () => {
 }
 
 
-
 let 各种设置 = () => {
-//在库的镜片表中循环 把空的镜片变成空字符串
- for(let i in 库.订单表){
-   if(库.订单表[i].镜片===null){
-     库.订单表[i].镜片=''
-     console.log(库.订单表[i].镜片);
-     
-   }
-   库.通讯('订单', "改", 库.订单表[i]);
- }
+  for (let 镜片订单 of 库.镜片订单表) {
 
+    镜片订单.对账 = "未兑"
+    socket.emit('镜片订单', "改", 镜片订单, (返回数据: any) => {
+      console.log(返回数据)
+    });
+  }
 }
 
 
@@ -153,7 +147,7 @@ let new订单 = () => {
 
     </div>
     <div class="滑条 开始">
-      <div v-for=" i in  库.订单表">{{ i.订单号 }} -{{i.镜片  }}</div>
+      <div v-for="i in  库.镜片订单表">{{ i.订单号 }}-{{ i.对账 }}</div>
     </div>
   </div>
   <datalist id="镜片名">

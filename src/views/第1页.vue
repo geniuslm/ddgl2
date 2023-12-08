@@ -1,8 +1,10 @@
+<!--suppress CommaExpressionJS -->
 <script setup lang="ts">
-import { pinia库, 镜片订单类 } from '@仓库/pinia库';
+import {pinia库, 订单类, 镜片订单类} from '@仓库/pinia库';
 import lmB from "@组件/按钮.vue";
-import { reactive, computed } from 'vue';
-import { socket } from "@仓库/socket链接";
+import {computed, reactive} from 'vue';
+import {socket} from "@仓库/socket链接";
+import lmInput from "@/components/订单行.vue";
 
 let 库 = pinia库();
 let 全局状态 = reactive({
@@ -11,8 +13,10 @@ let 全局状态 = reactive({
   显示库存表: false,
   湖北合益余额: 0,
   湖北蔡司余额: 0,
+  筛选开关: true,
+  筛选数量: 0,
+  显示详情: '',
 })
-
 
 
 let 充值 = () => {
@@ -21,7 +25,9 @@ let 充值 = () => {
   新镜片订单.充值金额 = 0;
   新镜片订单.供货商 = 全局状态.供应商;
   新镜片订单.订单类型 = '充值';
-  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => {
+    库.镜片订单表.push(返回数据), console.log(返回数据)
+  });
 }
 let 运费 = () => {
   let 新镜片订单 = new 镜片订单类()
@@ -30,9 +36,10 @@ let 运费 = () => {
   新镜片订单.进货价格 = 0;
   新镜片订单.供货商 = 全局状态.供应商;
   新镜片订单.订单类型 = '运费';
-  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => {
+    库.镜片订单表.push(返回数据), console.log(返回数据)
+  });
 }
-
 
 
 let 添加订单 = () => {
@@ -43,7 +50,9 @@ let 添加订单 = () => {
   新镜片订单.供货商 = '';
   新镜片订单.订单类型 = '进货';
   新镜片订单.镜片收到日 = '未收到';
-  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => {
+    库.镜片订单表.push(返回数据), console.log(返回数据)
+  });
 }
 
 let 添加测试订单 = () => {
@@ -55,12 +64,16 @@ let 添加测试订单 = () => {
   新镜片订单.进货价格 = 100;
   新镜片订单.订单类型 = '进货';
   新镜片订单.镜片收到日 = '未收到';
-  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => { 库.镜片订单表.push(返回数据), console.log(返回数据) });
+  socket.emit('镜片订单', '增', 新镜片订单, (返回数据: any) => {
+    库.镜片订单表.push(返回数据) , console.log(返回数据)
+  });
 }
 
 let 删除订单 = (订单) => {
 
-  socket.emit('镜片订单', '删', 订单, (返回数据: any) => { console.log(返回数据) });
+  socket.emit('镜片订单', '删', 订单, (返回数据: any) => {
+    console.log(返回数据)
+  });
   const indexToRemove = 库.镜片订单表.findIndex((行: any) => 行._id === 订单._id);
 
   if (indexToRemove !== -1) {
@@ -77,15 +90,16 @@ let 加库存 = (订单) => {
     socket.emit('镜片', "改", 镜片数据);
     socket.emit('镜片订单', "改", 订单);
     alert(`${订单.镜片名}近视${订单.近视}散光${订单.散光}的镜片 库存+1 到${镜片数据.库存[`近${订单.近视}散${订单.散光}`]}`)
-  }
-  else {
+  } else {
     alert('请填写近视散光和供货商')
   }
 }
 let 加店铺库存 = (镜片订单) => {
   if (镜片订单.供货商 && 镜片订单.近视 && 镜片订单.散光) {
     let 镜片数据 = 库.镜片表.find(镜片 => 镜片.镜片名 === 镜片订单.镜片名)
-    if (!镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`]) {镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`] = 0}
+    if (!镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`]) {
+      镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`] = 0
+    }
     //镜片库存-1 镜片订单收到日改到今天 订单的镜片收到日改到今天
     镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`] += 1
     镜片订单.镜片收到日 = new Date().toLocaleString('zh-CN')
@@ -95,9 +109,8 @@ let 加店铺库存 = (镜片订单) => {
 
     socket.emit('镜片订单', "改", 镜片订单);
     let 光度库存数量 = 镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`]
-    alert(`${镜片订单.镜片名}近视${镜片订单.近视}散光${镜片订单.散光}的镜片 库存从${光度库存数量-1}加到${光度库存数量}`)
-  }
-  else {
+    alert(`${镜片订单.镜片名}近视${镜片订单.近视}散光${镜片订单.散光}的镜片 库存从${光度库存数量 - 1}加到${光度库存数量}`)
+  } else {
     alert('请填写近视散光和供货商')
   }
 }
@@ -115,9 +128,8 @@ let 减店铺库存 = (镜片订单) => {
     socket.emit('订单', "改", 订单数据);
     socket.emit('镜片订单', "改", 镜片订单);
     let 光度库存数量 = 镜片数据.库存[`近${镜片订单.近视}散${镜片订单.散光}`]
-    alert(`${镜片订单.镜片名}近视${镜片订单.近视}散光${镜片订单.散光}的镜片 库存从${光度库存数量+1}减到${光度库存数量}`)
-  }
-  else {
+    alert(`${镜片订单.镜片名}近视${镜片订单.近视}散光${镜片订单.散光}的镜片 库存从${光度库存数量 + 1}减到${光度库存数量}`)
+  } else {
     alert('请填写近视散光和供货商')
   }
 }
@@ -131,9 +143,17 @@ let 收货 = (镜片订单) => {
     socket.emit('订单', "改", 订单数据);
     socket.emit('镜片订单', "改", 镜片订单);
     alert(`${镜片订单.订单号}的${镜片订单.镜片名}于${库.月}月${库.日}  收货成功`)
-  }
-  else {
+  } else {
     alert('请填写近视散光和供货商')
+  }
+}
+let 对账 = (镜片订单) => {
+  if (镜片订单.对账 == "已兑") {
+    镜片订单.对账 = "未兑"
+    socket.emit('镜片订单', "改", 镜片订单);
+  } else {
+    镜片订单.对账 = "已兑"
+    socket.emit('镜片订单', "改", 镜片订单);
   }
 }
 
@@ -143,14 +163,12 @@ let 进货价 = (订单) => {
     if (!镜片数据[订单.供货商]) {
       console.log(镜片数据)
       alert('请先在镜片表中填写进货价')
-    }
-    else {
+    } else {
       console.log(镜片数据[订单.供货商])
       订单.进货价格 = 镜片数据[订单.供货商]
       socket.emit('镜片订单', "改", 订单);
     }
-  }
-  else {
+  } else {
     alert('请填写存在的镜片名')
   }
 
@@ -160,8 +178,10 @@ let 测试 = () => {
   alert('测试功能 无意义')
 }
 
-let 提交更改 = (订单) => {
-  socket.emit('镜片订单', "改", 订单, (返回数据: any) => { console.log(返回数据) });
+let 提交更改 = (订单: any) => {
+  socket.emit('镜片订单', "改", 订单, (返回数据: any) => {
+    console.log(返回数据)
+  });
 }
 
 
@@ -170,7 +190,9 @@ let 镜片订单表 = computed(() => {
   //筛选供货商
   if (全局状态.供应商 !== '全部供货商') 镜片订单表 = 库.镜片订单表.filter(订单 => 订单.供货商 === 全局状态.供应商)
   //按照订单日期排序
-  镜片订单表 = 镜片订单表.sort((a, b) => { return new Date(b.订单日期) > new Date(a.订单日期) ? -1 : 1 })
+  镜片订单表 = 镜片订单表.sort((a, b) => {
+    return new Date(b.订单日期) > new Date(a.订单日期) ? -1 : 1
+  })
 
   let 和益预存余额 = 0
   let 蔡司预存余额 = 0
@@ -182,7 +204,9 @@ let 镜片订单表 = computed(() => {
       }
       if (镜片订单表[订单].订单类型 !== '充值') {
         和益预存余额 = 和益预存余额 - 镜片订单表[订单].进货价格
-        if(镜片订单表[订单].订单类型 === '运费'){和益预存余额 = 和益预存余额 - 镜片订单表[订单].充值金额}
+        if (镜片订单表[订单].订单类型 === '运费') {
+          和益预存余额 = 和益预存余额 - 镜片订单表[订单].充值金额
+        }
         镜片订单表[订单].预存余额 = parseFloat(和益预存余额.toFixed(2))
       }
     }
@@ -193,7 +217,9 @@ let 镜片订单表 = computed(() => {
       }
       if (镜片订单表[订单].订单类型 !== '充值') {
         蔡司预存余额 = 蔡司预存余额 - 镜片订单表[订单].进货价格
-        if(镜片订单表[订单].订单类型 === '运费'){蔡司预存余额 = 蔡司预存余额 - 镜片订单表[订单].充值金额}
+        if (镜片订单表[订单].订单类型 === '运费') {
+          蔡司预存余额 = 蔡司预存余额 - 镜片订单表[订单].充值金额
+        }
         镜片订单表[订单].预存余额 = parseFloat(蔡司预存余额.toFixed(2))
       }
     }
@@ -214,10 +240,32 @@ let 镜片订单表 = computed(() => {
     }
 
   }
-  if (全局状态.湖北合益余额 === 0) 全局状态.湖北合益余额 = 和益预存余额
-  if (全局状态.湖北蔡司余额 === 0) 全局状态.湖北蔡司余额 = 蔡司预存余额
+  // if (全局状态.湖北合益余额 === 0) 全局状态.湖北合益余额 = Math.floor(和益预存余额)  
+  if (全局状态.湖北合益余额 === 0) 全局状态.湖北合益余额 = parseFloat(和益预存余额.toFixed(2))
+  if (全局状态.湖北蔡司余额 === 0) 全局状态.湖北蔡司余额 = parseFloat(蔡司预存余额.toFixed(2))
+  if (全局状态.筛选开关) 镜片订单表 = 镜片订单表.filter((订单: any) => {
+    return 订单.镜片收到日 === '未收到' || 订单.镜片收到日 === null || 订单.镜片收到日 === undefined;
+  })
+  全局状态.筛选数量 = 镜片订单表.length
   return 镜片订单表
 })
+
+let 查找订单数据 = (订单号) => {
+  let 找到的订单 = 库.订单表.find(订单 => 订单.订单号 === 订单号);
+  if (找到的订单) {
+    return 库.订单表.find(订单 => 订单.订单号 === 订单号)
+  } else {
+    return new 订单类()
+  }
+}
+
+let 显示详情 = (订单号) => {
+  if (全局状态.显示详情 == '') {
+    全局状态.显示详情 = 订单号
+  } else {
+    全局状态.显示详情 = ''
+  }
+}
 
 </script>
 
@@ -255,31 +303,25 @@ let 镜片订单表 = computed(() => {
 
     <div class="订单部分 滑条">
       <div class="首行">
-        <div> </div>
+        <div></div>
         <div class="按钮 正蓝" @click="添加订单()">添加订单</div>
         <div class="按钮 正蓝" @click="添加测试订单()">添加测试订单</div>
         <div class="按钮 正蓝" @click="充值()">充值</div>
         <div class="按钮 正蓝" @click="运费()">运费</div>
+        <div class="按钮 正蓝" @click="全局状态.筛选开关=!全局状态.筛选开关">筛选{{ 全局状态.筛选数量 }}</div>
       </div>
       <div class="订单表 滑条">
+
         <div v-for="(i,k) in 镜片订单表">
-          <div v-if="镜片订单表[k].订单类型 !== '充值' && 镜片订单表[k].订单类型 !== '进货'&&镜片订单表[k].订单类型 !== '运费'" class="销售订单行">
-
-            <div class="订单行元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
-
-            <!-- <input v-model="镜片订单表[k].镜片名" placeholder="镜片名" list="镜片名"> -->
-            <div class="订单行元素"> 进货价{{ 镜片订单表[k].进货价格 }} </div>
-            <select class="订单行元素" @change="进货价(i)" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected >供货商</option>
-              <option>湖北和益</option>
-              <option>山东臻视</option>
-              <option>上海老周</option>
-              <option>湖北蔡司</option>
-              <option>丹阳夏总</option>
-              <option>店铺库存</option>
-            </select>
+          <!-- 销售 -->
+          <div
+              v-if="镜片订单表[k].订单类型 !== '充值' && 镜片订单表[k].订单类型 !== '进货'&&镜片订单表[k].订单类型 !== '运费'"
+              class="销售订单行">
+            <div class="订单行元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }}</div>
+            <div class="订单行元素"> 进货价{{ 镜片订单表[k].进货价格 }}</div>
+            <div class="订单行元素"> {{ 镜片订单表[k].供货商 }}</div>
             <div class="订单行元素">{{ 镜片订单表[k].预存余额 ? `余额:${镜片订单表[k].预存余额}` : `现结` }}</div>
-            <div class="订单行元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>
+            <div class="订单行元素"> {{ 镜片订单表[k].订单日期.slice(0, 10)  }}</div>
             <div class="订单行元素"> {{ 镜片订单表[k].镜片名 }}</div>
             <input v-model="镜片订单表[k].近视" placeholder="近视" list="近视">
             <input v-model="镜片订单表[k].散光" placeholder="散光" list="散光">
@@ -289,42 +331,36 @@ let 镜片订单表 = computed(() => {
             <div v-if="镜片订单表[k].供货商 !== '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
               <lmB v-if="镜片订单表[k].镜片收到日 === '未收到'" @click="收货(i)">收货</lmB>
+              <lmB @click="显示详情(镜片订单表[k].订单号.slice(0,8))">详情</lmB>
+              <lmB @click="对账(镜片订单表[k])" :class="{ 正红: 镜片订单表[k].对账 === '未兑'}">
+                {{ 镜片订单表[k].对账 }}
+              </lmB>
             </div>
             <div v-if="镜片订单表[k].供货商 === '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
               <lmB @click="减店铺库存(i)">减库存</lmB>
+              <lmB @click="显示详情(镜片订单表[k].订单号.slice(0,8))">详情</lmB>
+            </div>
+            <div v-if="全局状态.显示详情==镜片订单表[k].订单号.slice(0,8)" class="第二行">
+              <lmInput :行数据="查找订单数据(镜片订单表[k].订单号.slice(0,8))"></lmInput>
             </div>
           </div>
-
+          <!-- 充值 -->
           <div v-if="镜片订单表[k].订单类型 === '充值'||镜片订单表[k].订单类型 === '运费'" class="充值订单行">
 
-            <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
+            <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }}</div>
             <div class="元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>
-            <select class="元素" @change="提交更改(镜片订单表[k])" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected>供货商</option>
-              <option>湖北和益</option>
-              <option>山东臻视</option>
-              <option>上海老周</option>
-              <option>湖北蔡司</option>
-              <option>丹阳夏总</option>
-            </select>
-            <input @change="提交更改(镜片订单表[k])" class="元素" type="number" v-model="镜片订单表[k].充值金额" placeholder="充值金额">
+            <div class="元素"> {{ 镜片订单表[k].供货商 }}</div>
+            <input @change="提交更改(镜片订单表[k])" class="元素" type="number" v-model="镜片订单表[k].充值金额"
+                   placeholder="充值金额">
             <div class="元素">{{ 镜片订单表[k].预存余额 ? `余额:${镜片订单表[k].预存余额}` : `现结` }}</div>
             <lmB @click="删除订单(i)">删除</lmB>
           </div>
-
+          <!-- 进货 -->
           <div v-if="镜片订单表[k].订单类型 === '进货'" class="进货订单行">
-            <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }} </div>
-            <div class="元素"> 进货价{{ 镜片订单表[k].进货价格 }} </div>
-            <select class="元素" @change="进货价(i)" v-model="镜片订单表[k].供货商">
-              <option value="" disabled selected>供货商</option>
-              <option>湖北和益</option>
-              <option>山东臻视</option>
-              <option>上海老周</option>
-              <option>湖北蔡司</option>
-              <option>丹阳夏总</option>
-              <option>店铺库存</option>
-            </select>
+            <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }}</div>
+            <div class="元素"> 进货价{{ 镜片订单表[k].进货价格 }}</div>
+            <div class="元素"> {{ 镜片订单表[k].供货商 }}</div>
             <div class="元素">{{ 镜片订单表[k].预存余额 ? `余额:${镜片订单表[k].预存余额}` : `现结` }}</div>
 
             <div class="元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>
@@ -336,7 +372,7 @@ let 镜片订单表 = computed(() => {
             </div>
             <div v-if="镜片订单表[k].供货商 !== '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
-              <lmB  v-if="镜片订单表[k].镜片收到日 === '未收到'" @click="加店铺库存(i)">加库存</lmB>
+              <lmB v-if="镜片订单表[k].镜片收到日 === '未收到'" @click="加店铺库存(i)">加库存</lmB>
             </div>
             <div v-if="镜片订单表[k].供货商 === '店铺库存'" class="按钮组">
               <lmB @click="删除订单(i)">删除</lmB>
@@ -392,7 +428,7 @@ let 镜片订单表 = computed(() => {
 
   .首行 {
     gap: 2px;
-    grid-template-columns: 1fr 300px 300px 300px 300px;
+    grid-template-columns: 1fr 300px 300px 300px 300px 300px;
     grid-template-rows: 1fr;
   }
 
@@ -403,20 +439,25 @@ let 镜片订单表 = computed(() => {
     .销售订单行 {
       gap: 2px;
       justify-content: start;
-      grid-template-columns: 200px 150px 200px 120px 120px 1fr 80px 80px 200px 130px;
+      grid-template-columns: 200px 150px 120px 200px 120px 1fr 80px 80px 200px 200px;
       grid-template-rows: 1fr;
 
       .按钮组 {
         gap: 2px;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         grid-template-rows: 1fr;
+      }
+
+      .第二行 {
+        //横跨多列
+        grid-column: 1 / span 10;
       }
     }
 
     .充值订单行 {
       gap: 2px;
       justify-content: start;
-      grid-template-columns: 200px 1fr 1fr 1fr 1fr 180px;
+      grid-template-columns: 200px 1fr 1fr 1fr 1fr 190px;
       grid-template-rows: 1fr;
 
       .元素 {
@@ -436,7 +477,7 @@ let 镜片订单表 = computed(() => {
     .进货订单行 {
       gap: 2px;
       justify-content: start;
-      grid-template-columns: 200px 150px 200px 120px 120px 1fr 80px 80px 200px 130px;
+      grid-template-columns: 200px 150px 200px 120px 120px 1fr 80px 80px 200px 190px;
       grid-template-rows: 1fr;
 
       .元素 {
@@ -454,7 +495,6 @@ let 镜片订单表 = computed(() => {
     }
   }
 }
-
 
 
 input {

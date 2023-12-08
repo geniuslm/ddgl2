@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { pinia库 } from '../stores/pinia库';
-import { useRouter } from 'vue-router';
-import { socket } from "../stores/socket链接";
-import lmButton from "@组件/新版按钮.vue";
+import { pinia库 } from '@仓库/pinia库';
+import lm延时组件 from "@组件/延时组件.vue";
 import { ref } from 'vue';
-import { 获取Cookie, 删除Cookie, 设置Cookie } from "@仓库/cookie";
 
 let 库 = pinia库()
 
@@ -43,7 +40,9 @@ const 备份订单表 = () => {
  
     <button v-if="库.当前登录用户类型==='助理'" @click="备份订单表()">备份{{ 种类 }}</button>
     <a v-if="下载链接" :href="下载链接" :download="文件名" @click="下载链接 = ''">点击下载</a>
-
+    <a v-if="!下载链接" ></a>
+    
+    <lm延时组件></lm延时组件>
   </div>
 </template>
 
@@ -52,7 +51,7 @@ const 备份订单表 = () => {
 .底部 {
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr ;
+  grid-template-columns: 1fr 1fr 1fr 130px ;
   grid-template-rows: 1fr;
   grid-column-gap: 10px;
   grid-auto-flow: column;

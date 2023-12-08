@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     '头部': typeof import('./src/components/头部.vue')['default']
     '新版按钮': typeof import('./src/components/新版按钮.vue')['default']
     '行': typeof import('./src/components/行.vue')['default']
+    '延时组件': typeof import('./src/components/延时组件.vue')['default']
     '用户行': typeof import('./src/components/用户行.vue')['default']
     '用户行V2': typeof import('./src/components/用户行V2.vue')['default']
     Icon: typeof import('./src/components/icons/Icon.vue')['default']

@@ -7,10 +7,11 @@ let 本地服务器IP:string = "ws://localhost:8081"  // 创建一个socket实�
 let 远程服务器IP:string = "ws://120.53.103.135:8081"  // 创建一个socket实例 
 let 远程服务器域名:string = "wss://lmgwr.com:28888"  // 创建一个socket实例 
 let 远程服务器dev地址:string = "ws://120.53.103.135:8081"  // 创建一个socket实例 
-
-export let socket = io(远程服务器域名);  // 创建一个socket实例
+let 艾云地址:string = "wss://lmgwr.com:24444"  // 创建一个socket实例 
+let 艾云地址2:string = "wss://work.lmgwr.com:24444"  // 创建一个socket实例 
+export let socket = io(艾云地址);  // 创建一个socket实例
 
 
 // socket.on("广播", data => {
-//     console.log(`收到广播:${data}`);
+//     console.log(`收到广播:${data}`)
 // })

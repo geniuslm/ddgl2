@@ -50,7 +50,7 @@ socket.on("disconnect", () => {
 
 <template>
     <div class="登录页" @keyup.enter="登录">
-        <h1>李默眼镜工作室-V1.5.25-rider测试</h1>
+        <h1>李默眼镜工作室-V1.12.8</h1>
 
         <input type="text" placeholder="用户名" v-model.lazy="用户.用户名">
         <input type="text" placeholder="密码" v-model.lazy="用户.密码">

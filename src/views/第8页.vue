@@ -1,5 +1,5 @@
 <script setup lang = "ts">
-import { pinia库, 订单类, 镜片类 } from '../stores/pinia库';
+import { pinia库, 订单类, 镜片类 } from '@仓库/pinia库';
 import lmH from "@组件/镜片行V2.vue";
 import lmButton from "@组件/按钮.vue";
 import { onMounted, ref, toRef, computed, reactive, watch } from 'vue';

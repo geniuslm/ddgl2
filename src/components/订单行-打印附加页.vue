@@ -1,16 +1,14 @@
 <script setup lang = "ts">
-import { useRouter } from 'vue-router';
-import { ref, toRefs, reactive, computed, watch, onMounted } from 'vue';
+import { computed } from 'vue';
 import Icon from './icons/Icon.vue';
-import { socket } from "../stores/socket链接";
-import { pinia库, 镜片类, 订单类 } from '../stores/pinia库';
-import JsBarcode from "jsbarcode";
-import { values } from 'lodash';
-
+import { pinia库, 订单类 } from '@仓库/pinia库';
 
 
 let 库 = pinia库();
-let { 行数据 } = defineProps(['行数据'])
+//let { 行数据 } = defineProps(['行数据'])
+let props1 = defineProps(['行数据'])
+let 行数据: 订单类 = props1.行数据
+
 
 let 镜框列表 = computed(() => {
   let 镜框列表 = '';
@@ -66,7 +64,7 @@ let 镜框列表 = computed(() => {
       </div>
       <div class="镜框行 ">
         <!-- <div v-for="i in 行数据.试戴镜框">{{ i }}</div> -->
-        <div> {{ 行数据.镜框选项  }}{{ 镜框列表 }}</div>
+        <div> {{ 行数据.镜框选项  }} {{行数据.选定镜框}}{{ 镜框列表 }}</div>
       </div>
       <div class="最后行 ">
         <div>{{ 行数据.镜框选项 == "只买镜框" ? 行数据.选定镜框 : '' }} {{ 行数据.备注 }}</div>
@@ -167,7 +165,7 @@ let 镜框列表 = computed(() => {
         <div>{{ 行数据.左瞳距 }}</div>
       </div>
       <div class="最后行 ">
-        <div>{{ 行数据.备注 }}</div>
+        <input >
         <icon 图标名="lm-printer" v-print="'#打印范围-蔡司'" 颜色="#67C23A" font-size='30px' />
       </div>
     </div>
@@ -175,9 +173,6 @@ let 镜框列表 = computed(() => {
 
 
   <div v-if="库.当前登录用户类型 == '客服'" class="客服组件整页">
-
-
-
 
     <div id="盒内标签" class="打印范围">
       <div class="第一行 ">
@@ -259,7 +254,7 @@ let 镜框列表 = computed(() => {
 
   div {
     font-size: 20px;
-    border-radius: 0px;
+    border-radius: 0;
     border: 1px solid $深灰;
   }
 
@@ -306,7 +301,7 @@ div {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 0px solid rgb(225, 225, 225);
+  border: 0 solid rgb(225, 225, 225);
   border-radius: 5px;
   font-weight: bolder;
 
@@ -319,7 +314,7 @@ input {
   border: 0.5px solid rgb(225, 225, 225);
   text-align: center;
   border-radius: 5px;
-
+  font-size: 18px;
   font-weight: bolder;
 }
 
@@ -330,7 +325,7 @@ input:hover {
 
 input:focus {
   outline: none;
-  box-shadow: 0px 0px 3px 1px $深灰;
+  box-shadow: 0 0 3px 1px $深灰;
   z-index: 99;
 }
 
