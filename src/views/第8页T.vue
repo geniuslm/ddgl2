@@ -10,6 +10,7 @@ let 库 = pinia库();
 
 let 表格头 = new 镜片类();
 delete 表格头._id
+delete 表格头.镜片名
 delete 表格头.库存
 delete 表格头.光度范围
 delete 表格头.库存变更记录
@@ -38,19 +39,16 @@ let 排序 = (k: any) => {
 
   <div class="整页 ">
 
-    <div class="顶部 ">
-      <lmButton @click="测试">呵呵</lmButton>
-      <lmButton @click="添加镜片">新建
-        <icon 图标名="lm-plus-circle-fill" font-size='20px'/>
-      </lmButton>
-    </div>
+
     <!-- 表格模块 -->
     <div class="表格">
      
       <div class="横向 镜片行">
-        <div class="搜索按钮" v-for="key in Object.keys(表格头)" :key="key" > {{ key }}</div>
         <input class="搜索按钮"  v-model="库.镜片全局搜索值" placeholder="全局搜索">
-   
+        <div class="搜索按钮" v-for="key in Object.keys(表格头)" :key="key" > {{ key }}</div>
+        <lmButton @click="添加镜片">新建
+          <icon 图标名="lm-plus-circle-fill" font-size='20px'/>
+        </lmButton>
       </div>
       <div class="横向 镜片行">
         <lmButton @click="排序(k)" v-for="(i, k) in 库.镜片搜索值">
@@ -67,7 +65,7 @@ let 排序 = (k: any) => {
 <style lang="scss" scoped>
 .整页 {
   overflow: auto;
-  grid-template-rows: auto 1fr ;
+  grid-template-rows: auto auto  1fr ;
   gap: 8px;
 
   .表格 {
