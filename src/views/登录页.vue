@@ -54,7 +54,7 @@ socket.on("disconnect", () => {
     <div class="右边">
       
       <div class="标题">
-        <div class="版本号">V1.12.8</div>
+        <div class="版本号">V1.12.9</div>
         <div  :class="{ 版本号:true,退出登录: 库.当前数据库状态 != '已连接' }"> 服务器 {{ 库.当前数据库状态 }}</div>
         李默眼镜工作室
         
