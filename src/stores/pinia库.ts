@@ -336,6 +336,12 @@ export const pinia库 = defineStore("pinia库", {
     //函数 同步和异步函数
     actions: {
         初始化() {
+            this.订单表 = []
+            this.用户表 = []
+            this.镜片表 = []
+            this.镜框表 = []
+            this.镜框订单表 = []
+            this.镜片订单表 = []
             let 开始时间 = Date.now()
             socket.emit('订单', "未", (返回数据: any) => {
                 this.订单表 = this.订单表.concat(返回数据);
@@ -345,7 +351,7 @@ export const pinia库 = defineStore("pinia库", {
             });       
             socket.emit('订单', "非", (返回数据: any) => {
                 this.订单表 = this.订单表.concat(返回数据);
-                console.log("获未完成 返回数据条数" + 返回数据.length);
+                console.log("获已完成 返回数据条数" + 返回数据.length);
                 let 结束时间 = Date.now() - 开始时间;
                 console.log("订单表 完成用时:" + 结束时间);
             });

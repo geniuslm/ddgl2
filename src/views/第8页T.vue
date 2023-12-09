@@ -46,7 +46,7 @@ let 排序 = (k: any) => {
     </div>
     <!-- 表格模块 -->
     <div class="表格">
-      <div class="搜索按钮">以{{ 库.镜片排序的属性 }}排序</div>
+     
       <div class="横向 镜片行">
         <div class="搜索按钮" v-for="key in Object.keys(表格头)" :key="key" > {{ key }}</div>
         <input class="搜索按钮"  v-model="库.镜片全局搜索值" placeholder="全局搜索">
@@ -56,6 +56,7 @@ let 排序 = (k: any) => {
         <lmButton @click="排序(k)" v-for="(i, k) in 库.镜片搜索值">
           <icon 图标名="lm-sort-ascending" font-size='30px'/>
         </lmButton>
+        <div class="搜索按钮">以{{ 库.镜片排序的属性 }}排序</div>
       </div>
       <lmH v-for="(i, k) in 库.排序过的镜片" :key="i._id" :序号="k"></lmH>
     </div>
@@ -66,13 +67,13 @@ let 排序 = (k: any) => {
 <style lang="scss" scoped>
 .整页 {
   overflow: auto;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr ;
   gap: 8px;
 
   .表格 {
     gap: 3px;
     align-content: start;
-    grid-template-rows:  40px 40px auto;
+    grid-template-rows:  30px 20px auto;
     overflow: auto;
   }
 }
@@ -97,6 +98,6 @@ let 排序 = (k: any) => {
 
 .顶部 {
   gap: 5px;
-  grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
+  grid-template-columns: 140px 140px;
 }
 </style>
