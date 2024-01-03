@@ -8,16 +8,16 @@ let 日期 = new Date()
 let 月 = (日期.getMonth() + 1)
 
 
-let 选择年 = ref('23')
+let 选择年 = ref('24')
 
 let 显示月份 = computed(() => {
   let 月份 = []
-  if (选择年.value == '23') {
+  if (选择年.value == '24') {
     for (let i = 月; i >= 1; i--) {
       月份.push(("0" + i).slice(-2))
     }
   }
-  if (选择年.value != '23') {
+  if (选择年.value != '24') {
     for (let i = 12; i >= 1; i--) {
       月份.push(("0" + i).slice(-2))
     }
