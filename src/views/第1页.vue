@@ -321,7 +321,8 @@ let 显示详情 = (订单号) => {
             <div class="订单行元素"> 进货价{{ 镜片订单表[k].进货价格 }}</div>
             <div class="订单行元素"> {{ 镜片订单表[k].供货商 }}</div>
             <div class="订单行元素">{{ 镜片订单表[k].预存余额 ? `余额:${镜片订单表[k].预存余额}` : `现结` }}</div>
-            <div class="订单行元素"> {{ 镜片订单表[k].订单日期.slice(0, 10)  }}</div>
+            <!--            <div class="订单行元素"> {{ 镜片订单表[k].订单日期.slice(0, 10)  }}</div>-->
+            <input v-model.lazy="镜片订单表[k].订单日期">
             <div class="订单行元素"> {{ 镜片订单表[k].镜片名 }}</div>
             <input v-model="镜片订单表[k].近视" placeholder="近视" list="近视">
             <input v-model="镜片订单表[k].散光" placeholder="散光" list="散光">
@@ -332,8 +333,8 @@ let 显示详情 = (订单号) => {
               <lmB @click="删除订单(i)">删除</lmB>
               <lmB v-if="镜片订单表[k].镜片收到日 === '未收到'" @click="收货(i)">收货</lmB>
               <lmB @click="显示详情(镜片订单表[k].订单号.slice(0,8))">详情</lmB>
-              <lmB @click="对账(镜片订单表[k])" :class="{ 正红: 镜片订单表[k].对账 === '未兑'}">
-                {{ 镜片订单表[k].对账 }}
+              <lmB @click="提交更改(镜片订单表[k])">
+                上传
               </lmB>
             </div>
             <div v-if="镜片订单表[k].供货商 === '店铺库存'" class="按钮组">
@@ -349,12 +350,17 @@ let 显示详情 = (订单号) => {
           <div v-if="镜片订单表[k].订单类型 === '充值'||镜片订单表[k].订单类型 === '运费'" class="充值订单行">
 
             <div class="元素"> {{ 镜片订单表[k].订单类型 }} {{ 镜片订单表[k].订单号 }}</div>
-            <div class="元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>
+            <!--            <div class="元素"> {{ 镜片订单表[k].订单日期.slice(0, 10) }}</div>-->
+      
+            <input v-model.lazy="镜片订单表[k].订单日期">
             <div class="元素"> {{ 镜片订单表[k].供货商 }}</div>
             <input @change="提交更改(镜片订单表[k])" class="元素" type="number" v-model="镜片订单表[k].充值金额"
                    placeholder="充值金额">
             <div class="元素">{{ 镜片订单表[k].预存余额 ? `余额:${镜片订单表[k].预存余额}` : `现结` }}</div>
             <lmB @click="删除订单(i)">删除</lmB>
+            <lmB @click="提交更改(镜片订单表[k])">
+              上传
+            </lmB>
           </div>
           <!-- 进货 -->
           <div v-if="镜片订单表[k].订单类型 === '进货'" class="进货订单行">
@@ -439,7 +445,7 @@ let 显示详情 = (订单号) => {
     .销售订单行 {
       gap: 2px;
       justify-content: start;
-      grid-template-columns: 200px 150px 120px 200px 120px 1fr 80px 80px 200px 200px;
+      grid-template-columns: 200px 150px 120px 200px 150px 1fr 80px 80px 200px 200px;
       grid-template-rows: 1fr;
 
       .按钮组 {
@@ -457,7 +463,7 @@ let 显示详情 = (订单号) => {
     .充值订单行 {
       gap: 2px;
       justify-content: start;
-      grid-template-columns: 200px 1fr 1fr 1fr 1fr 190px;
+      grid-template-columns: 200px 1fr 1fr 1fr 1fr 90px 90px;
       grid-template-rows: 1fr;
 
       .元素 {

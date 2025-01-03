@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 
 let 本地服务器IP:string = "ws://localhost:44444"
 let 艾云地址:string = "wss://lmgwr.com:24444"  // 创建一个socket实例 
-let RackNerd地址:string = "wss://dm.lmgwr.com:24444"  // 创建一个socket实例 
+let RackNerd地址:string = "wss://dm.lmgwr.com:34444"  // 创建一个socket实例 
 
 export let socket = io(RackNerd地址);  // 创建一个socket实例
 
