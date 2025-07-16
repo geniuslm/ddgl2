@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    2: typeof import('./src/components/十一页行 copy 2.vue')['default']
     '按钮': typeof import('./src/components/按钮.vue')['default']
     '菜单': typeof import('./src/components/菜单.vue')['default']
     '菜单客服': typeof import('./src/components/菜单客服.vue')['default']
