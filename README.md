@@ -1,6 +1,27 @@
-# Vue 3 + TypeScript + Vite
+# 李默眼镜工作室 - 订单管理系统 (DDGL2)
 
-这个模板应该能帮助你开始使用Vue 3和TypeScript在Vite上进行开发。模板使用Vue 3 `<script setup>`单文件组件，查看[script setup文档](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup)了解更多信息。
+## 版本记录
+
+### V1.13.0 (2026-01-06)
+- 新增 2026 年利润计算支持
+- 后端服务器地址更新为 DMIT
+
+### V1.12.9
+- 旧版本
+
+## 技术栈
+Vue 3 + TypeScript + Vite + Element Plus + Socket.io
+
+## 开发
+```bash
+npm install
+npm run dev
+```
+
+## 构建
+```bash
+npm run build
+```
 
 ## 推荐的IDE设置
 

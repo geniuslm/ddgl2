@@ -8,16 +8,16 @@ let 日期 = new Date()
 let 月 = (日期.getMonth() + 1)
 
 
-let 选择年 = ref('25')
+let 选择年 = ref('26')
 
 let 显示月份 = computed(() => {
   let 月份 = []
-  if (选择年.value == '25') {
+  if (选择年.value == '26') {
     for (let i = 月; i >= 1; i--) {
       月份.push(("0" + i).slice(-2))
     }
   }
-  if (选择年.value != '25') {
+  if (选择年.value != '26') {
     for (let i = 12; i >= 1; i--) {
       月份.push(("0" + i).slice(-2))
     }
@@ -143,6 +143,7 @@ let 利润计算属性 = computed(() => {
         <option value="23">2023年</option>
         <option value="24">2024年</option>
         <option value="25">2025年</option>
+        <option value="26">2026年</option>
       </select>
     </div>
     <div v-if=" 库.当前登录用户类型 === '客服'" class="首行">
